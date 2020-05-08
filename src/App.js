@@ -12,7 +12,6 @@ function App() {
             if (snapshot.exists())
               return console.log(`User ${uid} already in database!`);
           } else {
-            console.log('entered');
             await auth().signInAnonymously();
             const uid = auth().currentUser.uid;
             await db.ref(`/users/${uid}`).set({ signedIn: true });
