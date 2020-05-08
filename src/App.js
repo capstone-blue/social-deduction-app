@@ -1,6 +1,29 @@
 import React, { useEffect } from 'react';
 import { auth, db } from './firebase';
+import { useList } from "react-firebase-hooks/database"
 
+
+
+const userList = db.ref("users");
+function UserRef(props){
+  const [snapshot,loading,error] = useList(userList)
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error!</p>;
+  return (
+    <div>
+      <ul>
+        {snapshot.map(user=>(
+          <li key = {user.key}>
+            <h1>{user.val().name}</h1>
+            <h1>hey</h1>
+
+          </li>
+        )
+        )}
+      </ul>
+    </div>
+  );
+}
 function App() {
   useEffect(() => {
     function checkAuthStatus() {
@@ -26,7 +49,15 @@ function App() {
     checkAuthStatus();
   }, []);
 
-  return <h1>This is the App</h1>;
+  return (
+    <div>
+      <h1>This is the App</h1>
+      <UserRef/>
+    </div>
+  )
 }
+
+
+
 
 export default App;
