@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import { useUser } from '../context/userContext';
+import { useLobby } from '../context/lobbyContext';
 
-function HomePage() {
+function HomePage(props) {
   return (
     <div>
-      <LobbyForm />
+      <LobbyForm {...props} />
     </div>
   );
 }
 
-function LobbyForm() {
+function LobbyForm({ history }) {
   const [lobbiesRef, setLobbiesRef] = useState('');
   const [currUser] = useUser();
+  const [, setLobby] = useLobby();
   const [lobbyName, setLobbyName] = useState('');
 
   // setup references in a useEffect
@@ -23,21 +25,33 @@ function LobbyForm() {
   // another useEffect can be used for listening on events for views
 
   async function createLobby() {
-    const lobbyRef = await lobbiesRef.push({ name: lobbyName });
-    await db.ref(`/lobbyHosts/${lobbyRef.key}`).set({ [currUser.key]: true });
-    setLobbyName('');
+    try {
+      const lobbyRef = await lobbiesRef.push({ name: lobbyName });
+      await db.ref(`/lobbyHosts/${lobbyRef.key}`).set({ [currUser.key]: true });
+      setLobby(lobbyRef.key);
+      setLobbyName('');
+      history.push(`/lobbies/${lobbyRef.key}`);
+    } catch (e) {
+      console.error('Error in createLobby', e.message);
+    }
   }
 
   async function joinLobby() {
-    const lobby = await lobbiesRef
-      .orderByChild('name')
-      .equalTo(lobbyName)
-      .once('value');
-    lobby.forEach((l) => {
-      db.ref(`/lobbyMembers/${l.key}`).update({ [currUser.key]: true });
-      return true;
-    });
-    setLobbyName('');
+    try {
+      const lobby = await lobbiesRef
+        .orderByChild('name')
+        .equalTo(lobbyName)
+        .once('value');
+      lobby.forEach((l) => {
+        db.ref(`/lobbyMembers/${l.key}`).update({ [currUser.key]: true });
+        setLobby({ id: l.key });
+        setLobbyName('');
+        history.push(`/lobbies/${l.key}`);
+        return true;
+      });
+    } catch (e) {
+      console.error('Error in joinLobby', e.message);
+    }
   }
 
   return (

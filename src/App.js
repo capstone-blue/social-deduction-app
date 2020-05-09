@@ -4,6 +4,7 @@ import { useUser } from './context/userContext';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import HomePage from './components/HomePage';
+import LobbyPage from './components/LobbyPage';
 
 function App() {
   const [, setCurrUser] = useUser();
@@ -41,6 +42,7 @@ function Routes() {
   return (
     <Router>
       <Switch>
+        <Route path="/lobbies/:id" component={LobbyPage} />
         <Route path="/" component={HomePage} />
       </Switch>
     </Router>
