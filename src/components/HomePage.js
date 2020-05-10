@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { db } from '../firebase';
-import { useUser } from '../context/userContext';
-import { useLobby } from '../context/lobbyContext';
+import { useObject } from 'react-firebase-hooks/database';
+import { useUserId } from '../context/userContext';
 
 function HomePage(props) {
   return (
@@ -12,25 +12,21 @@ function HomePage(props) {
 }
 
 function LobbyForm({ history }) {
-  const [lobbiesRef, setLobbiesRef] = useState('');
-  const [currUser] = useUser();
-  const [, setLobby] = useLobby();
+  const [lobbiesRef] = useState(db.ref().child('lobbies'));
+  const [usersRef] = useState(db.ref().child('users'));
+
   const [lobbyName, setLobbyName] = useState('');
-
-  // setup references in a useEffect
-  useEffect(() => {
-    setLobbiesRef(db.ref().child('lobbies'));
-  }, [setLobbiesRef]);
-
-  // another useEffect can be used for listening on events for views
+  const [userId] = useUserId();
+  const [userSnap, userLoading] = useObject(usersRef.child(userId));
 
   async function createLobby() {
     try {
-      const lobbyRef = await lobbiesRef.push({ name: lobbyName });
-      await db.ref(`/lobbyHosts/${lobbyRef.key}`).set({ [currUser.key]: true });
-      setLobby(lobbyRef.key);
+      const lobbySnap = await lobbiesRef.push({
+        name: lobbyName,
+        players: { [userSnap.key]: { ...userSnap.val(), host: true } },
+      });
       setLobbyName('');
-      history.push(`/lobbies/${lobbyRef.key}`);
+      history.push(`/lobbies/${lobbySnap.key}`);
     } catch (e) {
       console.error('Error in createLobby', e.message);
     }
@@ -38,13 +34,21 @@ function LobbyForm({ history }) {
 
   async function joinLobby() {
     try {
-      const lobby = await lobbiesRef
+      const lobbySnaps = await lobbiesRef
         .orderByChild('name')
         .equalTo(lobbyName)
         .once('value');
-      lobby.forEach((l) => {
-        db.ref(`/lobbyMembers/${l.key}`).update({ [currUser.key]: true });
-        setLobby({ id: l.key });
+
+      if (!lobbySnaps.val()) {
+        setLobbyName('');
+        throw new Error(`Cannot find lobby with name ${lobbyName}`);
+      }
+
+      lobbySnaps.forEach((l) => {
+        lobbiesRef
+          .child(l.key)
+          .child('players')
+          .update({ [userSnap.key]: userSnap.val() });
         setLobbyName('');
         history.push(`/lobbies/${l.key}`);
         return true;
@@ -54,7 +58,9 @@ function LobbyForm({ history }) {
     }
   }
 
-  return (
+  return userLoading ? (
+    <div>Loading...</div>
+  ) : (
     <div>
       <h2>Lobby Name</h2>
       <input
