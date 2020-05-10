@@ -1,14 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { UserProvider } from './context/userContext';
-import { LobbyProvider } from './context/lobbyContext';
 import App from './App';
-
+import { UserProvider } from './context/userContext';
 ReactDOM.render(
   <UserProvider>
-    <LobbyProvider>
-      <App />
-    </LobbyProvider>
+    <App />
   </UserProvider>,
   document.getElementById('root')
 );
