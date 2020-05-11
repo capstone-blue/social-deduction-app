@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { db } from '../firebase';
+import { db, auth } from '../firebase';
 import { useObjectVal } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
 
@@ -7,6 +7,7 @@ import { useUserId } from '../context/userContext';
 function LobbyPage({ match, history }) {
   const [lobbiesRef] = useState(db.ref().child('lobbies'));
   const [lobby, lobbyLoading] = useObjectVal(lobbiesRef.child(match.params.id));
+
 
   return lobbyLoading ? (
     <div>...Loading</div>
@@ -87,27 +88,32 @@ function AliasModal({ match }) {
 
 
 function GameStart({ match, players, history }) {
-  // https://social-deduction-test.firebaseio.com/lobbies/-M73Oor-5D-v5xYwlDAV/players
+  const [userId] = useUserId();
   const [lobbiesRef] = useState(db.ref(`/lobbies/${match.params.id}`));
+  // const [currentUser] = useState(lobbiesRef.child(`${userId}`))
   const [minPlayers] = useState(2)
+  const [gameStarted, setGameStarted] = useState(false)
+
+  function checkIfHost() {
+    const currentPlayer = players.find(player => player[0] === userId)
+    return currentPlayer[1].host
+  }
 
   async function createGameSession() {
-    // need to set user id as the key
-    // then inside that, set the rest of the user properties
-    console.log(players)
-    console.log(match.params.id)
+    // checks for min players to start game
     if (players.length >= minPlayers) {
       try {
+        // creates a game session by transferring lobby members data over
         players.forEach(player => {
           const [playerId, playerProps] = player;
           db.ref(`/gameSessions/${match.params.id}/players`).child(`${playerId}`).set(playerProps)
         })
-        // < Route path = "/gamesession/:id" component = { GameSession } />
-
       } catch (e) {
         console.error('Error in createGameSession', e.message)
       }
+      // sends player to GameSession component
       history.push(`/gamesession/${match.params.id}`);
+      // destroys lobby, but gets error because
       lobbiesRef.set(null)
     } else {
       alert(`${minPlayers - players.length} more players required to start a game`)
@@ -117,7 +123,7 @@ function GameStart({ match, players, history }) {
 
   return (
     <div>
-      <button onClick={createGameSession}>Start Game</button>
+      {checkIfHost() ? <button onClick={createGameSession}>Start Game</button> : <p>Waiting for host...</p>}
     </div>
   )
 }

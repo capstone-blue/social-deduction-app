@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { db } from '../firebase/index'
 
-function GameSession() {
+function GameSession({match}) {
   const [gameSessionRef] = useState(db.ref(`/gameSessions/${match.params.id}`));
   const [players] = useState(gameSessionRef.child('players'))
 
