@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { auth, db } from './firebase';
-import { useList } from "react-firebase-hooks/database"
+import { useUser } from './context/userContext';
+
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import HomePage from './components/HomePage';
 
 
 
@@ -25,17 +28,17 @@ function UserRef(props){
   );
 }
 function App() {
+  const [, setCurrUser] = useUser();
+
   useEffect(() => {
     function checkAuthStatus() {
       auth().onAuthStateChanged(async (user) => {
         try {
           if (user) {
             const uid = user.uid;
-            const snapshot = await db.ref(`/users/${uid}`).once('value');
-            if (snapshot.exists())
-              return console.log(`User ${uid} already in database!`);
+            const userSnap = await db.ref(`/users/${uid}`).once('value');
+            if (userSnap.exists()) setCurrUser(userSnap);
           } else {
-            console.log('entered');
             await auth().signInAnonymously();
             const uid = auth().currentUser.uid;
             await db.ref(`/users/${uid}`).set({ signedIn: true });
@@ -47,14 +50,23 @@ function App() {
       });
     }
     checkAuthStatus();
-  }, []);
+  }, [setCurrUser]);
 
   return (
     <div>
-      <h1>This is the App</h1>
-      <UserRef/>
+      <Routes />
     </div>
-  )
+  );
+}
+
+function Routes() {
+  return (
+    <Router>
+      <Switch>
+        <Route path="/" component={HomePage} />
+      </Switch>
+    </Router>
+  );
 }
 
 
