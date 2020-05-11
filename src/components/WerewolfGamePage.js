@@ -2,6 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import { useList, useObjectVal } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
+import styled from 'styled-components';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Badge from 'react-bootstrap/Badge';
+import Card from 'react-bootstrap/Card';
+import Spinner from 'react-bootstrap/Spinner';
+
+const OpponentCard = styled(Card)`
+  width: 8rem;
+  min-height: 10rem;
+`;
+
+const MiddleCard = styled(Card)`
+  width: 8rem;
+  min-height: 10rem;
+`;
 
 function WerewolfGamePage({ match }) {
   const [gameSessionRef] = useState(
@@ -39,18 +56,36 @@ function WerewolfGamePage({ match }) {
   // }, [count]);
 
   return !gameState ? (
-    <div>...Loading</div>
+    <Spinner animation="border" role="status" />
   ) : (
-    <div>
-      <h1>{gameState.name}</h1>
-      <div>{gameState.isNight ? 'Night Phase' : 'Day Phase'}</div>
-      <div>{gameState.availableRoles[0]}</div>
-      <div>{`:${count}`}</div>
+    <Container>
+      <Row>
+        <Col>
+          <h1 className="text-center">
+            {gameState.title}{' '}
+            <Badge variant={gameState.isNight ? 'dark' : 'light'}>
+              {gameState.isNight ? 'Night Phase' : 'Day Phase'}
+            </Badge>
+          </h1>
+        </Col>
+      </Row>
+      <Row>
+        <h2>
+          {gameState.availableRoles[0]}'s Turn {`:${count}`}
+        </h2>
+      </Row>
       <OpponentList gameRef={gameSessionRef} opponents={gameState.players} />
       <CenterCardList gameRef={gameSessionRef} />
-      <Messages gameRef={gameSessionRef} />
-      <PlayerCard gameRef={gameSessionRef} />
-    </div>
+      <Row>
+        <Col>
+          <Messages gameRef={gameSessionRef} />
+        </Col>
+        <Col>
+          <PlayerCard gameRef={gameSessionRef} />
+        </Col>
+        <Col></Col>
+      </Row>
+    </Container>
   );
 }
 
@@ -69,14 +104,18 @@ function OpponentList({ gameRef }) {
   return !opponents || playerSnapsLoading ? (
     ''
   ) : (
-    <div>
+    <Row className="justify-content-md-center">
       {opponents.map((o) => (
-        <div key={o.key}>
-          <div>{o.val().alias}</div>
-          <div>?</div>
+        <div key={o.key} className="text-center">
+          <Badge pill variant="info">
+            {o.val().alias}
+          </Badge>
+          <OpponentCard>
+            <Card.Title>?</Card.Title>
+          </OpponentCard>
         </div>
       ))}
-    </div>
+    </Row>
   );
 }
 
@@ -86,11 +125,13 @@ function CenterCardList({ gameRef }) {
   return cardSnapsLoading ? (
     ''
   ) : (
-    <div>
+    <Row className="justify-content-md-center">
       {cardSnaps.map((c) => (
-        <div key={c.key}>?</div>
+        <MiddleCard key={c.key}>
+          <Card.Title className="text-center">?</Card.Title>
+        </MiddleCard>
       ))}
-    </div>
+    </Row>
   );
 }
 
@@ -119,6 +160,7 @@ function Messages({ gameRef }) {
 
   return (
     <div>
+      <h3>Messages</h3>
       <div>
         {messageSnaps.map((m) => {
           return (
@@ -140,14 +182,22 @@ function PlayerCard({ gameRef }) {
   return loadPlayer ? (
     ''
   ) : (
-    <div>
-      <div>{player.alias}</div>
-      <div>{player.startingRole.name}</div>
-      <ul>
-        {player.startingRole.options.map((o, i) => (
-          <li key={`card-${userId}-${i}`}>{o}</li>
-        ))}
-      </ul>
+    <div className="text-center">
+      <Badge pill variant="success" className="text-center">
+        {player.alias}
+      </Badge>
+      <Card>
+        <Card.Title className="text-center">
+          <div>{player.startingRole.name}</div>
+        </Card.Title>
+        <Card.Body>
+          <div>
+            {player.startingRole.options.map((o, i) => (
+              <div key={`card-${userId}-${i}`}>{o}</div>
+            ))}
+          </div>
+        </Card.Body>
+      </Card>
     </div>
   );
 }
