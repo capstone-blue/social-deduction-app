@@ -4,18 +4,19 @@ import { useObjectVal } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
 
 // Main logic should be handled in this component
-function LobbyPage({ match }) {
+function LobbyPage({ match, history }) {
   const [lobbiesRef] = useState(db.ref().child('lobbies'));
   const [lobby, lobbyLoading] = useObjectVal(lobbiesRef.child(match.params.id));
 
   return lobbyLoading ? (
     <div>...Loading</div>
   ) : (
-    <div>
-      <AliasModal match={match} />
-      <LobbyView players={Object.entries(lobby.players)} name={lobby.name} />
-    </div>
-  );
+      <div>
+        <AliasModal match={match} />
+        <LobbyView players={Object.entries(lobby.players)} name={lobby.name} />
+        <GameStart players={Object.entries(lobby.players)} match={match} history={history} />
+      </div>
+    );
 }
 
 function LobbyView({ name, players }) {
@@ -82,6 +83,44 @@ function AliasModal({ match }) {
       </form>
     </div>
   );
+}
+
+// https://social-deduction-test.firebaseio.com/lobbies/-M73Oor-5D-v5xYwlDAV/players
+
+function GameStart({ match, players, history }) {
+  // const [gameSessionRef] = useState(db.ref(`/gameSessions/${match.params.id}`).child('players'));
+  const [lobbiesRef] = useState(db.ref(`/lobbies/${match.params.id}`));
+  const [minPlayers] = useState(2)
+
+  async function createGameSession() {
+    // need to set user id as the key
+    // then inside that, set the rest of the user properties
+    console.log(players)
+    console.log(match.params.id)
+    if (players.length >= minPlayers) {
+      try {
+        players.forEach(player => {
+          const [playerId, playerProps] = player;
+          db.ref(`/gameSessions/${match.params.id}/players`).child(`${playerId}`).set(playerProps)
+        })
+        // < Route path = "/gamesession/:id" component = { GameSession } />
+
+      } catch (e) {
+        console.error('Error in createGameSession', e.message)
+      }
+      history.push(`/gamesession/${match.params.id}`);
+      lobbiesRef.set(null)
+    } else {
+      alert(`${minPlayers - players.length} more players required to start a game`)
+    }
+  }
+
+
+  return (
+    <div>
+      <button onClick={createGameSession}>Start Game</button>
+    </div>
+  )
 }
 
 export default LobbyPage;

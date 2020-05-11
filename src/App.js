@@ -6,6 +6,7 @@ import { useUserId } from './context/userContext';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import LobbyPage from './components/LobbyPage';
+import GameSession from './components/GameSession'
 
 function App() {
   const [userId, setUserId] = useUserId();
@@ -39,18 +40,30 @@ function App() {
   return loading || !userId ? (
     <div>...Loading</div>
   ) : (
-    <div>
-      <Routes user={user} />
-    </div>
-  );
+      <div>
+        <Routes user={user} />
+      </div>
+    );
 }
 
+// function Routes() {
+//   return (
+//     <Router>
+//       <Switch>
+//         <Route path="/lobbies/:id" component={LobbyPage} />} />
+//         <Route path="/" component={HomePage} />} />
+//         <Route path="/gamesession/:id" component={GameSession} />} />
+//       </Switch>
+//     </Router>
+//   );
+// }
 function Routes() {
   return (
     <Router>
       <Switch>
-        <Route path="/lobbies/:id" component={LobbyPage} />} />
-        <Route path="/" component={HomePage} />} />
+        <Route path="/lobbies/:id" component={LobbyPage} />
+        <Route path="/" component={HomePage} />
+        <Route path="/gamesession/:id" component={GameSession} />
       </Switch>
     </Router>
   );
