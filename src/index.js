@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { UserProvider } from './context/userContext';
 import App from './App';
-
+import { UserProvider } from './context/userContext';
 ReactDOM.render(
   <UserProvider>
     <App />
