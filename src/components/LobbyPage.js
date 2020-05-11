@@ -85,10 +85,9 @@ function AliasModal({ match }) {
   );
 }
 
-// https://social-deduction-test.firebaseio.com/lobbies/-M73Oor-5D-v5xYwlDAV/players
 
 function GameStart({ match, players, history }) {
-  // const [gameSessionRef] = useState(db.ref(`/gameSessions/${match.params.id}`).child('players'));
+  // https://social-deduction-test.firebaseio.com/lobbies/-M73Oor-5D-v5xYwlDAV/players
   const [lobbiesRef] = useState(db.ref(`/lobbies/${match.params.id}`));
   const [minPlayers] = useState(2)
 
