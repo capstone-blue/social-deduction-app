@@ -21,6 +21,7 @@ const OpponentCard = styled(CommonCardStyles)``;
 
 const MiddleCard = styled(CommonCardStyles)``;
 
+//* WerewolfGamePage *//
 function WerewolfGamePage({ match }) {
   const [gameSessionRef] = useState(
     db.ref('/gameSessions').child(match.params.id)
@@ -87,6 +88,7 @@ function WerewolfGamePage({ match }) {
 
 export default WerewolfGamePage;
 
+//* TurnCountdown *//
 function TurnCountdown({ gameRef, roles, host, currentTurn, setCurrentTurn }) {
   const [userId] = useUserId();
   const [count, setCount] = useState('');
@@ -150,6 +152,7 @@ function TurnCountdown({ gameRef, roles, host, currentTurn, setCurrentTurn }) {
   );
 }
 
+//* OpponentList *//
 function OpponentList({ gameRef }) {
   const [userId] = useUserId();
   const [playerSnaps, playerSnapsLoading] = useList(gameRef.child('players'));
@@ -234,6 +237,7 @@ function Messages({ gameRef }) {
   );
 }
 
+//* PlayerCard *//
 function PlayerCard({ gameRef }) {
   const [userId] = useUserId();
   const [player, loadPlayer] = useObjectVal(gameRef.child(`players/${userId}`));
