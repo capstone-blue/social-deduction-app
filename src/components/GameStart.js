@@ -8,7 +8,6 @@ function GameStart({ match, players, history, }) {
   const [lobbiesRef] = useState(db.ref(`/lobbies/${lobbyId}`));
   const [minPlayers] = useState(2)
   const [isHost, setIsHost] = useState(false)
-  // const [started, setStarted] = useState('pending')
 
 
   useEffect(() => {
@@ -42,13 +41,11 @@ function GameStart({ match, players, history, }) {
           const [playerId, playerProps] = player;
           db.ref(`/gameSessions/${lobbyId}/players`).child(`${playerId}`).set(playerProps)
         })
-        // set lobby status from pending to started so component will render redirect to game session
+        // set lobby status from pending to started so component will render redirect to game session from the lobby listener
         lobbiesRef.update({ 'status': 'started' });
       } catch (e) {
         console.error('Error in createGameSession', e.message)
       }
-      // lobbiesRef.set(null)
-      // history.push(`/gamesession/${match.params.id}`);
     } else {
       alert(`${minPlayers - players.length} more players required to start a game`)
     }
