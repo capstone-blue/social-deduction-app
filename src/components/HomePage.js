@@ -2,11 +2,20 @@ import React, { useState } from 'react';
 import { db } from '../firebase';
 import { useObject } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
+import styled from 'styled-components';
+import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+
+
+const Title = styled.h1`
+  font-size: 1.5em;
+  text-align: center;
+  color: darkslateblue;
+`;
 
 function HomePage(props) {
   return (
@@ -67,15 +76,34 @@ function LobbyForm({ history }) {
   return userLoading ? (
     <div>Loading...</div>
   ) : (
-      <div>
-        <h2>Lobby Name</h2>
+    <Container>
         <Container>
+          <Navbar bg="dark" variant="dark">
+            <Navbar.Brand>
+              <img
+                alt=""
+                src="../../public/logo.png"
+                width="30"
+                height="30"
+                className="d-inline-block align-top"
+              />One Night Ultimate Werewolf
+    </Navbar.Brand>
+          </Navbar>
+        </Container>
+      <Container>
+        <Title>Create or Join a Lobby</Title>
+        <Row>
           <Form.Control size="sm" type="text" placeholder="Lobby Name" onChange={(e) => setLobbyName(e.target.value)}
             value={lobbyName} />
-          <Button variant="dark" onClick={joinLobby}>Join Lobby</Button>
-          <Button variant="dark" onClick={createLobby}>Create Lobby</Button>
-        </Container>
-      </div>
+        </Row>
+        <Row>
+          <Col>
+            <Button variant="dark" onClick={joinLobby}>Join Lobby</Button>
+            <Button variant="dark" onClick={createLobby}>Create Lobby</Button>
+          </Col>
+        </Row>
+      </Container>
+    </Container>
     );
 }
 
