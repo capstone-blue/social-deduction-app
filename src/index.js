@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { UserProvider } from './context/userContext';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 ReactDOM.render(
   <UserProvider>
     <App />

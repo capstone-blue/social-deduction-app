@@ -5,7 +5,7 @@ import { useUserId } from './context/userContext';
 import {useList} from 'react-firebase-hooks/database';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { HomePage, LobbyPage, GameSession, RoleAssignment } from './components';
+import { HomePage, LobbyPage, GameSession, RoleAssignment,WerewolfGamePage } from './components';
 
 
 
@@ -74,6 +74,7 @@ function Routes() {
         <Route path="/lobbies/:id" component={LobbyPage} />
         <Route path="/gamesession/:id" component={GameSession} />
         <Route path = "/hostScreen/:id" component = {RoleAssignment}/>
+        <Route path="/gameSessions/:id" component={WerewolfGamePage} />
         <Route path="/" component={HomePage} />
       </Switch>
     </Router>

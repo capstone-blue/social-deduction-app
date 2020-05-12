@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { useObjectVal, useList, useListKeys } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
+import EvilButton from './EvilButton'
 
+function hey(){
+  console.log("hey")
+}
 function RoleAssignment({ match }) {
   const [lobbiesRef] = useState(db.ref().child('gameSessions'));
   const [lobby, lobbyLoading] = useObjectVal(lobbiesRef.child(match.params.id));
@@ -13,42 +17,43 @@ function RoleAssignment({ match }) {
   // console.log(players)
   // console.log(roleList)
   //unifying the button behavior and implementing toggling
-  // function buttonClicked(role){
-  //   console.log(role)
-  //   if(role === "active"){
-  //     console.log('we made it here')
-  //   }
-  // }
+   function buttonClicked(role){
+    if(roles.includes(role)){
+      const newRoles = roles.filter(el=>el !== role)
+      setRoles(newRoles)
+    }
+    else{
+      setRoles([...roles, role])
+    }
+  }
   return(
     
     <div>
       <h1>werewolves</h1>
       <div className = 'werewolfTeam'>
-        <button className = "active" onClick = {()=>setRoles([...roles,"werewolf"])}>
-          werewolf
-        </button>
-        <button onClick = {()=>setRoles([...roles,"werewolf"])}>
+        <EvilButton buttonClicked = {buttonClicked} role = "werewolf1"/>
+        <button onClick = {()=>buttonClicked("werewolf2")}>
           werewolf2
         </button>
-        <button onClick = {()=>setRoles([...roles,"minion"])}>
+        <button onClick = {()=>buttonClicked("minion")}>
          minion
         </button>
-        <button onClick = {()=>setRoles([...roles,"alpha wolf"])}>
+        <button onClick = {()=>buttonClicked("alpha wolf")}>
          alphawolf
         </button>
       </div>
       <h1>Villagers</h1>
       <div className = 'villagerTeam'>
-        <button onClick = {()=>setRoles([...roles,"seer"])}>
+        <button onClick = {()=>buttonClicked("seer")}>
           seer
         </button>
-        <button onClick = {()=>setRoles([...roles,"robber"])}>
+        <button onClick = {()=>buttonClicked("robber")}>
           robber
         </button>
-        <button onClick = {()=>setRoles([...roles,"villager"])}>
+        <button onClick = {()=>buttonClicked("villager1")}>
           villager
         </button>
-        <button onClick = {()=>setRoles([...roles,"villager"])}>
+        <button onClick = {()=>buttonClicked("villager2")}>
           villager2
         </button>
       </div>
@@ -107,14 +112,27 @@ function wolfy(inputArray,playerNumber,players,playersRef,roleList){
         //   }
         // }})
         // console.log(roleList)
-        const roleUpdate = roleList[inPlay[i]]
+        if(inPlay[i]=== "villager1" || inPlay[i]=== "villager2"){
+          console.log('villager')
+          const roleUpdate = roleList["villager"]
+          individualRef.update({"startingRole": roleUpdate})
+        }
+        else if(inPlay[i]==="werewolf1" || inPlay[i]=== "werewolf2"){
+          console.log('wolf')
+          const roleUpdate = roleList["werewolf"]
+          individualRef.update({"startingRole": roleUpdate})
+        }
+        else{
+          console.log('else')
+          const roleUpdate = roleList[inPlay[i]]
+          individualRef.update({"startingRole": roleUpdate})
+        }
         // console.log(roleUpdate)
           // individualRef.update({"actualRole":{
           //   "description" : "Look at one player's card or two from the center",
           //   "name" : inPlay[i],
           //   "type" : "villager"
           // }})
-          individualRef.update({"startingRole": roleUpdate})
       }
     }
     setTheRoles(players,playersRef,roleList)
