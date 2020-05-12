@@ -5,10 +5,7 @@ import { useUserId } from './context/userContext';
 import {useList} from 'react-firebase-hooks/database';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import HomePage from './components/HomePage';
-import LobbyPage from './components/LobbyPage';
-import GamesViewLol from './components/GamesViewLol'
-import RoleAssignment from './components/RoleAssignment';
+import { HomePage, LobbyPage, GameSession, RoleAssignment } from './components';
 
 
 
@@ -64,10 +61,10 @@ function App() {
   return loading || !userId ? (
     <div>...Loading</div>
   ) : (
-    <div>
-      <Routes user={user} />
-    </div>
-  );
+      <div>
+        <Routes user={user} />
+      </div>
+    );
 }
 
 function Routes() {
@@ -75,8 +72,8 @@ function Routes() {
     <Router>
       <Switch>
         <Route path="/lobbies/:id" component={LobbyPage} />
-        <Route path = "/gameSessions/:id" component = {GamesViewLol}/>
-        <Route path = "/hostScreen/:id" component ={RoleAssignment}/>
+        <Route path="/gamesession/:id" component={GameSession} />
+        <Route path = "/hostScreen/:id" component = {RoleAssignment}/>
         <Route path="/" component={HomePage} />
       </Switch>
     </Router>

@@ -2,19 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { useObjectVal } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
+import { Redirect } from 'react-router-dom';
+import {GameStart} from './index'
 
 // Main logic should be handled in this component
-function LobbyPage({ match }) {
+function LobbyPage({ match, history }) {
   const [lobbiesRef] = useState(db.ref().child('lobbies'));
   const [lobby, lobbyLoading] = useObjectVal(lobbiesRef.child(match.params.id));
+  const [gameStarted, setGameStarted] = useState(false)
+
+
   return lobbyLoading ? (
     <div>...Loading</div>
   ) : (
-    <div>
-      <AliasModal match={match} />
-      <LobbyView players={Object.entries(lobby.players)} name={lobby.name} />
-    </div>
-  );
+      <div>
+        <AliasModal match={match} />
+        <LobbyView players={Object.entries(lobby.players)} name={lobby.name} />
+        <GameStart players={Object.entries(lobby.players)} match={match} history={history} setGameStarted={setGameStarted} gameStarted={gameStarted} />
+      </div>
+    );
 }
 
 function LobbyView({ name, players }) {

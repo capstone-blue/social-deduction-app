@@ -23,6 +23,7 @@ function LobbyForm({ history }) {
     try {
       const lobbySnap = await lobbiesRef.push({
         name: lobbyName,
+        status: "pending",
         players: { [userSnap.key]: { ...userSnap.val(), host: true } },
       });
       setLobbyName('');

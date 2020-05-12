@@ -12,11 +12,19 @@ function RoleAssignment({ match }) {
   const playersRef = lobbiesRef.child(match.params.id).child('players')
   // console.log(players)
   // console.log(roleList)
+  //unifying the button behavior and implementing toggling
+  // function buttonClicked(role){
+  //   console.log(role)
+  //   if(role === "active"){
+  //     console.log('we made it here')
+  //   }
+  // }
   return(
     
     <div>
+      <h1>werewolves</h1>
       <div className = 'werewolfTeam'>
-        <button onClick = {()=>setRoles([...roles,"werewolf"])}>
+        <button className = "active" onClick = {()=>setRoles([...roles,"werewolf"])}>
           werewolf
         </button>
         <button onClick = {()=>setRoles([...roles,"werewolf"])}>
@@ -29,6 +37,7 @@ function RoleAssignment({ match }) {
          alphawolf
         </button>
       </div>
+      <h1>Villagers</h1>
       <div className = 'villagerTeam'>
         <button onClick = {()=>setRoles([...roles,"seer"])}>
           seer
@@ -44,6 +53,7 @@ function RoleAssignment({ match }) {
         </button>
       </div>
       <div>
+        <h1>start the game</h1>
         <button onClick = {()=>wolfy(roles,3,players,playersRef,roleList)}>
           set the roles
         </button>
@@ -82,10 +92,10 @@ function wolfy(inputArray,playerNumber,players,playersRef,roleList){
         // console.log('got here')
         // console.log(spliceArray)
     }
-    console.log(players)
+    // console.log(players)
     console.log("these are assigned",inPlay, "these are in the center",spliceArray)
     function setTheRoles(players,playersRef,roleList){
-     console.log(players)
+    //  console.log(players)
      for (let i = 0; i<players.length; i++){
        console.log(players[i])
        const individualRef = playersRef.child(players[i])
