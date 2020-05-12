@@ -10,15 +10,16 @@ import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
 
-const OpponentCard = styled(Card)`
+const CommonCardStyles = styled(Card)`
   width: 5rem;
   min-height: 7rem;
+  padding: 1rem;
+  font-size: 1.5rem;
 `;
 
-const MiddleCard = styled(Card)`
-  width: 5rem;
-  min-height: 7rem;
-`;
+const OpponentCard = styled(CommonCardStyles)``;
+
+const MiddleCard = styled(CommonCardStyles)``;
 
 function WerewolfGamePage({ match }) {
   const [gameSessionRef] = useState(
@@ -70,7 +71,7 @@ function WerewolfGamePage({ match }) {
         />
       </Row>
       <OpponentList gameRef={gameSessionRef} opponents={gameState.players} />
-      <CenterCardList gameRef={gameSessionRef} />
+      <MiddleCardList gameRef={gameSessionRef} />
       <Row>
         <Col>
           <Messages gameRef={gameSessionRef} />
@@ -177,7 +178,8 @@ function OpponentList({ gameRef }) {
   );
 }
 
-function CenterCardList({ gameRef }) {
+//* MiddleCardList *//
+function MiddleCardList({ gameRef }) {
   const [cardSnaps, cardSnapsLoading] = useList(gameRef.child('centerCards'));
 
   return cardSnapsLoading ? (
