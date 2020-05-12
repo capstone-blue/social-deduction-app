@@ -11,24 +11,24 @@ import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
 
 const OpponentCard = styled(Card)`
-  width: 8rem;
-  min-height: 10rem;
+  width: 5rem;
+  min-height: 7rem;
 `;
 
 const MiddleCard = styled(Card)`
-  width: 8rem;
-  min-height: 10rem;
+  width: 5rem;
+  min-height: 7rem;
 `;
 
 function WerewolfGamePage({ match }) {
   const [gameSessionRef] = useState(
     db.ref('/gameSessions').child(match.params.id)
   );
+  const [host, loadingHost] = useObjectVal(
+    gameSessionRef.child('players').orderByChild('host').equalTo(true)
+  );
   const [gameState, setGameState] = useState(null);
-  const [count] = useState(15);
-
-  // const decrement = () => setCount((c) => c - 1);
-
+  console.log('host', host);
   // use 'once' to grab the initial state on load
   // firebase-hooks uses 'on', which we don't want in this case
   useEffect(() => {
@@ -43,19 +43,7 @@ function WerewolfGamePage({ match }) {
     });
   }, [gameSessionRef, setGameState]);
 
-  // count down timer
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (count > 0) {
-  //       decrement();
-  //     } else {
-  //       setCount(15);
-  //     }
-  //   }, 1000);
-  //   return () => clearInterval(interval);
-  // }, [count]);
-
-  return !gameState ? (
+  return !gameState || loadingHost ? (
     <Spinner animation="border" role="status" />
   ) : (
     <Container>
@@ -70,9 +58,11 @@ function WerewolfGamePage({ match }) {
         </Col>
       </Row>
       <Row>
-        <h2>
-          {gameState.availableRoles[0]}'s Turn {`:${count}`}
-        </h2>
+        <TurnCountdown
+          gameRef={gameSessionRef}
+          role={gameState.availableRoles[0]}
+          host={host}
+        />
       </Row>
       <OpponentList gameRef={gameSessionRef} opponents={gameState.players} />
       <CenterCardList gameRef={gameSessionRef} />
@@ -90,6 +80,44 @@ function WerewolfGamePage({ match }) {
 }
 
 export default WerewolfGamePage;
+
+function TurnCountdown({ gameRef, role, host }) {
+  const [userId] = useUserId();
+  // const [count, setCount] = useState(15);
+  const [currUser] = useObjectVal(gameRef.child(`players/${userId}`));
+  console.log(currUser);
+  console.log(role);
+
+  useEffect(() => {
+    db.ref('/.info/serverTimeOffset').once('value', function (snap) {
+      const offset = snap.val();
+      const startTime = new Date().getTime() + offset;
+      console.log(new Date(startTime).toString());
+      const endTime = startTime + 15000;
+      console.log(endTime);
+      gameRef.child('endTime');
+      console.log((endTime - startTime) / 1000);
+    });
+  }, []);
+
+  // const decrement = () => setCount((c) => c - 1);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (count > 0) {
+  //       decrement();
+  //     } else {
+  //       setCount(15);
+  //     }
+  //   }, 1000);
+  //   return () => clearInterval(interval);
+  // }, [count]);
+
+  return (
+    <h2>
+      {role}'s Turn {`:${15}`}
+    </h2>
+  );
+}
 
 function OpponentList({ gameRef }) {
   const [userId] = useUserId();
@@ -177,7 +205,6 @@ function Messages({ gameRef }) {
 function PlayerCard({ gameRef }) {
   const [userId] = useUserId();
   const [player, loadPlayer] = useObjectVal(gameRef.child(`players/${userId}`));
-  console.log(player);
 
   return loadPlayer ? (
     ''
