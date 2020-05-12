@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { useUserId } from '../context/userContext';
-import { Redirect } from 'react-router-dom';
 
 function GameStart({ match, players, history, }) {
   const [userId] = useUserId();
