@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { auth, db } from './firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useUserId } from './context/userContext';
+import {useList} from 'react-firebase-hooks/database';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import LobbyPage from './components/LobbyPage';
+import GamesViewLol from './components/GamesViewLol'
+import RoleAssignment from './components/RoleAssignment';
 
 
 
@@ -19,7 +22,7 @@ function UserRef(props){
       <ul>
         {snapshot.map(user=>(
           <li key = {user.key}>
-            <h1>{user.val().name}</h1>
+            <h1>{user.val()}</h1>
             <h1>hey</h1>
 
           </li>
@@ -71,8 +74,10 @@ function Routes() {
   return (
     <Router>
       <Switch>
-        <Route path="/lobbies/:id" component={LobbyPage} />} />
-        <Route path="/" component={HomePage} />} />
+        <Route path="/lobbies/:id" component={LobbyPage} />
+        <Route path = "/gameSessions/:id" component = {GamesViewLol}/>
+        <Route path = "/hostScreen/:id" component ={RoleAssignment}/>
+        <Route path="/" component={HomePage} />
       </Switch>
     </Router>
   );
