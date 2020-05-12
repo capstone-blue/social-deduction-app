@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { useObjectVal } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
-import { Redirect } from 'react-router-dom';
 import {GameStart} from './index'
 
 // Main logic should be handled in this component

@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { db } from '../firebase';
 import { useObject } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container'
+import Form from 'react-bootstrap/Form'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 function HomePage(props) {
   return (
@@ -62,21 +67,16 @@ function LobbyForm({ history }) {
   return userLoading ? (
     <div>Loading...</div>
   ) : (
-    <div>
-      <h2>Lobby Name</h2>
-      <input
-        type="text"
-        onChange={(e) => setLobbyName(e.target.value)}
-        value={lobbyName}
-      />
-      <button type="button" onClick={joinLobby}>
-        Join Lobby
-      </button>
-      <button type="button" onClick={createLobby}>
-        Create Lobby
-      </button>
-    </div>
-  );
+      <div>
+        <h2>Lobby Name</h2>
+        <Container>
+          <Form.Control size="sm" type="text" placeholder="Lobby Name" onChange={(e) => setLobbyName(e.target.value)}
+            value={lobbyName} />
+          <Button variant="dark" onClick={joinLobby}>Join Lobby</Button>
+          <Button variant="dark" onClick={createLobby}>Create Lobby</Button>
+        </Container>
+      </div>
+    );
 }
 
 export default HomePage;
