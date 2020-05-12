@@ -3,6 +3,7 @@ import { db } from '../firebase';
 import { useObjectVal, useList, useListKeys } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
 import EvilButton from './EvilButton'
+import VillageButton from './VillageButton'
 
 function hey(){
   console.log("hey")
@@ -32,30 +33,16 @@ function RoleAssignment({ match }) {
       <h1>werewolves</h1>
       <div className = 'werewolfTeam'>
         <EvilButton buttonClicked = {buttonClicked} role = "werewolf1"/>
-        <button onClick = {()=>buttonClicked("werewolf2")}>
-          werewolf2
-        </button>
-        <button onClick = {()=>buttonClicked("minion")}>
-         minion
-        </button>
-        <button onClick = {()=>buttonClicked("alpha wolf")}>
-         alphawolf
-        </button>
+        <EvilButton buttonClicked = {buttonClicked} role = "werewolf2"/>
+        <EvilButton buttonClicked = {buttonClicked} role = "minion"/>
+        <EvilButton buttonClicked = {buttonClicked} role = "alpha wolf"/>
       </div>
       <h1>Villagers</h1>
       <div className = 'villagerTeam'>
-        <button onClick = {()=>buttonClicked("seer")}>
-          seer
-        </button>
-        <button onClick = {()=>buttonClicked("robber")}>
-          robber
-        </button>
-        <button onClick = {()=>buttonClicked("villager1")}>
-          villager
-        </button>
-        <button onClick = {()=>buttonClicked("villager2")}>
-          villager2
-        </button>
+      <VillageButton buttonClicked = {buttonClicked} role = "villager1"/>
+      <VillageButton buttonClicked = {buttonClicked} role = "villager2"/>
+      <VillageButton buttonClicked = {buttonClicked} role = "seer"/>
+      <VillageButton buttonClicked = {buttonClicked} role = "robber"/>
       </div>
       <div>
         <h1>start the game</h1>

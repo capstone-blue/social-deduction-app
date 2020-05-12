@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-function EvilButton(props){
+function VillageButton(props){
     const [active, setActive] = useState(false)
     function clickActivate(){
         setActive(!active)
@@ -13,4 +13,4 @@ function EvilButton(props){
     )
 }
 
-export default EvilButton
+export default VillageButton
