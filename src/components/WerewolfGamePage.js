@@ -28,7 +28,8 @@ function WerewolfGamePage({ match }) {
     gameSessionRef.child('players').orderByChild('host').equalTo(true)
   );
   const [gameState, setGameState] = useState(null);
-  console.log('host', host);
+  console.log(gameState);
+  const [currentTurn, setCurrentTurn] = useState(null);
   // use 'once' to grab the initial state on load
   // firebase-hooks uses 'on', which we don't want in this case
   useEffect(() => {
@@ -36,12 +37,14 @@ function WerewolfGamePage({ match }) {
       try {
         if (!gameSessionSnap.val())
           throw new Error('no value found in game snapshot');
-        setGameState(gameSessionSnap.val());
+        const initialGameState = gameSessionSnap.val();
+        setGameState(initialGameState);
+        setCurrentTurn(initialGameState.currentTurn);
       } catch (e) {
         console.error('Error loading intitial game state, ', e.message);
       }
     });
-  }, [gameSessionRef, setGameState]);
+  }, [gameSessionRef, setGameState, setCurrentTurn]);
 
   return !gameState || loadingHost ? (
     <Spinner animation="border" role="status" />
@@ -60,8 +63,10 @@ function WerewolfGamePage({ match }) {
       <Row>
         <TurnCountdown
           gameRef={gameSessionRef}
-          role={gameState.availableRoles[0]}
+          roles={gameState.turnOrder}
           host={host}
+          currentTurn={currentTurn}
+          setCurrentTurn={setCurrentTurn}
         />
       </Row>
       <OpponentList gameRef={gameSessionRef} opponents={gameState.players} />
@@ -81,40 +86,65 @@ function WerewolfGamePage({ match }) {
 
 export default WerewolfGamePage;
 
-function TurnCountdown({ gameRef, role, host }) {
+function TurnCountdown({ gameRef, roles, host, currentTurn, setCurrentTurn }) {
   const [userId] = useUserId();
-  // const [count, setCount] = useState(15);
-  const [currUser] = useObjectVal(gameRef.child(`players/${userId}`));
-  console.log(currUser);
-  console.log(role);
+  const [count, setCount] = useState('');
+  const [endTime, loadingEndTime] = useObjectVal(gameRef.child('turnToEnd'));
+  const gameHasntStarted = !loadingEndTime && !endTime;
 
+  const countDownReached = !gameHasntStarted && endTime < new Date().getTime();
   useEffect(() => {
-    db.ref('/.info/serverTimeOffset').once('value', function (snap) {
-      const offset = snap.val();
-      const startTime = new Date().getTime() + offset;
-      console.log(new Date(startTime).toString());
-      const endTime = startTime + 15000;
-      console.log(endTime);
-      gameRef.child('endTime');
-      console.log((endTime - startTime) / 1000);
-    });
-  }, []);
+    function setEndTimeInDB() {
+      db.ref('/.info/serverTimeOffset').once('value', function (snap) {
+        const offset = snap.val();
+        const rightNow = new Date().getTime() + offset;
+        const endTime = rightNow + 15000;
+        gameRef.child('turnToEnd').set(endTime);
+        console.log('TIMER STARTED');
+      });
+    }
+    function setNextTurnInDB() {
+      // roles.shift(); temporary solution to mimic roles counting down
+      setCurrentTurn(roles[0]);
+      gameRef.child('currentTurn').set(roles[0]);
+    }
 
-  // const decrement = () => setCount((c) => c - 1);
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (count > 0) {
-  //       decrement();
-  //     } else {
-  //       setCount(15);
-  //     }
-  //   }, 1000);
-  //   return () => clearInterval(interval);
-  // }, [count]);
+    if (host[userId]) {
+      if (gameHasntStarted) {
+        // set an expiration time for 15 seconds into the future
+        setEndTimeInDB();
+      } else if (countDownReached && roles.length !== 1) {
+        // remove the role that just went from the turn order
+        // console.log(roles);
+        setEndTimeInDB();
+        setNextTurnInDB();
+      }
+    }
+  }, [
+    gameRef,
+    host,
+    userId,
+    gameHasntStarted,
+    countDownReached,
+    roles,
+    setCurrentTurn,
+  ]);
 
-  return (
+  // every second, client checks their time against server end time
+  useEffect(() => {
+    const interval = setInterval(() => {
+      let secondsLeft = Math.floor((endTime - new Date().getTime()) / 1000);
+      setCount(secondsLeft);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [count, endTime]);
+
+  return loadingEndTime ? (
+    <Spinner animation="border" role="status" />
+  ) : (
     <h2>
-      {role}'s Turn {`:${15}`}
+      {currentTurn}'s Turn{' '}
+      {`:${Math.floor((endTime - new Date().getTime()) / 1000)}`}
     </h2>
   );
 }
