@@ -27,6 +27,14 @@ const OpponentCard = styled(CommonCardStyles)``;
 
 const MiddleCard = styled(CommonCardStyles)``;
 
+const Board = styled(Container)`
+  width: 80%;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+  background-color: gray;
+`;
+
 async function werewolfTurn(gameRef) {
   const werewolfList = [];
   await gameRef
@@ -62,8 +70,12 @@ ${werewolfList[0].val().alias} and ${werewolfList[1].val().alias}
 
 //* WerewolfGamePage *//
 function WerewolfGamePage({ match }) {
+  const [userId] = useUserId();
   const [gameSessionRef] = useState(
     db.ref('/gameSessions').child(match.params.id)
+  );
+  const [currPlayer, loadingCurrPlayer] = useObjectVal(
+    gameSessionRef.child(`players/${userId}`)
   );
   const [host, loadingHost] = useObjectVal(
     gameSessionRef.child('players').orderByChild('host').equalTo(true)
@@ -97,7 +109,10 @@ function WerewolfGamePage({ match }) {
     }
   }, [gameSessionRef, currentTurn]);
 
-  return !initialGameState || loadingHost || loadingCurrentTurn ? (
+  return !initialGameState ||
+    loadingHost ||
+    loadingCurrentTurn ||
+    loadingCurrPlayer ? (
     <Spinner animation="border" role="status" />
   ) : (
     <Container>
@@ -119,17 +134,25 @@ function WerewolfGamePage({ match }) {
           currentTurn={currentTurn}
         />
       </Row>
-      <OpponentList
-        gameRef={gameSessionRef}
-        opponents={initialGameState.players}
-      />
-      <MiddleCardList gameRef={gameSessionRef} />
+      <Board
+        style={
+          currPlayer.startingRole.name === currentTurn
+            ? { backgroundColor: 'gold' }
+            : {}
+        }
+      >
+        <OpponentList
+          gameRef={gameSessionRef}
+          opponents={initialGameState.players}
+        />
+        <MiddleCardList gameRef={gameSessionRef} />
+      </Board>
       <Row>
         <Col>
           <Messages gameRef={gameSessionRef} />
         </Col>
         <Col>
-          <PlayerCard gameRef={gameSessionRef} />
+          <PlayerCard currPlayer={currPlayer} userId={userId} />
         </Col>
         <Col>
           <ResetForm gameRef={gameSessionRef} />
@@ -300,23 +323,19 @@ function Messages({ gameRef }) {
 }
 
 //* PlayerCard *//
-function PlayerCard({ gameRef }) {
-  const [userId] = useUserId();
-  const [player, loadPlayer] = useObjectVal(gameRef.child(`players/${userId}`));
-  return loadPlayer ? (
-    ''
-  ) : (
+function PlayerCard({ userId, currPlayer }) {
+  return (
     <div className="text-center">
       <Badge pill variant="success" className="text-center">
-        {player.alias}
+        {currPlayer.alias}
       </Badge>
       <Card>
         <Card.Title className="text-center">
-          <div>{player.startingRole.name}</div>
+          <div>{currPlayer.startingRole.name}</div>
         </Card.Title>
         <Card.Body>
           <div>
-            {player.startingRole.options.map((o, i) => (
+            {currPlayer.startingRole.options.map((o, i) => (
               <div key={`card-${userId}-${i}`}>{o}</div>
             ))}
           </div>
