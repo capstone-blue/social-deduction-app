@@ -107,7 +107,6 @@ function TurnCountdown({ gameRef, roles, host, currentTurn, setCurrentTurn }) {
         const rightNow = new Date().getTime() + offset;
         const endTime = rightNow + 15000;
         gameRef.child('turnToEnd').set(endTime);
-        console.log('TIMER STARTED');
       });
     }
     function setNextTurnInDB() {
@@ -245,7 +244,6 @@ function Messages({ gameRef }) {
 function PlayerCard({ gameRef }) {
   const [userId] = useUserId();
   const [player, loadPlayer] = useObjectVal(gameRef.child(`players/${userId}`));
-  console.log('player', player);
   return loadPlayer ? (
     ''
   ) : (
@@ -274,12 +272,10 @@ function ResetForm({ gameRef }) {
   const [host, setHost] = useState(true);
   const [role, setRole] = useState('werewolf');
   const toggleHost = () => {
-    console.log('change');
     setHost(!host);
   };
 
   function handleRoleSwitch(e) {
-    console.log(e.target.value);
     setRole(e.target.value);
   }
 
@@ -287,7 +283,6 @@ function ResetForm({ gameRef }) {
     e.preventDefault();
     db.ref(`/games/werewolf/roles/${role}`).once('value', function (roleSnap) {
       const newRole = roleSnap.val();
-      console.log(newRole);
       const updates = {
         [`players/${userId}/host`]: host,
         [`players/${userId}/startingRole`]: newRole,
