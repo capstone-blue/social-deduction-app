@@ -22,21 +22,55 @@ function RoleAssignment({ match }) {
   const [roles,setRoles] = useState([])
   const [roleList,loading,error] = useObjectVal(db.ref().child('games').child('gameId1').child('roles'))
   const playersRef = lobbiesRef.child(match.params.id).child('players')
+  const gameRef = lobbiesRef.child(match.params.id)
+  const [currentRolesList] =  useObjectVal(gameRef.child("currentRoles"))
+  // console.log(players)
+  // console.log(currentRoleList)
+  // rolesRef.once('value').then(function (snapshot) {
+  //   console.log(snapshot.val())
+  //   const updatedRoles =  snapshot.val()
+  //   console.log(updatedRoles)
+  //   setRoles(updatedRoles)
+  // })
+  useEffect(()=>checkHostUpdate)
+  function checkHostUpdate(){
+    if(currentRolesList){
+      if(!equalArrays(roles,currentRolesList)){
+        setRoles(currentRolesList)
+      }
+    }
+  }
+  function equalArrays(localRoles, DBRoles){
+    if(localRoles.length !== DBRoles.length){
+      return false
+    }
+    for(let i =0;i<localRoles.length; i++){
+      if(localRoles[i] !== DBRoles[i]){
+        return false
+      }
+    }
+    return true
+  }
   function buttonClicked(role){
     if(roles.includes(role)){
       const newRoles = roles.filter(el=>el !== role)
+      gameRef.update({"currentRoles":newRoles})
       setRoles(newRoles)
     }
     else{
+      const newRoles = [...roles, role]
+      gameRef.update({"currentRoles":newRoles})
       setRoles([...roles, role])
     }
   }
   function masonButtonClicked(){
     if(roles.includes("mason")){
       const newRoles = roles.filter(el=>el !== "mason")
+      gameRef.update({"currentRoles":roles})
       setRoles(newRoles)
     }
     else{
+      gameRef.update({"currentRoles":roles})
       setRoles([...roles, "mason", "mason"])
     }
   }
@@ -60,7 +94,8 @@ function RoleAssignment({ match }) {
         <h1>start the game</h1>
       </div>
       <div>
-        {roles.join(" ")}
+        {/* {currentRoleList} */}
+        meep
       </div>
       <div>
         {roles.length - (players.length+3) != 0
