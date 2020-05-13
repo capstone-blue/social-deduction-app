@@ -96,7 +96,7 @@ export default WerewolfGamePage;
 function TurnCountdown({ gameRef, roles, host, currentTurn, setCurrentTurn }) {
   const [userId] = useUserId();
   const [count, setCount] = useState('');
-  const [endTime, loadingEndTime] = useObjectVal(gameRef.child('turnToEnd'));
+  const [endTime, loadingEndTime] = useObjectVal(gameRef.child('endTime'));
   const gameHasntStarted = !loadingEndTime && !endTime;
 
   const countDownReached = !gameHasntStarted && endTime < new Date().getTime();
@@ -106,7 +106,7 @@ function TurnCountdown({ gameRef, roles, host, currentTurn, setCurrentTurn }) {
         const offset = snap.val();
         const rightNow = new Date().getTime() + offset;
         const endTime = rightNow + 15000;
-        gameRef.child('turnToEnd').set(endTime);
+        gameRef.child('endTime').set(endTime);
       });
     }
     function setNextTurnInDB() {
@@ -290,51 +290,79 @@ function ResetForm({ gameRef }) {
       gameRef.update(updates);
     });
   }
+
+  function restartGame(e) {
+    e.preventDefault();
+    const updates = {
+      turnOrder: {
+        '0': 'Werewolf',
+        '1': 'Seer',
+        '2': 'Robber',
+        '3': 'Villager',
+      },
+      currentTurn: 'Werewolf',
+      userMessages: null,
+      messages: null,
+      endTime: null,
+    };
+    gameRef.update(updates);
+  }
+
   return (
-    <Form onSubmit={seedDatabase}>
-      <div key="host" className="mb-3">
-        <Form.Switch
-          id="custom-switch"
-          label="Make Host"
-          onChange={toggleHost}
-          checked={host}
-        />
-      </div>
-      <Form.Check
-        name="role"
-        type="radio"
-        id="custom-radio"
-        label="werewolf"
-        value="werewolf"
-        onChange={handleRoleSwitch}
-      />
-      <Form.Check
-        name="role"
-        type="radio"
-        id="custom-radio"
-        label="seer"
-        value="seer"
-        onChange={handleRoleSwitch}
-      />
-      <Form.Check
-        name="role"
-        type="radio"
-        id="custom-radio"
-        label="robber"
-        value="robber"
-        onChange={handleRoleSwitch}
-      />
-      <Form.Check
-        name="role"
-        type="radio"
-        id="custom-radio"
-        label="villager"
-        value="villager"
-        onChange={handleRoleSwitch}
-      />
-      <Button variant="outline-primary" type="submit">
-        Submit
-      </Button>
-    </Form>
+    <Row>
+      <Col>
+        <Form onSubmit={seedDatabase}>
+          <div>Change Player</div>
+          <div key="host" className="mb-3">
+            <Form.Switch
+              id="custom-switch"
+              label="Make Host"
+              onChange={toggleHost}
+              checked={host}
+            />
+          </div>
+          <Form.Check
+            name="role"
+            type="radio"
+            id="custom-radio"
+            label="werewolf"
+            value="werewolf"
+            onChange={handleRoleSwitch}
+          />
+          <Form.Check
+            name="role"
+            type="radio"
+            id="custom-radio"
+            label="seer"
+            value="seer"
+            onChange={handleRoleSwitch}
+          />
+          <Form.Check
+            name="role"
+            type="radio"
+            id="custom-radio"
+            label="robber"
+            value="robber"
+            onChange={handleRoleSwitch}
+          />
+          <Form.Check
+            name="role"
+            type="radio"
+            id="custom-radio"
+            label="villager"
+            value="villager"
+            onChange={handleRoleSwitch}
+          />
+          <Button variant="outline-primary" type="submit">
+            Submit
+          </Button>
+        </Form>
+      </Col>
+      <Col>
+        <Button type="button" variant="outline-danger" onClick={restartGame}>
+          Restart Game
+        </Button>
+      </Col>
+    </Row>
   );
 }
