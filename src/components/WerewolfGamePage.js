@@ -92,8 +92,10 @@ function WerewolfGamePage({ match }) {
       const werewolfList = await werewolfTurn(gameSessionRef);
       console.log(werewolfList);
     }
-    getWerewolves();
-  }, [gameSessionRef]);
+    if (currentTurn === 'Werewolf') {
+      getWerewolves();
+    }
+  }, [gameSessionRef, currentTurn]);
 
   return !initialGameState || loadingHost || loadingCurrentTurn ? (
     <Spinner animation="border" role="status" />
@@ -263,15 +265,20 @@ function Messages({ gameRef }) {
     gameRef
       .child(`userMessages/${userId}`)
       .on('value', function (messageIdSnaps) {
-        messageIdSnaps.forEach((messageIdSnap) => {
-          const messageId = messageIdSnap.key;
-          gameRef
-            .child(`messages/${messageId}`)
-            .once('value', function (messageSnap) {
-              // the setState must take in the prev state or else it won't update properly
-              setMessageSnaps((prevMessages) => [...prevMessages, messageSnap]);
+        messageIdSnaps.val() === null
+          ? setMessageSnaps([])
+          : messageIdSnaps.forEach((messageIdSnap) => {
+              const messageId = messageIdSnap.key;
+              gameRef
+                .child(`messages/${messageId}`)
+                .once('value', function (messageSnap) {
+                  // the setState must take in the prev state or else it won't update properly
+                  setMessageSnaps((prevMessages) => [
+                    ...prevMessages,
+                    messageSnap,
+                  ]);
+                });
             });
-        });
       });
     return () => gameRef.child(`userMessages/${userId}`).off();
   }, [gameRef, setMessageSnaps, userId]);
