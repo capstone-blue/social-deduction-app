@@ -288,20 +288,18 @@ function Messages({ gameRef }) {
     gameRef
       .child(`userMessages/${userId}`)
       .on('value', function (messageIdSnaps) {
-        messageIdSnaps.val() === null
-          ? setMessageSnaps([])
-          : messageIdSnaps.forEach((messageIdSnap) => {
-              const messageId = messageIdSnap.key;
-              gameRef
-                .child(`messages/${messageId}`)
-                .once('value', function (messageSnap) {
-                  // the setState must take in the prev state or else it won't update properly
-                  setMessageSnaps((prevMessages) => [
-                    ...prevMessages,
-                    messageSnap,
-                  ]);
-                });
+        setMessageSnaps([]);
+        messageIdSnaps.forEach((messageIdSnap) => {
+          const messageId = messageIdSnap.key;
+          gameRef
+            .child(`messages/${messageId}`)
+            .once('value', function (messageSnap) {
+              // the setState must take in the prev state or else it won't update properly
+              setMessageSnaps((prevMessages) => {
+                return [...prevMessages, messageSnap];
+              });
             });
+        });
       });
     return () => gameRef.child(`userMessages/${userId}`).off();
   }, [gameRef, setMessageSnaps, userId]);
