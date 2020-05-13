@@ -7,8 +7,10 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
+import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
+import Form from 'react-bootstrap/Form';
 
 const CommonCardStyles = styled(Card)`
   width: 5rem;
@@ -80,7 +82,9 @@ function WerewolfGamePage({ match }) {
         <Col>
           <PlayerCard gameRef={gameSessionRef} />
         </Col>
-        <Col></Col>
+        <Col>
+          <ResetForm gameRef={gameSessionRef} />
+        </Col>
       </Row>
     </Container>
   );
@@ -241,7 +245,7 @@ function Messages({ gameRef }) {
 function PlayerCard({ gameRef }) {
   const [userId] = useUserId();
   const [player, loadPlayer] = useObjectVal(gameRef.child(`players/${userId}`));
-
+  console.log('player', player);
   return loadPlayer ? (
     ''
   ) : (
@@ -262,5 +266,80 @@ function PlayerCard({ gameRef }) {
         </Card.Body>
       </Card>
     </div>
+  );
+}
+
+function ResetForm({ gameRef }) {
+  const [userId] = useUserId();
+  const [host, setHost] = useState(true);
+  const [role, setRole] = useState('werewolf');
+  const toggleHost = () => {
+    console.log('change');
+    setHost(!host);
+  };
+
+  function handleRoleSwitch(e) {
+    console.log(e.target.value);
+    setRole(e.target.value);
+  }
+
+  function seedDatabase(e) {
+    e.preventDefault();
+    db.ref(`/games/werewolf/roles/${role}`).once('value', function (roleSnap) {
+      const newRole = roleSnap.val();
+      console.log(newRole);
+      const updates = {
+        [`players/${userId}/host`]: host,
+        [`players/${userId}/startingRole`]: newRole,
+      };
+      gameRef.update(updates);
+    });
+  }
+  return (
+    <Form onSubmit={seedDatabase}>
+      <div key="host" className="mb-3">
+        <Form.Switch
+          id="custom-switch"
+          label="Make Host"
+          onChange={toggleHost}
+          checked={host}
+        />
+      </div>
+      <Form.Check
+        name="role"
+        type="radio"
+        id="custom-radio"
+        label="werewolf"
+        value="werewolf"
+        onChange={handleRoleSwitch}
+      />
+      <Form.Check
+        name="role"
+        type="radio"
+        id="custom-radio"
+        label="seer"
+        value="seer"
+        onChange={handleRoleSwitch}
+      />
+      <Form.Check
+        name="role"
+        type="radio"
+        id="custom-radio"
+        label="robber"
+        value="robber"
+        onChange={handleRoleSwitch}
+      />
+      <Form.Check
+        name="role"
+        type="radio"
+        id="custom-radio"
+        label="villager"
+        value="villager"
+        onChange={handleRoleSwitch}
+      />
+      <Button variant="outline-primary" type="submit">
+        Submit
+      </Button>
+    </Form>
   );
 }
