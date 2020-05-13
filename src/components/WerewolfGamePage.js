@@ -70,20 +70,25 @@ ${werewolfList[0].val().alias} and ${werewolfList[1].val().alias}
 
 //* WerewolfGamePage *//
 function WerewolfGamePage({ match }) {
+  // Id
   const [userId] = useUserId();
+  // Reference
   const [gameSessionRef] = useState(
     db.ref('/gameSessions').child(match.params.id)
   );
+  // Listeners
   const [currPlayer, loadingCurrPlayer] = useObjectVal(
     gameSessionRef.child(`players/${userId}`)
   );
   const [host, loadingHost] = useObjectVal(
     gameSessionRef.child('players').orderByChild('host').equalTo(true)
   );
-  const [initialGameState, setGameState] = useState(null);
   const [currentTurn, loadingCurrentTurn] = useObjectVal(
     gameSessionRef.child('currentTurn')
   );
+  // State - should only influence current user's own screen
+  const [initialGameState, setGameState] = useState(null);
+
   // use 'once' to grab the initial state on load
   // firebase-hooks uses 'on', which we don't want in this case
   useEffect(() => {
@@ -99,6 +104,7 @@ function WerewolfGamePage({ match }) {
     });
   }, [gameSessionRef, setGameState]);
 
+  // Background actions for individual roles
   useEffect(() => {
     async function getWerewolves() {
       const werewolfList = await werewolfTurn(gameSessionRef);
@@ -109,6 +115,7 @@ function WerewolfGamePage({ match }) {
     }
   }, [gameSessionRef, currentTurn]);
 
+  // View
   return !initialGameState ||
     loadingHost ||
     loadingCurrentTurn ||
