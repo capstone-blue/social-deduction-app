@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { db } from '../firebase';
 import { useObject } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
+import { NavigationBar } from './index'
 import styled from 'styled-components';
-import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
@@ -76,17 +76,7 @@ function LobbyForm({ history }) {
     <div>Loading...</div>
   ) : (
       <React.Fragment>
-        <Navbar bg="dark" variant="dark">
-          <Navbar.Brand>
-            <img
-              alt=""
-              src="../../public/logo.png"
-              width="30"
-              height="30"
-              className="d-inline-block align-top"
-            />One Night Ultimate Werewolf
-    </Navbar.Brand>
-        </Navbar>
+        <NavigationBar />
         <Container>
           <Title>Create or Join a Lobby</Title>
           <Row>

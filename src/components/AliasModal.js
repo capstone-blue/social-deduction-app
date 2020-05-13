@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { db } from '../firebase';
 import { useUserId } from '../context/userContext';
 import Modal from 'react-bootstrap/Modal'
@@ -24,7 +24,7 @@ function AliasModal({ match }) {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
+      <Button variant="dark" onClick={handleShow}>
         Create Alias
       </Button>
 
@@ -39,13 +39,13 @@ function AliasModal({ match }) {
               value={alias}
               onChange={(e) => setAlias(e.target.value)}
             />
-            <Button type="submit" variant="primary" onClick={handleClose}>
+            <Button type="submit" variant="dark" onClick={handleClose}>
               Save Changes
           </Button>
           </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="dark" onClick={handleClose}>
             Close
           </Button>
         </Modal.Footer>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { useUserId } from '../context/userContext';
+import Container from 'react-bootstrap/Container'
+import Button from 'react-bootstrap/Button'
 
 function GameStart({ match, players, history, }) {
   const [userId] = useUserId();
@@ -52,9 +54,9 @@ function GameStart({ match, players, history, }) {
   }
 
   return (
-    <div>
-      {isHost ? <button onClick={createGameSession}>Start Game</button> : <p>Waiting for host...</p>}
-    </div>
+    <Container>
+      {isHost ? <Button variant="dark" onClick={createGameSession}>Start Game</Button> : <p>Waiting for host...</p>}
+    </Container>
   )
 }
 
