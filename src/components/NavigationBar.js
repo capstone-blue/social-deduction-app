@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from 'react-bootstrap/Navbar';
+import logo from '../assets/logo.jpeg'
 
 const NavigationBar = () => {
   return (
@@ -7,11 +8,11 @@ const NavigationBar = () => {
       <Navbar.Brand href="/">
         <img
           alt=""
-          src="../../public/logo.png"
+          src={logo}
           width="30"
           height="30"
           className="d-inline-block align-top"
-        />One Night Ultimate Werewolf
+        /> One Night Ultimate Werewolf
     </Navbar.Brand>
     </Navbar>
   )

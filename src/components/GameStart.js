@@ -3,6 +3,7 @@ import { db } from '../firebase';
 import { useUserId } from '../context/userContext';
 import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
+import Spinner from 'react-bootstrap/Spinner'
 
 function GameStart({ match, players, history, }) {
   const [userId] = useUserId();
@@ -55,7 +56,20 @@ function GameStart({ match, players, history, }) {
 
   return (
     <Container>
-      {isHost ? <Button variant="dark" onClick={createGameSession}>Start Game</Button> : <p>Waiting for host...</p>}
+      {isHost ? <Button variant="dark" onClick={createGameSession}>Start Game</Button> :
+        <Container>
+          <Button variant="dark" disabled>
+            <Spinner
+              as="span"
+              animation="grow"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+            />
+    Waiting for host...
+  </Button>
+          <Spinner animation="border" role="status" >Waiting for host...</Spinner>
+        </Container>}
     </Container>
   )
 }
