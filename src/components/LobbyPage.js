@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { useObjectVal } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
-import {GameStart} from './index'
+import { GameStart } from './index'
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
 
 // Main logic should be handled in this component
 function LobbyPage({ match, history }) {
@@ -60,7 +62,9 @@ function LobbyView({ name, players }) {
   );
 }
 
+
 function AliasModal({ match }) {
+  const [show, setShow] = useState(false);
   const [userId] = useUserId();
   const [alias, setAlias] = useState('');
 
@@ -74,17 +78,38 @@ function AliasModal({ match }) {
     db.ref().update(updates);
   }
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={alias}
-          onChange={(e) => setAlias(e.target.value)}
-        />
-        <button type="submit">submit</button>
-      </form>
-    </div>
+    <>
+      <Button variant="primary" onClick={handleShow}>
+        Create Alias
+      </Button>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>What would you like to set your name as?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              value={alias}
+              onChange={(e) => setAlias(e.target.value)}
+            />
+            <Button type="submit" variant="primary" onClick={handleClose}>
+              Save Changes
+          </Button>
+          </form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }
 
