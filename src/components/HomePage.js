@@ -76,34 +76,32 @@ function LobbyForm({ history }) {
   return userLoading ? (
     <div>Loading...</div>
   ) : (
-    <Container>
-        <Container>
-          <Navbar bg="dark" variant="dark">
-            <Navbar.Brand>
-              <img
-                alt=""
-                src="../../public/logo.png"
-                width="30"
-                height="30"
-                className="d-inline-block align-top"
-              />One Night Ultimate Werewolf
+      <React.Fragment>
+        <Navbar bg="dark" variant="dark">
+          <Navbar.Brand>
+            <img
+              alt=""
+              src="../../public/logo.png"
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+            />One Night Ultimate Werewolf
     </Navbar.Brand>
-          </Navbar>
+        </Navbar>
+        <Container>
+          <Title>Create or Join a Lobby</Title>
+          <Row>
+            <Form.Control size="sm" type="text" placeholder="Lobby Name" onChange={(e) => setLobbyName(e.target.value)}
+              value={lobbyName} />
+          </Row>
+          <Row>
+            <Col>
+              <Button variant="dark" onClick={joinLobby}>Join Lobby</Button>
+              <Button variant="dark" onClick={createLobby}>Create Lobby</Button>
+            </Col>
+          </Row>
         </Container>
-      <Container>
-        <Title>Create or Join a Lobby</Title>
-        <Row>
-          <Form.Control size="sm" type="text" placeholder="Lobby Name" onChange={(e) => setLobbyName(e.target.value)}
-            value={lobbyName} />
-        </Row>
-        <Row>
-          <Col>
-            <Button variant="dark" onClick={joinLobby}>Join Lobby</Button>
-            <Button variant="dark" onClick={createLobby}>Create Lobby</Button>
-          </Col>
-        </Row>
-      </Container>
-    </Container>
+      </React.Fragment>
     );
 }
 
