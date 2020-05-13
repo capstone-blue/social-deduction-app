@@ -27,6 +27,39 @@ const OpponentCard = styled(CommonCardStyles)``;
 
 const MiddleCard = styled(CommonCardStyles)``;
 
+async function werewolfTurn(gameRef) {
+  const werewolfList = [];
+  await gameRef
+    .child('players')
+    .orderByChild('startingRole/name')
+    .equalTo('Werewolf')
+    .once('value', function (werewolfSnaps) {
+      werewolfSnaps.forEach((w) => {
+        werewolfList.push(w);
+      });
+    });
+  console.log(werewolfList);
+  if (werewolfList.length > 1) {
+    console.log('2 werewolves');
+    const messageContent = `
+~Secret Message~
+There are two of you...
+${werewolfList[0].val().alias} and ${werewolfList[1].val().alias}
+    `;
+    const newMessageRef = await gameRef.child('messages').push();
+    newMessageRef.child('contents').set(messageContent);
+    werewolfList.forEach((w) => {
+      const updates = {};
+      updates[`${w.key}/${newMessageRef.key}`] = true;
+      gameRef.child('userMessages').update(updates);
+    });
+  } else {
+    console.log('1 werewolf');
+    werewolfList.forEach((w) => console.log(w.key));
+  }
+  return werewolfList;
+}
+
 //* WerewolfGamePage *//
 function WerewolfGamePage({ match }) {
   const [gameSessionRef] = useState(
@@ -36,7 +69,6 @@ function WerewolfGamePage({ match }) {
     gameSessionRef.child('players').orderByChild('host').equalTo(true)
   );
   const [initialGameState, setGameState] = useState(null);
-  console.log(initialGameState);
   const [currentTurn, loadingCurrentTurn] = useObjectVal(
     gameSessionRef.child('currentTurn')
   );
@@ -54,6 +86,14 @@ function WerewolfGamePage({ match }) {
       }
     });
   }, [gameSessionRef, setGameState]);
+
+  useEffect(() => {
+    async function getWerewolves() {
+      const werewolfList = await werewolfTurn(gameSessionRef);
+      console.log(werewolfList);
+    }
+    getWerewolves();
+  }, [gameSessionRef]);
 
   return !initialGameState || loadingHost || loadingCurrentTurn ? (
     <Spinner animation="border" role="status" />
