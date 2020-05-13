@@ -298,6 +298,7 @@ function ResetForm({ gameRef }) {
       const updates = {
         [`players/${userId}/host`]: host,
         [`players/${userId}/startingRole`]: newRole,
+        [`players/${userId}/roleName`]: newRole.name,
       };
       gameRef.update(updates);
     });
