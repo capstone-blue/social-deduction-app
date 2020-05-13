@@ -41,6 +41,7 @@ function RoleAssignment({ match }) {
       <div className = 'villagerTeam'>
         <VillageButton buttonClicked = {buttonClicked} role = "villager1"/>
         <VillageButton buttonClicked = {buttonClicked} role = "villager2"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "villager3"/>
         <VillageButton buttonClicked = {buttonClicked} role = "seer"/>
         <VillageButton buttonClicked = {buttonClicked} role = "robber"/>
         <div>
@@ -66,6 +67,18 @@ function RoleAssignment({ match }) {
       </div>
       <div>
         {roles}
+      </div>
+      <div>
+        {roles.length - (players.length+3) != 0
+          ?
+        <div>
+          {roles.length - (players.length+3) > 0
+            ? <h4>select {roles.length - (players.length+3)} fewer roles to start the game </h4>
+            : <h4>select {(players.length+3)-roles.length} more roles to start the game</h4>
+          }
+        </div>
+          : null
+        }
       </div>
     </div>
   );
@@ -113,7 +126,7 @@ function wolfy(inputArray,playerNumber,players,playersRef,roleList){
         //   }
         // }})
         // console.log(roleList)
-        if(inPlay[i]=== "villager1" || inPlay[i]=== "villager2"){
+        if(inPlay[i].includes("villager")){
           console.log('villager')
           const roleUpdate = roleList["villager"]
           individualRef.update({"startingRole": roleUpdate})
