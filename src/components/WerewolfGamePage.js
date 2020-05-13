@@ -281,6 +281,7 @@ function PlayerCard({ gameRef }) {
 
 function ResetForm({ gameRef }) {
   const [userId] = useUserId();
+  const [fakeUserId, setFakeUserId] = useState('');
   const [host, setHost] = useState(true);
   const [role, setRole] = useState('werewolf');
   const toggleHost = () => {
@@ -294,11 +295,11 @@ function ResetForm({ gameRef }) {
   function seedDatabase(e) {
     e.preventDefault();
     db.ref(`/games/werewolf/roles/${role}`).once('value', function (roleSnap) {
+      const id = fakeUserId ? fakeUserId : userId;
       const newRole = roleSnap.val();
       const updates = {
-        [`players/${userId}/host`]: host,
-        [`players/${userId}/startingRole`]: newRole,
-        [`players/${userId}/roleName`]: newRole.name,
+        [`players/${id}/host`]: host,
+        [`players/${id}/startingRole`]: newRole,
       };
       gameRef.update(updates);
     });
@@ -365,6 +366,10 @@ function ResetForm({ gameRef }) {
             label="villager"
             value="villager"
             onChange={handleRoleSwitch}
+          />
+          <Form.Control
+            onChange={(e) => setFakeUserId(e.target.value)}
+            value={fakeUserId}
           />
           <Button variant="outline-primary" type="submit">
             Change Player
