@@ -39,10 +39,24 @@ function RoleAssignment({ match }) {
       </div>
       <h1>Villagers</h1>
       <div className = 'villagerTeam'>
-      <VillageButton buttonClicked = {buttonClicked} role = "villager1"/>
-      <VillageButton buttonClicked = {buttonClicked} role = "villager2"/>
-      <VillageButton buttonClicked = {buttonClicked} role = "seer"/>
-      <VillageButton buttonClicked = {buttonClicked} role = "robber"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "villager1"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "villager2"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "seer"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "robber"/>
+        <div>
+          <h3>currently unsupported roles</h3>
+          <VillageButton buttonClicked = {buttonClicked} role = "TroubleMaker"/>
+          <VillageButton buttonClicked = {buttonClicked} role = "Drunk"/>
+          <VillageButton buttonClicked = {buttonClicked} role = "Tanner"/>
+          <VillageButton buttonClicked = {buttonClicked} role = "Hunter"/>
+          <VillageButton buttonClicked = {buttonClicked} role = "Insomniac"/>
+          <div>
+            <h3>roles so unsupported I haven't thought through their implementation at all</h3>
+            <VillageButton buttonClicked = {buttonClicked} role = "Mason 1"/>
+            <VillageButton buttonClicked = {buttonClicked} role = "Mason 2"/>
+            <VillageButton buttonClicked = {buttonClicked} role = "dopplegänger"/>
+          </div>
+        </div>
       </div>
       <div>
         <h1>start the game</h1>
