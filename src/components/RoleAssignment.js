@@ -4,10 +4,8 @@ import { useObjectVal, useList, useListKeys } from 'react-firebase-hooks/databas
 import { useUserId } from '../context/userContext';
 import EvilButton from './EvilButton'
 import VillageButton from './VillageButton'
-
-function hey(){
-  console.log("hey")
-}
+import MasonButton from './MasonButton'
+import RoleLockButton from './RoleLockButton'
 function RoleAssignment({ match }) {
   const [lobbiesRef] = useState(db.ref().child('gameSessions'));
   const [lobby, lobbyLoading] = useObjectVal(lobbiesRef.child(match.params.id));
@@ -18,7 +16,7 @@ function RoleAssignment({ match }) {
   // console.log(players)
   // console.log(roleList)
   //unifying the button behavior and implementing toggling
-   function buttonClicked(role){
+  function buttonClicked(role){
     if(roles.includes(role)){
       const newRoles = roles.filter(el=>el !== role)
       setRoles(newRoles)
@@ -27,43 +25,33 @@ function RoleAssignment({ match }) {
       setRoles([...roles, role])
     }
   }
+  function masonButtonClicked(){
+    if(roles.includes("mason")){
+      const newRoles = roles.filter(el=>el !== "mason")
+      setRoles(newRoles)
+    }
+    else{
+      setRoles([...roles, "mason", "mason"])
+    }
+  }
   return(
     
     <div>
       <h1>werewolves</h1>
       <div className = 'werewolfTeam'>
-        <EvilButton buttonClicked = {buttonClicked} role = "werewolf1"/>
-        <EvilButton buttonClicked = {buttonClicked} role = "werewolf2"/>
-        <EvilButton buttonClicked = {buttonClicked} role = "minion"/>
-        <EvilButton buttonClicked = {buttonClicked} role = "alpha wolf"/>
+        <EvilButton buttonClicked = {buttonClicked} role = "werewolf 1"/>
+        <EvilButton buttonClicked = {buttonClicked} role = "werewolf 2"/>
       </div>
       <h1>Villagers</h1>
       <div className = 'villagerTeam'>
-        <VillageButton buttonClicked = {buttonClicked} role = "villager1"/>
-        <VillageButton buttonClicked = {buttonClicked} role = "villager2"/>
-        <VillageButton buttonClicked = {buttonClicked} role = "villager3"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "villager 1"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "villager 2"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "villager 3"/>
         <VillageButton buttonClicked = {buttonClicked} role = "seer"/>
         <VillageButton buttonClicked = {buttonClicked} role = "robber"/>
-        <div>
-          <h3>currently unsupported roles</h3>
-          <VillageButton buttonClicked = {buttonClicked} role = "TroubleMaker"/>
-          <VillageButton buttonClicked = {buttonClicked} role = "Drunk"/>
-          <VillageButton buttonClicked = {buttonClicked} role = "Tanner"/>
-          <VillageButton buttonClicked = {buttonClicked} role = "Hunter"/>
-          <VillageButton buttonClicked = {buttonClicked} role = "Insomniac"/>
-          <div>
-            <h3>roles so unsupported I haven't thought through their implementation at all</h3>
-            <VillageButton buttonClicked = {buttonClicked} role = "Mason 1"/>
-            <VillageButton buttonClicked = {buttonClicked} role = "Mason 2"/>
-            <VillageButton buttonClicked = {buttonClicked} role = "dopplegänger"/>
-          </div>
-        </div>
       </div>
       <div>
         <h1>start the game</h1>
-        <button onClick = {()=>wolfy(roles,3,players,playersRef,roleList)}>
-          set the roles
-        </button>
       </div>
       <div>
         {roles}
@@ -71,37 +59,35 @@ function RoleAssignment({ match }) {
       <div>
         {roles.length - (players.length+3) != 0
           ?
-        <div>
+          <div>
           {roles.length - (players.length+3) > 0
             ? <h4>select {roles.length - (players.length+3)} fewer roles to start the game </h4>
             : <h4>select {(players.length+3)-roles.length} more roles to start the game</h4>
           }
         </div>
-          : null
+          : <RoleLockButton wolfy = {wolfy} roles = {roles} players = {players} playersRef = {playersRef} roleList = {roleList}/>
         }
+      </div>
+      <div>
+        <h3>Coming Soon</h3>
+        <MasonButton masonButtonClicked = {masonButtonClicked}/>
+        <EvilButton buttonClicked = {buttonClicked} role = "minion"/>
+        <EvilButton buttonClicked = {buttonClicked} role = "alpha wolf"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "TroubleMaker"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "Drunk"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "Tanner"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "Hunter"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "Insomniac"/>
+        <VillageButton buttonClicked = {buttonClicked} role = "dopplegänger"/>
       </div>
     </div>
   );
 }
 
-function setup(match,lobbiesRef){
-  
-  const playersRef = lobbiesRef.child(match.params.id).child('players')
-  console.log(playersRef)
-  
-    const buddyBoy = {
-        "actualRole" : {
-          "description" : "Look at one player's card or two from the center",
-          "name" : "what it do",
-          "type" : "villager"
-        }
-      }
-    playersRef.update({"buddyboy":buddyBoy})
-}
-function wolfy(inputArray,playerNumber,players,playersRef,roleList){
+function wolfy(inputArray,players,playersRef,roleList){
     const inPlay = []
     const spliceArray = inputArray.slice(0)
-    for(let i=0; i<playerNumber;i++){
+    for(let i=0; i<players.length;i++){
         const newVal = Math.round(Math.random()*(spliceArray.length-1))
         // console.log(newVal)
         // console.log(spliceArray[newVal])
@@ -126,12 +112,13 @@ function wolfy(inputArray,playerNumber,players,playersRef,roleList){
         //   }
         // }})
         // console.log(roleList)
+        console.log(inPlay[i])
         if(inPlay[i].includes("villager")){
           console.log('villager')
           const roleUpdate = roleList["villager"]
           individualRef.update({"startingRole": roleUpdate})
         }
-        else if(inPlay[i]==="werewolf1" || inPlay[i]=== "werewolf2"){
+        else if(inPlay[i].includes("werewolf")){
           console.log('wolf')
           const roleUpdate = roleList["werewolf"]
           individualRef.update({"startingRole": roleUpdate})
