@@ -88,6 +88,7 @@ function WerewolfGamePage({ match }) {
   );
   // State - should only influence current user's own screen
   const [initialGameState, setGameState] = useState(null);
+  const [currPlayerRole, setCurrPlayerRole] = useState('');
 
   // use 'once' to grab the initial state on load
   // firebase-hooks uses 'on', which we don't want in this case
@@ -110,10 +111,11 @@ function WerewolfGamePage({ match }) {
       const werewolfList = await werewolfTurn(gameSessionRef);
       console.log(werewolfList);
     }
-    if (currentTurn === 'Werewolf') {
+    if (currentTurn === 'Werewolf' && currPlayerRole === 'Werewolf') {
+      console.log('GET WEREWOLVES');
       getWerewolves();
     }
-  }, [gameSessionRef, currentTurn]);
+  }, [gameSessionRef, currentTurn, currPlayerRole]);
 
   // View
   return !initialGameState ||
@@ -159,7 +161,11 @@ function WerewolfGamePage({ match }) {
           <Messages gameRef={gameSessionRef} />
         </Col>
         <Col>
-          <PlayerCard currPlayer={currPlayer} userId={userId} />
+          <PlayerCard
+            currPlayer={currPlayer}
+            userId={userId}
+            setCurrPlayerRole={setCurrPlayerRole}
+          />
         </Col>
         <Col>
           <ResetForm gameRef={gameSessionRef} />
@@ -328,7 +334,11 @@ function Messages({ gameRef }) {
 }
 
 //* PlayerCard *//
-function PlayerCard({ userId, currPlayer }) {
+function PlayerCard({ userId, currPlayer, setCurrPlayerRole }) {
+  useEffect(() => {
+    setCurrPlayerRole(currPlayer.startingRole.name);
+  }, [setCurrPlayerRole, currPlayer.startingRole.name]);
+
   return (
     <div className="text-center">
       <Badge pill variant="success" className="text-center">
