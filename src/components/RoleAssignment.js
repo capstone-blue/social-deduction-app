@@ -7,7 +7,12 @@ import VillageButton from './VillageButton'
 import MasonButton from './MasonButton'
 import RoleLockButton from './RoleLockButton'
 
+//immediate needs
+  // conditional rendering based on if you are host versus player
+  // actually writing roles to the db when changing roles
+    // FUGGG,  this has slightly larger implications than I thought 
 //possible further work
+
   // default setup button for given number of players
   //prebuilt game states that are regarded as fun
 function RoleAssignment({ match }) {

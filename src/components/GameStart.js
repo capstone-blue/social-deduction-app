@@ -17,7 +17,7 @@ function GameStart({ match, players, history, }) {
       try {
         lobbiesRef.child('status').once('value').then(function (snapshot) {
           if (snapshot.val() === 'started') {
-            history.push(`/gamesession/${lobbyId}`);
+            history.push(`/hostScreen/${lobbyId}`);
           }
         })
       } catch (e) {
