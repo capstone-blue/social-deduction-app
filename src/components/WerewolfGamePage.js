@@ -312,7 +312,6 @@ function ResetForm({ gameRef }) {
     <Row>
       <Col>
         <Form onSubmit={seedDatabase}>
-          <div>Change Player</div>
           <div key="host" className="mb-3">
             <Form.Switch
               id="custom-switch"
@@ -327,6 +326,7 @@ function ResetForm({ gameRef }) {
             id="custom-radio"
             label="werewolf"
             value="werewolf"
+            checked={role === 'werewolf'}
             onChange={handleRoleSwitch}
           />
           <Form.Check
@@ -354,7 +354,7 @@ function ResetForm({ gameRef }) {
             onChange={handleRoleSwitch}
           />
           <Button variant="outline-primary" type="submit">
-            Submit
+            Change Player
           </Button>
         </Form>
       </Col>
