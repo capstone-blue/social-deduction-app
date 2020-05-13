@@ -6,16 +6,17 @@ import EvilButton from './EvilButton'
 import VillageButton from './VillageButton'
 import MasonButton from './MasonButton'
 import RoleLockButton from './RoleLockButton'
+
+//possible further work
+  // default setup button for given number of players
+  //prebuilt game states that are regarded as fun
 function RoleAssignment({ match }) {
   const [lobbiesRef] = useState(db.ref().child('gameSessions'));
   const [lobby, lobbyLoading] = useObjectVal(lobbiesRef.child(match.params.id));
   const [players]=useListKeys(lobbiesRef.child(match.params.id).child('players'))
-  const [roles,setRoles] = useState('')
+  const [roles,setRoles] = useState([])
   const [roleList,loading,error] = useObjectVal(db.ref().child('games').child('gameId1').child('roles'))
   const playersRef = lobbiesRef.child(match.params.id).child('players')
-  // console.log(players)
-  // console.log(roleList)
-  //unifying the button behavior and implementing toggling
   function buttonClicked(role){
     if(roles.includes(role)){
       const newRoles = roles.filter(el=>el !== role)
@@ -54,7 +55,7 @@ function RoleAssignment({ match }) {
         <h1>start the game</h1>
       </div>
       <div>
-        {roles}
+        {roles.join(" ")}
       </div>
       <div>
         {roles.length - (players.length+3) != 0
@@ -69,7 +70,7 @@ function RoleAssignment({ match }) {
         }
       </div>
       <div>
-        <h3>Coming Soon</h3>
+        <h3>Coming "Soon"</h3>
         <MasonButton masonButtonClicked = {masonButtonClicked}/>
         <EvilButton buttonClicked = {buttonClicked} role = "minion"/>
         <EvilButton buttonClicked = {buttonClicked} role = "alpha wolf"/>
@@ -89,30 +90,14 @@ function wolfy(inputArray,players,playersRef,roleList){
     const spliceArray = inputArray.slice(0)
     for(let i=0; i<players.length;i++){
         const newVal = Math.round(Math.random()*(spliceArray.length-1))
-        // console.log(newVal)
-        // console.log(spliceArray[newVal])
         inPlay.push(spliceArray[newVal])
-        // console.log("this is in play",inPlay)
         spliceArray.splice(newVal,1)
-        // console.log('got here')
-        // console.log(spliceArray)
     }
-    // console.log(players)
     console.log("these are assigned",inPlay, "these are in the center",spliceArray)
     function setTheRoles(players,playersRef,roleList){
-    //  console.log(players)
      for (let i = 0; i<players.length; i++){
        console.log(players[i])
        const individualRef = playersRef.child(players[i])
-        // playersRef.update({[players[i]]:{
-        //   "actualRole" : {
-        //     "description" : "Look at one player's card or two from the center",
-        //     "name" : inPlay[i],
-        //     "type" : "villager"
-        //   }
-        // }})
-        // console.log(roleList)
-        console.log(inPlay[i])
         if(inPlay[i].includes("villager")){
           console.log('villager')
           const roleUpdate = roleList["villager"]
@@ -128,12 +113,6 @@ function wolfy(inputArray,players,playersRef,roleList){
           const roleUpdate = roleList[inPlay[i]]
           individualRef.update({"startingRole": roleUpdate})
         }
-        // console.log(roleUpdate)
-          // individualRef.update({"actualRole":{
-          //   "description" : "Look at one player's card or two from the center",
-          //   "name" : inPlay[i],
-          //   "type" : "villager"
-          // }})
       }
     }
     setTheRoles(players,playersRef,roleList)
