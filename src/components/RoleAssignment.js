@@ -32,12 +32,17 @@ function RoleAssignment({ match }) {
   //   console.log(updatedRoles)
   //   setRoles(updatedRoles)
   // })
+  console.log(roles, currentRolesList)
   useEffect(()=>checkHostUpdate)
   function checkHostUpdate(){
     if(currentRolesList){
       if(!equalArrays(roles,currentRolesList)){
         setRoles(currentRolesList)
       }
+    }
+    else if(currentRolesList === null && roles.length !== 0){
+      console.log(roles.length)
+      setRoles([])
     }
   }
   function equalArrays(localRoles, DBRoles){
