@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
-import { useList, useObjectVal } from 'react-firebase-hooks/database';
+import {
+  useList,
+  useListVals,
+  useObjectVal,
+} from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
 import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
@@ -96,13 +100,15 @@ function WerewolfGamePage({ match }) {
 export default WerewolfGamePage;
 
 //* TurnCountdown *//
-function TurnCountdown({ gameRef, roles, host, currentTurn, setCurrentTurn }) {
+function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
   const [userId] = useUserId();
   const [count, setCount] = useState('');
   const [endTime, loadingEndTime] = useObjectVal(gameRef.child('endTime'));
+  const [roleList, loadingRoleList] = useListVals(gameRef.child('turnOrder'));
   const gameHasntStarted = !loadingEndTime && !endTime;
-
   const countDownReached = !gameHasntStarted && endTime < new Date().getTime();
+
+  // EFFECTS
   useEffect(() => {
     function setEndTimeInDB() {
       db.ref('/.info/serverTimeOffset').once('value', function (snap) {
@@ -113,20 +119,22 @@ function TurnCountdown({ gameRef, roles, host, currentTurn, setCurrentTurn }) {
       });
     }
     function setNextTurnInDB() {
-      // roles.shift(); temporary solution to mimic roles counting down
-      setCurrentTurn(roles[0]);
-      gameRef.child('currentTurn').set(roles[0]);
+      roleList.shift();
+      gameRef.child('turnOrder').set(roleList);
+      gameRef.child('currentTurn').set(roleList[0]);
     }
 
     if (host[userId]) {
       if (gameHasntStarted) {
         // set an expiration time for 15 seconds into the future
         setEndTimeInDB();
-      } else if (countDownReached && roles.length !== 1) {
+      } else if (countDownReached && roleList.length > 1) {
         // remove the role that just went from the turn order
-        // console.log(roles);
         setEndTimeInDB();
         setNextTurnInDB();
+      } else if (countDownReached && roleList.length === 1) {
+        // the turns are done
+        gameRef.child('status').set('dayPhase');
       }
     }
   }, [
@@ -135,8 +143,8 @@ function TurnCountdown({ gameRef, roles, host, currentTurn, setCurrentTurn }) {
     userId,
     gameHasntStarted,
     countDownReached,
-    roles,
     setCurrentTurn,
+    roleList,
   ]);
 
   // every second, client checks their time against server end time
@@ -148,7 +156,8 @@ function TurnCountdown({ gameRef, roles, host, currentTurn, setCurrentTurn }) {
     return () => clearInterval(interval);
   }, [count, endTime]);
 
-  return loadingEndTime ? (
+  // VIEW
+  return loadingEndTime || loadingRoleList ? (
     <Spinner animation="border" role="status" />
   ) : (
     <h2>
