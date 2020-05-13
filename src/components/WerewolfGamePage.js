@@ -31,9 +31,11 @@ function WerewolfGamePage({ match }) {
   const [host, loadingHost] = useObjectVal(
     gameSessionRef.child('players').orderByChild('host').equalTo(true)
   );
-  const [gameState, setGameState] = useState(null);
-  console.log(gameState);
-  const [currentTurn, setCurrentTurn] = useState(null);
+  const [initialGameState, setGameState] = useState(null);
+  console.log(initialGameState);
+  const [currentTurn, loadingCurrentTurn] = useObjectVal(
+    gameSessionRef.child('currentTurn')
+  );
   // use 'once' to grab the initial state on load
   // firebase-hooks uses 'on', which we don't want in this case
   useEffect(() => {
@@ -41,25 +43,24 @@ function WerewolfGamePage({ match }) {
       try {
         if (!gameSessionSnap.val())
           throw new Error('no value found in game snapshot');
-        const initialGameState = gameSessionSnap.val();
-        setGameState(initialGameState);
-        setCurrentTurn(initialGameState.currentTurn);
+        const gameState = gameSessionSnap.val();
+        setGameState(gameState);
       } catch (e) {
         console.error('Error loading intitial game state, ', e.message);
       }
     });
-  }, [gameSessionRef, setGameState, setCurrentTurn]);
+  }, [gameSessionRef, setGameState]);
 
-  return !gameState || loadingHost ? (
+  return !initialGameState || loadingHost || loadingCurrentTurn ? (
     <Spinner animation="border" role="status" />
   ) : (
     <Container>
       <Row>
         <Col>
           <h1 className="text-center">
-            {gameState.title}{' '}
-            <Badge variant={gameState.isNight ? 'dark' : 'light'}>
-              {gameState.isNight ? 'Night Phase' : 'Day Phase'}
+            {initialGameState.title}{' '}
+            <Badge variant={initialGameState.isNight ? 'dark' : 'light'}>
+              {initialGameState.isNight ? 'Night Phase' : 'Day Phase'}
             </Badge>
           </h1>
         </Col>
@@ -67,13 +68,15 @@ function WerewolfGamePage({ match }) {
       <Row>
         <TurnCountdown
           gameRef={gameSessionRef}
-          roles={gameState.turnOrder}
+          roles={initialGameState.turnOrder}
           host={host}
           currentTurn={currentTurn}
-          setCurrentTurn={setCurrentTurn}
         />
       </Row>
-      <OpponentList gameRef={gameSessionRef} opponents={gameState.players} />
+      <OpponentList
+        gameRef={gameSessionRef}
+        opponents={initialGameState.players}
+      />
       <MiddleCardList gameRef={gameSessionRef} />
       <Row>
         <Col>
