@@ -48,7 +48,7 @@ function App() {
           await auth().signInAnonymously();
           const uid = auth().currentUser.uid;
           setUserId(uid);
-          await usersRef.child(uid).set({ signedIn: true });
+          await usersRef.child(uid).set({ signedIn: true, inLobby: false });
           console.log(`Added user ${uid} to database!`);
         }
       } catch (e) {
