@@ -284,38 +284,16 @@ function OpponentList({ gameRef, setSelectedCards, selectedCards }) {
 }
 
 function OpponentCard({ opponentSnapshot, setSelectedCards, selectedCards }) {
-  const [isSelected, setIsSelected] = useState(false);
-  const toggleSelected = () => setIsSelected(!isSelected);
-
-  function handleClick() {
-    toggleSelected();
-    if (!isSelected) {
-      console.log('selected');
-      setSelectedCards([...selectedCards, opponentSnapshot]);
-    } else {
-      console.log('unselected');
-      const currKey = opponentSnapshot.key;
-      const listWithoutThisCard = selectedCards.filter(
-        (c) => c.key !== currKey
-      );
-      setSelectedCards(listWithoutThisCard);
-    }
-  }
-
   return (
-    <div className="text-center" onClick={handleClick}>
+    <div className="text-center">
       <Badge pill variant="info">
         {opponentSnapshot.val().alias}
       </Badge>
-      {isSelected ? (
-        <CardActive>
-          <Card.Title>?</Card.Title>
-        </CardActive>
-      ) : (
-        <CardInactive>
-          <Card.Title>?</Card.Title>
-        </CardInactive>
-      )}
+      <SelectableCard
+        cardSnapshot={opponentSnapshot}
+        setSelectedCards={setSelectedCards}
+        selectedCards={selectedCards}
+      />
     </div>
   );
 }
@@ -341,6 +319,17 @@ function MiddleCardList({ gameRef, selectedCards, setSelectedCards }) {
 }
 
 function MiddleCard({ cardSnapshot, setSelectedCards, selectedCards }) {
+  return (
+    <SelectableCard
+      cardSnapshot={cardSnapshot}
+      setSelectedCards={setSelectedCards}
+      selectedCards={selectedCards}
+    />
+  );
+}
+
+//* Selectable Card//
+function SelectableCard({ cardSnapshot, setSelectedCards, selectedCards }) {
   const [isSelected, setIsSelected] = useState(false);
   const toggleSelected = () => setIsSelected(!isSelected);
 
@@ -348,6 +337,7 @@ function MiddleCard({ cardSnapshot, setSelectedCards, selectedCards }) {
     toggleSelected();
     if (!isSelected) {
       console.log('selected');
+      console.log(cardSnapshot.key);
       setSelectedCards([...selectedCards, cardSnapshot]);
     } else {
       console.log('unselected');
