@@ -156,7 +156,7 @@ function WerewolfGamePage({ match }) {
       >
         <OpponentList
           gameRef={gameSessionRef}
-          opponents={initialGameState.players}
+          players={initialGameState.players}
           setSelectedCards={setSelectedCards}
           selectedCards={selectedCards}
         />
@@ -259,40 +259,55 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
 }
 
 //* OpponentList *//
-function OpponentList({ gameRef, setSelectedCards, selectedCards }) {
+function OpponentList({ gameRef, setSelectedCards, selectedCards, players }) {
   const [userId] = useUserId();
-  const [playerSnaps, playerSnapsLoading] = useList(gameRef.child('players'));
   const [opponents, setOpponents] = useState(null);
-
   // filter current user out of list
   useEffect(() => {
-    setOpponents(playerSnaps.filter((p) => p.key !== userId));
-  }, [playerSnaps, userId]);
+    setOpponents(Object.entries(players).filter((p) => p[0] !== userId));
+  }, [players, userId]);
 
-  return !opponents || playerSnapsLoading ? (
+  return !opponents ? (
     ''
   ) : (
     <Row className="justify-content-md-center">
-      {opponents.map((o) => (
-        <OpponentCard
-          key={o.key}
-          opponentSnapshot={o}
-          setSelectedCards={setSelectedCards}
-          selectedCards={selectedCards}
-        />
-      ))}
+      {opponents.map((o) => {
+        const [opponentId, opponentData] = o;
+        console.log(o);
+        return (
+          <OpponentCard
+            gameRef={gameRef}
+            key={opponentId}
+            alias={opponentData.alias}
+            opponentId={opponentId}
+            setSelectedCards={setSelectedCards}
+            selectedCards={selectedCards}
+          />
+        );
+      })}
     </Row>
   );
 }
 
-function OpponentCard({ opponentSnapshot, setSelectedCards, selectedCards }) {
-  return (
+function OpponentCard({
+  gameRef,
+  opponentId,
+  alias,
+  setSelectedCards,
+  selectedCards,
+}) {
+  const [cardSnapshot, loadingCardSnapshot] = useObject(
+    gameRef.child(`players/${opponentId}/actualRole`)
+  );
+  return loadingCardSnapshot ? (
+    ''
+  ) : (
     <div className="text-center">
       <Badge pill variant="info">
-        {opponentSnapshot.val().alias}
+        {alias}
       </Badge>
       <SelectableCard
-        cardSnapshot={opponentSnapshot}
+        cardSnapshot={cardSnapshot}
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}
       />
