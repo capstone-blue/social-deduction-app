@@ -27,70 +27,38 @@ function RoleAssignment({ match }) {
   const gameRef = lobbiesRef.child(match.params.id)
   const [currentRolesList] =  useObjectVal(gameRef.child("currentRoles"))
   console.log(playerVals)
-  if(playerVals){
-    const isHost = playerVals.host
-    console.log(isHost)
-  }
-  // console.log(players)
-  // console.log(currentRoleList)
-  // rolesRef.once('value').then(function (snapshot) {
-  //   console.log(snapshot.val())
-  //   const updatedRoles =  snapshot.val()
-  //   console.log(updatedRoles)
-  //   setRoles(updatedRoles)
-  // })
-  // console.log(roles, currentRolesList)
-  // useEffect(()=>checkHostUpdate)
-  // function checkHostUpdate(){
-  //   if(currentRolesList){
-  //     if(!equalArrays(roles,currentRolesList)){
-  //       setRoles(currentRolesList)
-  //     }
-  //   }
-  //   else if(currentRolesList === null && roles.length !== 0){
-  //     console.log(roles.length)
-  //     setRoles([])
-  //   }
-  // }
-  // function equalArrays(localRoles, DBRoles){
-  //   if(localRoles.length !== DBRoles.length){
-  //     return false
-  //   }
-  //   for(let i =0;i<localRoles.length; i++){
-  //     if(localRoles[i] !== DBRoles[i]){
-  //       return false
-  //     }
-  //   }
-  //   return true
-  // }
+
   function buttonClicked(role){
-    if(currentRolesList){
-      if(currentRolesList.includes(role)){
-        const newRoles = currentRolesList.filter(el=>el !== role)
-        gameRef.update({"currentRoles":newRoles})
+    if(playerVals.host){
+      if(currentRolesList){
+        if(currentRolesList.includes(role)){
+          const newRoles = currentRolesList.filter(el=>el !== role)
+          gameRef.update({"currentRoles":newRoles})
+        }
+        else{
+          const newRoles = [...currentRolesList, role]
+          gameRef.update({"currentRoles":newRoles})
+        }
       }
       else{
-        const newRoles = [...currentRolesList, role]
-        gameRef.update({"currentRoles":newRoles})
+        gameRef.update({"currentRoles":[role]})
       }
-    }
-    else{
-      gameRef.update({"currentRoles":[role]})
+
     }
   }
-  // function masonButtonClicked(){
-  //   if(roles.includes("mason")){
-  //     const newRoles = roles.filter(el=>el !== "mason")
-  //     gameRef.update({"currentRoles":roles})
-  //     setRoles(newRoles)
-  //   }
-  //   else{
-  //     gameRef.update({"currentRoles":roles})
-  //     setRoles([...roles, "mason", "mason"])
-  //   }
-  // }
+  function masonButtonClicked(){
+    if(currentRolesList.includes("mason")){
+      const newRoles = currentRolesList.filter(el=>el !== "mason")
+      gameRef.update({"currentRoles":newRoles})
+    }
+    else{
+      const newRoles = [...currentRolesList, "mason", "mason"]
+      gameRef.update({"currentRoles":newRoles})
+    }
+  }
   return(
-    
+    playerVals
+    ?
     <div>
       <h1>werewolves</h1>
       <div className = 'werewolfTeam'>
@@ -105,22 +73,25 @@ function RoleAssignment({ match }) {
         <VillageButton buttonClicked = {buttonClicked} role = "seer"/>
         <VillageButton buttonClicked = {buttonClicked} role = "robber"/>
       </div>
-      <div>
-        <h1>start the game</h1>
-        <h2>{userId}</h2>
-      </div>
+
       <div>
         {currentRolesList
         ? currentRolesList.length - (players.length+3) != 0
           ?
             <div>
             {currentRolesList.length - (players.length+3) > 0
-              ? <h4>select {currentRolesList.length - (players.length+3)} fewer roles to start the game </h4>
-              : <h4>select {(players.length+3)-currentRolesList.length} more roles to start the game</h4>
+              ? playerVals.host 
+                ? <h4>select {currentRolesList.length - (players.length+3)} fewer roles to start the game </h4>
+                : <h4>host needs to select {currentRolesList.length - (players.length+3)} fewer roles to start the game </h4>
+              : playerVals.host
+                ? <h4>select {(players.length+3)-currentRolesList.length} more roles to start the game</h4>
+                : <h4>host needs to select {(players.length+3)-currentRolesList.length} more roles to start the game</h4>
             }
           </div>
-            : <RoleLockButton wolfy = {wolfy} roles = {currentRolesList} players = {players} playersRef = {playersRef} roleList = {roleList}/>
-          :<h4>select {players.length+3} more roles to start the game</h4>
+          : playerVals.host 
+            ?<RoleLockButton wolfy = {wolfy} roles = {currentRolesList} players = {players} playersRef = {playersRef} roleList = {roleList}/>
+            : <h4>waiting for host to start the game</h4>
+        :<h4>select {players.length+3} more roles to start the game</h4>
         }
       </div>
       <div>
@@ -136,6 +107,7 @@ function RoleAssignment({ match }) {
         <VillageButton buttonClicked = {buttonClicked} role = "dopplegänger"/>
       </div>
     </div>
+    : <h1>loading</h1>
   );
 }
 
