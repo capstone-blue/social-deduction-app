@@ -23,13 +23,10 @@ const CommonCardStyles = styled(Card)`
   font-size: 1.5rem;
 `;
 
-const OpponentCardInactive = styled(CommonCardStyles)``;
-
-const OpponentCardActive = styled(CommonCardStyles)`
+const CardActive = styled(CommonCardStyles)`
   border: 2px solid green;
 `;
-
-const MiddleCard = styled(CommonCardStyles)``;
+const CardInactive = styled(CommonCardStyles)``;
 
 const Board = styled(Container)`
   width: 80%;
@@ -162,7 +159,11 @@ function WerewolfGamePage({ match }) {
           setSelectedCards={setSelectedCards}
           selectedCards={selectedCards}
         />
-        <MiddleCardList gameRef={gameSessionRef} />
+        <MiddleCardList
+          gameRef={gameSessionRef}
+          setSelectedCards={setSelectedCards}
+          selectedCards={selectedCards}
+        />
       </Board>
       <Row>
         <Col>
@@ -307,20 +308,20 @@ function OpponentCard({ opponentSnapshot, setSelectedCards, selectedCards }) {
         {opponentSnapshot.val().alias}
       </Badge>
       {isSelected ? (
-        <OpponentCardActive>
+        <CardActive>
           <Card.Title>?</Card.Title>
-        </OpponentCardActive>
+        </CardActive>
       ) : (
-        <OpponentCardInactive>
+        <CardInactive>
           <Card.Title>?</Card.Title>
-        </OpponentCardInactive>
+        </CardInactive>
       )}
     </div>
   );
 }
 
 //* MiddleCardList *//
-function MiddleCardList({ gameRef }) {
+function MiddleCardList({ gameRef, selectedCards, setSelectedCards }) {
   const [cardSnaps, cardSnapsLoading] = useList(gameRef.child('centerCards'));
 
   return cardSnapsLoading ? (
@@ -328,11 +329,48 @@ function MiddleCardList({ gameRef }) {
   ) : (
     <Row className="justify-content-md-center">
       {cardSnaps.map((c) => (
-        <MiddleCard key={c.key}>
-          <Card.Title className="text-center">?</Card.Title>
-        </MiddleCard>
+        <MiddleCard
+          key={c.key}
+          cardSnapshot={c}
+          setSelectedCards={setSelectedCards}
+          selectedCards={selectedCards}
+        />
       ))}
     </Row>
+  );
+}
+
+function MiddleCard({ cardSnapshot, setSelectedCards, selectedCards }) {
+  const [isSelected, setIsSelected] = useState(false);
+  const toggleSelected = () => setIsSelected(!isSelected);
+
+  function handleClick() {
+    toggleSelected();
+    if (!isSelected) {
+      console.log('selected');
+      setSelectedCards([...selectedCards, cardSnapshot]);
+    } else {
+      console.log('unselected');
+      const currKey = cardSnapshot.key;
+      const listWithoutThisCard = selectedCards.filter(
+        (c) => c.key !== currKey
+      );
+      setSelectedCards(listWithoutThisCard);
+    }
+  }
+
+  return (
+    <div className="text-center" onClick={handleClick}>
+      {isSelected ? (
+        <CardActive>
+          <Card.Title>?</Card.Title>
+        </CardActive>
+      ) : (
+        <CardInactive>
+          <Card.Title>?</Card.Title>
+        </CardInactive>
+      )}
+    </div>
   );
 }
 
