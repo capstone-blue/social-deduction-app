@@ -3,6 +3,7 @@ import { db } from '../firebase';
 import {
   useList,
   useListVals,
+  useObject,
   useObjectVal,
 } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
@@ -163,6 +164,7 @@ function WerewolfGamePage({ match }) {
           gameRef={gameSessionRef}
           setSelectedCards={setSelectedCards}
           selectedCards={selectedCards}
+          centerCards={initialGameState.centerCards}
         />
       </Board>
       <Row>
@@ -299,27 +301,37 @@ function OpponentCard({ opponentSnapshot, setSelectedCards, selectedCards }) {
 }
 
 //* MiddleCardList *//
-function MiddleCardList({ gameRef, selectedCards, setSelectedCards }) {
-  const [cardSnaps, cardSnapsLoading] = useList(gameRef.child('centerCards'));
-
-  return cardSnapsLoading ? (
-    ''
-  ) : (
+function MiddleCardList({
+  gameRef,
+  selectedCards,
+  setSelectedCards,
+  centerCards,
+}) {
+  return (
     <Row className="justify-content-md-center">
-      {cardSnaps.map((c) => (
-        <MiddleCard
-          key={c.key}
-          cardSnapshot={c}
-          setSelectedCards={setSelectedCards}
-          selectedCards={selectedCards}
-        />
-      ))}
+      {Object.entries(centerCards).map((c) => {
+        const [cardId] = c;
+        return (
+          <MiddleCard
+            key={cardId}
+            gameRef={gameRef}
+            cardId={cardId}
+            setSelectedCards={setSelectedCards}
+            selectedCards={selectedCards}
+          />
+        );
+      })}
     </Row>
   );
 }
 
-function MiddleCard({ cardSnapshot, setSelectedCards, selectedCards }) {
-  return (
+function MiddleCard({ gameRef, cardId, setSelectedCards, selectedCards }) {
+  const [cardSnapshot, loadingCardSnapshot] = useObject(
+    gameRef.child(`centerCards/${cardId}`)
+  );
+  return loadingCardSnapshot ? (
+    ''
+  ) : (
     <SelectableCard
       cardSnapshot={cardSnapshot}
       setSelectedCards={setSelectedCards}
