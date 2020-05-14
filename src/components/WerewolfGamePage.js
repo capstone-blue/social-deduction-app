@@ -273,7 +273,6 @@ function OpponentList({ gameRef, setSelectedCards, selectedCards, players }) {
     <Row className="justify-content-md-center">
       {opponents.map((o) => {
         const [opponentId, opponentData] = o;
-        console.log(o);
         return (
           <OpponentCard
             gameRef={gameRef}
@@ -358,6 +357,7 @@ function MiddleCard({ gameRef, cardId, setSelectedCards, selectedCards }) {
 //* Selectable Card//
 function SelectableCard({ cardSnapshot, setSelectedCards, selectedCards }) {
   const [isSelected, setIsSelected] = useState(false);
+  const [isPeeked, setIsPeeked] = useState(false);
   const toggleSelected = () => setIsSelected(!isSelected);
 
   function handleClick() {
@@ -379,9 +379,19 @@ function SelectableCard({ cardSnapshot, setSelectedCards, selectedCards }) {
   return (
     <div className="text-center" onClick={handleClick}>
       {isSelected ? (
-        <CardActive>
-          <Card.Title>?</Card.Title>
-        </CardActive>
+        isPeeked ? (
+          <CardActive>
+            <Card.Title>{cardSnapshot.val().name}</Card.Title>
+          </CardActive>
+        ) : (
+          <CardActive>
+            <Card.Title>?</Card.Title>
+          </CardActive>
+        )
+      ) : isPeeked ? (
+        <CardInactive>
+          <Card.Title>{cardSnapshot.val().name}</Card.Title>
+        </CardInactive>
       ) : (
         <CardInactive>
           <Card.Title>?</Card.Title>
