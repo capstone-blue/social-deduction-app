@@ -448,6 +448,10 @@ function ResetForm({ gameRef }) {
     gameRef.update(updates);
   }
 
+  function endNight(){
+    gameRef.update({"isNight": false})
+    gameRef.update({"isDay":true})
+  }
   return (
     <Row>
       <Col>
@@ -505,6 +509,9 @@ function ResetForm({ gameRef }) {
       <Col>
         <Button type="button" variant="outline-danger" onClick={restartGame}>
           Restart Game
+        </Button>
+        <Button type="button" variant="outline-danger" onClick={endNight}>
+          End Night
         </Button>
       </Col>
     </Row>
