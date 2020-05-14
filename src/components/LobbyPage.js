@@ -15,7 +15,7 @@ function LobbyPage({ match, history }) {
     <Container>...Loading</Container>
   ) : (
       <React.Fragment>
-        <NavigationBar />
+        <NavigationBar/>
         <Container>
           <AliasModal match={match} />
           <LobbyView players={Object.entries(lobby.players)} name={lobby.name} />
