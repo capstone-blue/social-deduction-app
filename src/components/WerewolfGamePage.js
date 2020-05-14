@@ -23,7 +23,11 @@ const CommonCardStyles = styled(Card)`
   font-size: 1.5rem;
 `;
 
-const OpponentCard = styled(CommonCardStyles)``;
+const OpponentCardInactive = styled(CommonCardStyles)``;
+
+const OpponentCardActive = styled(CommonCardStyles)`
+  border: 2px solid green;
+`;
 
 const MiddleCard = styled(CommonCardStyles)``;
 
@@ -89,6 +93,8 @@ function WerewolfGamePage({ match }) {
   // State - should only influence current user's own screen
   const [initialGameState, setGameState] = useState(null);
   const [currPlayerRole, setCurrPlayerRole] = useState('');
+  const [selectedCards, setSelectedCards] = useState([]);
+  console.log(selectedCards);
 
   // use 'once' to grab the initial state on load
   // firebase-hooks uses 'on', which we don't want in this case
@@ -153,6 +159,8 @@ function WerewolfGamePage({ match }) {
         <OpponentList
           gameRef={gameSessionRef}
           opponents={initialGameState.players}
+          setSelectedCards={setSelectedCards}
+          selectedCards={selectedCards}
         />
         <MiddleCardList gameRef={gameSessionRef} />
       </Board>
@@ -165,6 +173,8 @@ function WerewolfGamePage({ match }) {
             currPlayer={currPlayer}
             userId={userId}
             setCurrPlayerRole={setCurrPlayerRole}
+            setSelectedCards={setSelectedCards}
+            selectedCards={selectedCards}
           />
         </Col>
         <Col>
@@ -246,7 +256,7 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
 }
 
 //* OpponentList *//
-function OpponentList({ gameRef }) {
+function OpponentList({ gameRef, setSelectedCards, selectedCards }) {
   const [userId] = useUserId();
   const [playerSnaps, playerSnapsLoading] = useList(gameRef.child('players'));
   const [opponents, setOpponents] = useState(null);
@@ -261,16 +271,51 @@ function OpponentList({ gameRef }) {
   ) : (
     <Row className="justify-content-md-center">
       {opponents.map((o) => (
-        <div key={o.key} className="text-center">
-          <Badge pill variant="info">
-            {o.val().alias}
-          </Badge>
-          <OpponentCard>
-            <Card.Title>?</Card.Title>
-          </OpponentCard>
-        </div>
+        <OpponentCard
+          key={o.key}
+          opponentSnapshot={o}
+          setSelectedCards={setSelectedCards}
+          selectedCards={selectedCards}
+        />
       ))}
     </Row>
+  );
+}
+
+function OpponentCard({ opponentSnapshot, setSelectedCards, selectedCards }) {
+  const [isSelected, setIsSelected] = useState(false);
+  const toggleSelected = () => setIsSelected(!isSelected);
+
+  function handleClick() {
+    toggleSelected();
+    if (!isSelected) {
+      console.log('selected');
+      setSelectedCards([...selectedCards, opponentSnapshot]);
+    } else {
+      console.log('unselected');
+      const currKey = opponentSnapshot.key;
+      const listWithoutThisCard = selectedCards.filter(
+        (c) => c.key !== currKey
+      );
+      setSelectedCards(listWithoutThisCard);
+    }
+  }
+
+  return (
+    <div className="text-center" onClick={handleClick}>
+      <Badge pill variant="info">
+        {opponentSnapshot.val().alias}
+      </Badge>
+      {isSelected ? (
+        <OpponentCardActive>
+          <Card.Title>?</Card.Title>
+        </OpponentCardActive>
+      ) : (
+        <OpponentCardInactive>
+          <Card.Title>?</Card.Title>
+        </OpponentCardInactive>
+      )}
+    </div>
   );
 }
 
