@@ -130,58 +130,65 @@ function WerewolfGamePage({ match }) {
   ) : (
     <Container>
       <Row>
-        <Col>
-          <h1 className="text-center">
-            {initialGameState.title}{' '}
-            <Badge variant={initialGameState.isNight ? 'dark' : 'light'}>
-              {initialGameState.isNight ? 'Night Phase' : 'Day Phase'}
-            </Badge>
-          </h1>
+        <Col md={10}>
+          <Row>
+            <Col>
+              <h1 className="text-center">
+                {initialGameState.title}{' '}
+                <Badge variant={initialGameState.isNight ? 'dark' : 'light'}>
+                  {initialGameState.isNight ? 'Night Phase' : 'Day Phase'}
+                </Badge>
+              </h1>
+            </Col>
+          </Row>
+          <Row>
+            <TurnCountdown
+              gameRef={gameSessionRef}
+              roles={initialGameState.turnOrder}
+              host={host}
+              currentTurn={currentTurn}
+            />
+          </Row>
+          <Board
+            style={
+              currPlayer.startingRole.name === currentTurn
+                ? { backgroundColor: 'gold' }
+                : {}
+            }
+          >
+            <OpponentList
+              gameRef={gameSessionRef}
+              players={initialGameState.players}
+              setSelectedCards={setSelectedCards}
+              selectedCards={selectedCards}
+            />
+            <MiddleCardList
+              gameRef={gameSessionRef}
+              setSelectedCards={setSelectedCards}
+              selectedCards={selectedCards}
+              centerCards={initialGameState.centerCards}
+            />
+          </Board>
+          <Row>
+            <Col>
+              <Messages gameRef={gameSessionRef} />
+            </Col>
+            <Col>
+              <PlayerCard
+                currPlayer={currPlayer}
+                userId={userId}
+                setCurrPlayerRole={setCurrPlayerRole}
+                setSelectedCards={setSelectedCards}
+                selectedCards={selectedCards}
+              />
+            </Col>
+            <Col>
+              <ResetForm gameRef={gameSessionRef} />
+            </Col>
+          </Row>
         </Col>
-      </Row>
-      <Row>
-        <TurnCountdown
-          gameRef={gameSessionRef}
-          roles={initialGameState.turnOrder}
-          host={host}
-          currentTurn={currentTurn}
-        />
-      </Row>
-      <Board
-        style={
-          currPlayer.startingRole.name === currentTurn
-            ? { backgroundColor: 'gold' }
-            : {}
-        }
-      >
-        <OpponentList
-          gameRef={gameSessionRef}
-          players={initialGameState.players}
-          setSelectedCards={setSelectedCards}
-          selectedCards={selectedCards}
-        />
-        <MiddleCardList
-          gameRef={gameSessionRef}
-          setSelectedCards={setSelectedCards}
-          selectedCards={selectedCards}
-          centerCards={initialGameState.centerCards}
-        />
-      </Board>
-      <Row>
-        <Col>
-          <Messages gameRef={gameSessionRef} />
-        </Col>
-        <Col>
-          <PlayerCard
-            currPlayer={currPlayer}
-            userId={userId}
-            setCurrPlayerRole={setCurrPlayerRole}
-            setSelectedCards={setSelectedCards}
-            selectedCards={selectedCards}
-          />
-        </Col>
-        <Col>
-          <ResetForm gameRef={gameSessionRef} />
+        <Col md={2}>
+          <div>other stuff</div>
         </Col>
       </Row>
     </Container>
