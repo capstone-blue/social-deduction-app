@@ -4,6 +4,7 @@ import { useUserId } from '../context/userContext';
 import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
 import Spinner from 'react-bootstrap/Spinner'
+import sneak from './sneak'
 
 function GameStart({ match, players, history, }) {
   const [userId] = useUserId();
@@ -40,6 +41,8 @@ function GameStart({ match, players, history, }) {
     if (players.length >= minPlayers) {
       try {
         // creates a game session by transferring lobby members data over
+        db.ref(`/gameSessions/${lobbyId}`)
+        db.ref(`/gameSessions`).update({[lobbyId]:sneak})
         players.forEach(player => {
           const [playerId, playerProps] = player;
           db.ref(`/gameSessions/${lobbyId}/players`).child(`${playerId}`).set(playerProps)
