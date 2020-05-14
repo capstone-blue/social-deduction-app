@@ -17,13 +17,20 @@ import RoleLockButton from './RoleLockButton'
   //prebuilt game states that are regarded as fun
 function RoleAssignment({ match }) {
   const [lobbiesRef] = useState(db.ref().child('gameSessions'));
+  const [userId] = useUserId()
+  const [playerVals] = useObjectVal(lobbiesRef.child(match.params.id).child('players').child(userId))
   const [lobby, lobbyLoading] = useObjectVal(lobbiesRef.child(match.params.id));
   const [players]=useListKeys(lobbiesRef.child(match.params.id).child('players'))
-  const [roles,setRoles] = useState([])
+  // const [roles,setRoles] = useState([])
   const [roleList,loading,error] = useObjectVal(db.ref().child('games').child('gameId1').child('roles'))
   const playersRef = lobbiesRef.child(match.params.id).child('players')
   const gameRef = lobbiesRef.child(match.params.id)
   const [currentRolesList] =  useObjectVal(gameRef.child("currentRoles"))
+  console.log(playerVals)
+  if(playerVals){
+    const isHost = playerVals.host
+    console.log(isHost)
+  }
   // console.log(players)
   // console.log(currentRoleList)
   // rolesRef.once('value').then(function (snapshot) {
@@ -32,53 +39,56 @@ function RoleAssignment({ match }) {
   //   console.log(updatedRoles)
   //   setRoles(updatedRoles)
   // })
-  console.log(roles, currentRolesList)
-  useEffect(()=>checkHostUpdate)
-  function checkHostUpdate(){
-    if(currentRolesList){
-      if(!equalArrays(roles,currentRolesList)){
-        setRoles(currentRolesList)
-      }
-    }
-    else if(currentRolesList === null && roles.length !== 0){
-      console.log(roles.length)
-      setRoles([])
-    }
-  }
-  function equalArrays(localRoles, DBRoles){
-    if(localRoles.length !== DBRoles.length){
-      return false
-    }
-    for(let i =0;i<localRoles.length; i++){
-      if(localRoles[i] !== DBRoles[i]){
-        return false
-      }
-    }
-    return true
-  }
+  // console.log(roles, currentRolesList)
+  // useEffect(()=>checkHostUpdate)
+  // function checkHostUpdate(){
+  //   if(currentRolesList){
+  //     if(!equalArrays(roles,currentRolesList)){
+  //       setRoles(currentRolesList)
+  //     }
+  //   }
+  //   else if(currentRolesList === null && roles.length !== 0){
+  //     console.log(roles.length)
+  //     setRoles([])
+  //   }
+  // }
+  // function equalArrays(localRoles, DBRoles){
+  //   if(localRoles.length !== DBRoles.length){
+  //     return false
+  //   }
+  //   for(let i =0;i<localRoles.length; i++){
+  //     if(localRoles[i] !== DBRoles[i]){
+  //       return false
+  //     }
+  //   }
+  //   return true
+  // }
   function buttonClicked(role){
-    if(roles.includes(role)){
-      const newRoles = roles.filter(el=>el !== role)
-      gameRef.update({"currentRoles":newRoles})
-      setRoles(newRoles)
+    if(currentRolesList){
+      if(currentRolesList.includes(role)){
+        const newRoles = currentRolesList.filter(el=>el !== role)
+        gameRef.update({"currentRoles":newRoles})
+      }
+      else{
+        const newRoles = [...currentRolesList, role]
+        gameRef.update({"currentRoles":newRoles})
+      }
     }
     else{
-      const newRoles = [...roles, role]
-      gameRef.update({"currentRoles":newRoles})
-      setRoles([...roles, role])
+      gameRef.update({"currentRoles":[role]})
     }
   }
-  function masonButtonClicked(){
-    if(roles.includes("mason")){
-      const newRoles = roles.filter(el=>el !== "mason")
-      gameRef.update({"currentRoles":roles})
-      setRoles(newRoles)
-    }
-    else{
-      gameRef.update({"currentRoles":roles})
-      setRoles([...roles, "mason", "mason"])
-    }
-  }
+  // function masonButtonClicked(){
+  //   if(roles.includes("mason")){
+  //     const newRoles = roles.filter(el=>el !== "mason")
+  //     gameRef.update({"currentRoles":roles})
+  //     setRoles(newRoles)
+  //   }
+  //   else{
+  //     gameRef.update({"currentRoles":roles})
+  //     setRoles([...roles, "mason", "mason"])
+  //   }
+  // }
   return(
     
     <div>
@@ -97,26 +107,25 @@ function RoleAssignment({ match }) {
       </div>
       <div>
         <h1>start the game</h1>
+        <h2>{userId}</h2>
       </div>
       <div>
-        {/* {currentRoleList} */}
-        meep
-      </div>
-      <div>
-        {roles.length - (players.length+3) != 0
+        {currentRolesList
+        ? currentRolesList.length - (players.length+3) != 0
           ?
-          <div>
-          {roles.length - (players.length+3) > 0
-            ? <h4>select {roles.length - (players.length+3)} fewer roles to start the game </h4>
-            : <h4>select {(players.length+3)-roles.length} more roles to start the game</h4>
-          }
-        </div>
-          : <RoleLockButton wolfy = {wolfy} roles = {roles} players = {players} playersRef = {playersRef} roleList = {roleList}/>
+            <div>
+            {currentRolesList.length - (players.length+3) > 0
+              ? <h4>select {currentRolesList.length - (players.length+3)} fewer roles to start the game </h4>
+              : <h4>select {(players.length+3)-currentRolesList.length} more roles to start the game</h4>
+            }
+          </div>
+            : <RoleLockButton wolfy = {wolfy} roles = {currentRolesList} players = {players} playersRef = {playersRef} roleList = {roleList}/>
+          :<h4>select {players.length+3} more roles to start the game</h4>
         }
       </div>
       <div>
         <h3>Coming "Soon"</h3>
-        <MasonButton masonButtonClicked = {masonButtonClicked}/>
+        {/* <MasonButton masonButtonClicked = {masonButtonClicked}/> */}
         <EvilButton buttonClicked = {buttonClicked} role = "minion"/>
         <EvilButton buttonClicked = {buttonClicked} role = "alpha wolf"/>
         <VillageButton buttonClicked = {buttonClicked} role = "TroubleMaker"/>
