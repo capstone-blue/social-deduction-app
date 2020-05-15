@@ -16,19 +16,6 @@ function GameScreen({match}){
     const [status] = useObjectVal(gameRef.child("status"))
 
     return(
-        // <React.Fragment>
-        //     <NavigationBar/>
-        //     {rolesSet
-        //     ? isNight
-        //        ? <WerewolfGamePage match = {match}/>
-        //        : isDay
-        //         ? <DayTime match = {match}/>
-        //         :voting
-        //             ? <VoteScreen match = {match}/>
-        //             :<h1>Result screen</h1>
-        //     : <RoleAssignment match = {match}/>
-        //     }
-        // </React.Fragment>
 
         <React.Fragment>
         <NavigationBar/>
