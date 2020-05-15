@@ -580,7 +580,7 @@ function ResetForm({ gameRef }) {
 
   function endNight(){
     gameRef.update({"isNight": false})
-    gameRef.update({"isDay":true})
+    gameRef.update({"status":"dayPhase"})
   }
   return (
     <Row>
