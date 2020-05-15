@@ -417,34 +417,33 @@ function SelectableCard({
   cardVal,
   cardRef,
 }) {
-  const [isSelected, setIsSelected] = useState(false);
-  const [isPeeked, setIsPeeked] = useState(false);
-  const toggleSelected = () => setIsSelected(!isSelected);
+  const [card, setCard] = useState({});
 
   useEffect(() => {
-    if (isSelected && isRevealed) {
-      setIsPeeked(true);
-    } else {
-      setIsPeeked(false);
-    }
-  }, [isSelected, isPeeked, isRevealed]);
+    const thisCard = selectedCards.find((c) => c.cardId === cardId);
+    console.log(thisCard);
+    if (thisCard) setCard(thisCard);
+    else setCard({});
+  }, [selectedCards, cardId]);
 
   function handleClick() {
-    toggleSelected();
-    if (!isSelected) {
-      setSelectedCards([...selectedCards, { cardId, cardVal, cardRef }]);
+    const thisCard = selectedCards.find((c) => c.cardId === cardId);
+    // if this card is in the list, remove it
+    if (thisCard) {
+      setSelectedCards(selectedCards.filter((c) => c.cardId !== cardId));
+      // otherwise, add it to the list
     } else {
-      const listWithoutThisCard = selectedCards.filter(
-        (c) => c.cardId !== cardId
-      );
-      setSelectedCards(listWithoutThisCard);
+      setSelectedCards([
+        ...selectedCards,
+        { cardId, cardVal, cardRef, isRevealed: false, isSelected: true },
+      ]);
     }
   }
 
   return (
     <div className="text-center" onClick={handleClick}>
-      {isSelected ? (
-        isPeeked ? (
+      {card.isSelected ? (
+        card.isPeeked ? (
           <CardActive>
             <Card.Title>{cardVal.name}</Card.Title>
           </CardActive>
@@ -453,7 +452,7 @@ function SelectableCard({
             <Card.Title>?</Card.Title>
           </CardActive>
         )
-      ) : isPeeked ? (
+      ) : card.isPeeked ? (
         <CardInactive>
           <Card.Title>{cardVal.name}</Card.Title>
         </CardInactive>
