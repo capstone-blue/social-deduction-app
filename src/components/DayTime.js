@@ -13,6 +13,8 @@ function DayTime({match}){
         const gameHasntStarted = !loadingEndTime && !endDayTime;
         const countDownReached = !gameHasntStarted && endDayTime < new Date().getTime();
         const timeLeft = Math.floor(endDayTime - new Date().getTime())
+        const minutes = Math.floor((timeLeft / 1000)/60)
+        const seconds = Math.floor((timeLeft/1000) -((minutes)*60))
         // EFFECTS
         useEffect(() => {
           function setEndTimeInDB() {
@@ -48,9 +50,16 @@ function DayTime({match}){
         return loadingEndTime ? (
           <h2>loading</h2>
         ) : (
+            seconds > 9
+                ?
           <h2>
             Daytime left
-            {`:${Math.floor(timeLeft / 1000)}`}
+            {`: ${minutes}:${seconds}`}
+          </h2>
+                :
+                <h2>
+            Daytime left
+            {`: ${minutes}:0${seconds}`}
           </h2>
         );
       }
