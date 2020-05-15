@@ -5,8 +5,7 @@ import { useObjectVal, useList, useListKeys } from 'react-firebase-hooks/databas
 function DayTime({match}){
     const gameRef = db.ref().child('gameSessions').child(match.params.id)
     function skipToVote(){
-        gameRef.update({"isDay":false})
-        gameRef.update({"voting":true})
+        gameRef.update({"status":"voting"})
     }
     return(
         <div>

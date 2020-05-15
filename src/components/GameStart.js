@@ -4,7 +4,7 @@ import { useUserId } from '../context/userContext';
 import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
 import Spinner from 'react-bootstrap/Spinner'
-import sneak from './sneak'
+import { useObjectVal } from 'react-firebase-hooks/database';
 
 function GameStart({ match, players, history, }) {
   const [userId] = useUserId();
@@ -12,6 +12,7 @@ function GameStart({ match, players, history, }) {
   const [lobbiesRef] = useState(db.ref(`/lobbies/${lobbyId}`));
   const [minPlayers] = useState(2)
   const [isHost, setIsHost] = useState(false)
+  const [gameRules] = useObjectVal(db.ref().child("games").child("werewolf"))
 
 
   useEffect(() => {
@@ -42,7 +43,7 @@ function GameStart({ match, players, history, }) {
       try {
         // creates a game session by transferring lobby members data over
         db.ref(`/gameSessions/${lobbyId}`)
-        db.ref(`/gameSessions`).update({[lobbyId]:sneak})
+        db.ref(`/gameSessions`).update({[lobbyId]:gameRules})
         players.forEach(player => {
           const [playerId, playerProps] = player;
           db.ref(`/gameSessions/${lobbyId}/players`).child(`${playerId}`).set(playerProps)

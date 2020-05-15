@@ -145,17 +145,26 @@ function wolfy(inputArray,players,playersRef,roleList,gameRef){
         if(inPlay[i].includes("villager")){
           console.log('villager')
           const roleUpdate = roleList["villager"]
-          individualRef.update({"startingRole": roleUpdate})
+          individualRef.update({
+            "startingRole": roleUpdate,
+            "actualRole":roleUpdate
+        })
         }
         else if(inPlay[i].includes("werewolf")){
           console.log('wolf')
           const roleUpdate = roleList["werewolf"]
-          individualRef.update({"startingRole": roleUpdate})
+          individualRef.update({
+            "startingRole": roleUpdate,
+            "actualRole":roleUpdate
+        })
         }
         else{
           console.log('else')
           const roleUpdate = roleList[inPlay[i]]
-          individualRef.update({"startingRole": roleUpdate})
+          individualRef.update({
+            "startingRole": roleUpdate,
+            "actualRole":roleUpdate
+        })
         }
       }
     }

@@ -90,6 +90,7 @@ function WerewolfGamePage({ match }) {
   const [currentTurn, loadingCurrentTurn] = useObjectVal(
     gameSessionRef.child('currentTurn')
   );
+  console.log(currentTurn)
   // State - should only influence current user's own screen
   const [initialGameState, setGameState] = useState(null);
   const [currPlayerRole, setCurrPlayerRole] = useState('');
@@ -195,7 +196,6 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
   const [roleList, loadingRoleList] = useListVals(gameRef.child('turnOrder'));
   const gameHasntStarted = !loadingEndTime && !endTime;
   const countDownReached = !gameHasntStarted && endTime < new Date().getTime();
-
   // EFFECTS
   useEffect(() => {
     function setEndTimeInDB() {

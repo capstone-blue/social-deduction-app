@@ -5,7 +5,7 @@ import { useObjectVal, useList, useListKeys } from 'react-firebase-hooks/databas
 function VoteScreen({match}){
     const gameRef = db.ref().child('gameSessions').child(match.params.id)
     function skipToResults(){
-        gameRef.update({"voting":false})
+        gameRef.update({"status":"results"})
     }
     return(
         <div>
