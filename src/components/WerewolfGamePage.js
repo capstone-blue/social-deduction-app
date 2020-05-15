@@ -434,7 +434,9 @@ function SelectableCard({
     if (!isSelected) {
       setSelectedCards([...selectedCards, { cardId, cardVal, cardRef }]);
     } else {
-      const listWithoutThisCard = selectedCards.filter((c) => c.id !== cardId);
+      const listWithoutThisCard = selectedCards.filter(
+        (c) => c.cardId !== cardId
+      );
       setSelectedCards(listWithoutThisCard);
     }
   }
