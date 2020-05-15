@@ -4,7 +4,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useUserId } from './context/userContext';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { HomePage, LobbyPage, GameSession, VotingPage } from './components';
+import { HomePage, LobbyPage, GameSession, VotingPage, GameEnd } from './components';
 
 function App() {
   const [userId, setUserId] = useUserId();
@@ -49,6 +49,7 @@ function Routes() {
     <Router>
       <Switch>
         <Route path="/lobbies/:id" component={LobbyPage} />
+        <Route path="/gamesession/:id/gameover" component={GameEnd} />
         <Route path="/gamesession/:id/vote" component={VotingPage} />
         <Route path="/gamesession/:id" component={GameSession} />
         <Route path="/" component={HomePage} />
