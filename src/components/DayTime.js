@@ -467,7 +467,7 @@ function OpponentCard({
   
     function endNight(){
       gameRef.update({"isNight": false})
-      gameRef.update({"status":"dayPhase"})
+      gameRef.update({"status":"voting"})
     }
     return (
       <Row>
