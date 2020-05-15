@@ -91,11 +91,12 @@ function WerewolfGamePage({ match }) {
   const [initialGameState, setGameState] = useState(null);
   const [currPlayerRole, setCurrPlayerRole] = useState('');
   const [selectedCards, setSelectedCards] = useState([]);
-  const [isRevealed, setIsRevealed] = useState(false);
   console.log(selectedCards);
 
   function revealCard() {
-    isRevealed ? setIsRevealed(false) : setIsRevealed(true);
+    selectedCards.length > 1
+      ? alert('You may only reveal one card at a time!')
+      : setSelectedCards([{ ...selectedCards[0], isRevealed: true }]);
   }
 
   async function swapCards() {
@@ -107,8 +108,8 @@ function WerewolfGamePage({ match }) {
     secondRef.set(firstVal);
 
     setSelectedCards([
-      { ...firstCard, cardVal: secondVal },
-      { ...secondCard, cardVal: firstVal },
+      { ...firstCard, cardVal: secondVal, isRevealed: false },
+      { ...secondCard, cardVal: firstVal, isRevealed: false },
     ]);
   }
   // use 'once' to grab the initial state on load
@@ -178,14 +179,12 @@ function WerewolfGamePage({ match }) {
               players={initialGameState.players}
               setSelectedCards={setSelectedCards}
               selectedCards={selectedCards}
-              isRevealed={isRevealed}
             />
             <MiddleCardList
               gameRef={gameSessionRef}
               setSelectedCards={setSelectedCards}
               selectedCards={selectedCards}
               centerCards={initialGameState.centerCards}
-              isRevealed={isRevealed}
             />
           </Board>
           <Row>
@@ -293,13 +292,7 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
 }
 
 //* OpponentList *//
-function OpponentList({
-  gameRef,
-  setSelectedCards,
-  selectedCards,
-  players,
-  isRevealed,
-}) {
+function OpponentList({ gameRef, setSelectedCards, selectedCards, players }) {
   const [userId] = useUserId();
   const [opponents, setOpponents] = useState(null);
   // filter current user out of list
@@ -321,7 +314,6 @@ function OpponentList({
             opponentId={opponentId}
             setSelectedCards={setSelectedCards}
             selectedCards={selectedCards}
-            isRevealed={isRevealed}
           />
         );
       })}
@@ -335,7 +327,6 @@ function OpponentCard({
   alias,
   setSelectedCards,
   selectedCards,
-  isRevealed,
 }) {
   const playerRef = gameRef.child(`players/${opponentId}/actualRole`);
   const [cardSnap, loadingcardSnap] = useObject(playerRef);
@@ -349,7 +340,6 @@ function OpponentCard({
       <SelectableCard
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}
-        isRevealed={isRevealed}
         cardId={opponentId}
         cardVal={cardSnap.val()}
         cardRef={playerRef}
@@ -364,7 +354,6 @@ function MiddleCardList({
   selectedCards,
   setSelectedCards,
   centerCards,
-  isRevealed,
 }) {
   return (
     <Row className="justify-content-md-center">
@@ -377,7 +366,6 @@ function MiddleCardList({
             cardId={cardId}
             setSelectedCards={setSelectedCards}
             selectedCards={selectedCards}
-            isRevealed={isRevealed}
           />
         );
       })}
@@ -385,13 +373,7 @@ function MiddleCardList({
   );
 }
 
-function MiddleCard({
-  gameRef,
-  cardId,
-  setSelectedCards,
-  selectedCards,
-  isRevealed,
-}) {
+function MiddleCard({ gameRef, cardId, setSelectedCards, selectedCards }) {
   const centerCardRef = gameRef.child(`centerCards/${cardId}`);
   const [cardSnap, loadingcardSnap] = useObject(centerCardRef);
   return loadingcardSnap ? (
@@ -400,7 +382,6 @@ function MiddleCard({
     <SelectableCard
       setSelectedCards={setSelectedCards}
       selectedCards={selectedCards}
-      isRevealed={isRevealed}
       cardId={cardId}
       cardVal={cardSnap.val()}
       cardRef={centerCardRef}
@@ -412,7 +393,6 @@ function MiddleCard({
 function SelectableCard({
   setSelectedCards,
   selectedCards,
-  isRevealed,
   cardId,
   cardVal,
   cardRef,
@@ -443,7 +423,7 @@ function SelectableCard({
   return (
     <div className="text-center" onClick={handleClick}>
       {card.isSelected ? (
-        card.isPeeked ? (
+        card.isRevealed ? (
           <CardActive>
             <Card.Title>{cardVal.name}</Card.Title>
           </CardActive>
@@ -452,7 +432,7 @@ function SelectableCard({
             <Card.Title>?</Card.Title>
           </CardActive>
         )
-      ) : card.isPeeked ? (
+      ) : card.isRevealed ? (
         <CardInactive>
           <Card.Title>{cardVal.name}</Card.Title>
         </CardInactive>
