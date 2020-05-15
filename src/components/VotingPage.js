@@ -70,9 +70,6 @@ const VotingPage = ({ match, history }) => {
   }, [userId, gameSessionId, voteStatusRef, playerInfo, players])
 
   async function vote(selectedPlayer) {
-    // if you click on a player, it will set a new vote property onto the game session with that player role
-    // or should there be a use effect when entering the vote screen that adds all the players's roles into the game session then increment as voting happens?
-    // but we also want to display the votes across all player screens to incite tension
     if (selectedPlayer.key === userId) {
       return alert("You can't vote for yourself!")
     }
@@ -83,7 +80,7 @@ const VotingPage = ({ match, history }) => {
         return (votes || 0) + 1
       })
 
-      // update the voter's voted status to true
+      // update the voter's votedAgainst field to the id of the player they voted against
       await playerRef.update({ ...playerInfo, votedAgainst: selectedPlayer.key })
     }
   }
@@ -95,7 +92,7 @@ const VotingPage = ({ match, history }) => {
       selectedPlayerVoteRef.transaction(function (votes) {
         return votes - 1
       })
-      // update the voter's voted status back to false
+      // update the voter's votedAgainst status back to false
       await playerRef.update({ ...playerInfo, votedAgainst: false })
     }
   }
@@ -110,10 +107,10 @@ const VotingPage = ({ match, history }) => {
 
   function finishVoting() {
     if (allVoted) {
+      // turn off listener
       voteStatusRef.off()
+      // go to results page
       history.push(`/gamesession/${gameSessionId}/gameover`)
-    } else {
-      alert("People aren't done voting!")
     }
   }
 
