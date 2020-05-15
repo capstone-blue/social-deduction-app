@@ -26,6 +26,7 @@ const BoardCard = styled(Card)`
 `;
 
 const PlayerCardStyle = styled(Card)`
+  border-width: ${(props) => (props.border ? '3px' : '1px')};
   border-color: ${(props) => props.border || 'gray'};
 `;
 
@@ -209,6 +210,7 @@ function WerewolfGamePage({ match }) {
             </Col>
             <Col>
               <PlayerCard
+                gameRef={gameSessionRef}
                 currPlayer={currPlayer}
                 userId={userId}
                 setCurrPlayerRole={setCurrPlayerRole}
@@ -353,7 +355,7 @@ function OpponentCard({
       <Badge pill variant="info">
         {alias}
       </Badge>
-      <SelectableCard
+      <SelectableBoardCard
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}
         cardId={opponentId}
@@ -395,7 +397,7 @@ function MiddleCard({ gameRef, cardId, setSelectedCards, selectedCards }) {
   return loadingcardSnap ? (
     ''
   ) : (
-    <SelectableCard
+    <SelectableBoardCard
       setSelectedCards={setSelectedCards}
       selectedCards={selectedCards}
       cardId={cardId}
@@ -406,7 +408,7 @@ function MiddleCard({ gameRef, cardId, setSelectedCards, selectedCards }) {
 }
 
 //* Selectable Card//
-function SelectableCard({
+function SelectableBoardCard({
   setSelectedCards,
   selectedCards,
   cardId,
@@ -455,6 +457,95 @@ function SelectableCard({
   );
 }
 
+//* PlayerCard *//
+function PlayerCard({
+  userId,
+  currPlayer,
+  setCurrPlayerRole,
+  gameRef,
+  setSelectedCards,
+  selectedCards,
+}) {
+  const playerRef = gameRef.child(`players/${userId}/actualRole`);
+
+  useEffect(() => {
+    setCurrPlayerRole(currPlayer.startingRole.name);
+  }, [setCurrPlayerRole, currPlayer.startingRole.name]);
+
+  return (
+    <SelectablePlayerCard
+      setSelectedCards={setSelectedCards}
+      selectedCards={selectedCards}
+      cardId={userId}
+      cardVal={currPlayer}
+      cardRef={playerRef}
+    />
+  );
+}
+
+function SelectablePlayerCard({
+  setSelectedCards,
+  selectedCards,
+  cardId,
+  cardVal,
+  cardRef,
+}) {
+  const [card, setCard] = useState({});
+
+  useEffect(() => {
+    const thisCard = selectedCards.find((c) => c.cardId === cardId);
+    console.log(thisCard);
+    if (thisCard) setCard(thisCard);
+    else setCard({});
+  }, [selectedCards, cardId]);
+
+  function handleClick() {
+    const thisCard = selectedCards.find((c) => c.cardId === cardId);
+    // if this card is in the list, remove it
+    if (thisCard) {
+      setSelectedCards(selectedCards.filter((c) => c.cardId !== cardId));
+      // otherwise, add it to the list
+    } else {
+      if (selectedCards.length === 2)
+        return alert('You may only select 2 cards at a time');
+      const newCard = {
+        cardId,
+        cardVal: cardVal.actualRole,
+        cardRef,
+        isRevealed: false,
+        isSelected: true,
+      };
+      // if there is a card in the list already, give the new card a different border
+      const firstCard = selectedCards[0];
+      newCard.border =
+        firstCard && firstCard.border === 'green' ? 'red' : 'green';
+      setSelectedCards([...selectedCards, newCard]);
+    }
+  }
+
+  return (
+    <div className="text-center" onClick={handleClick}>
+      <div className="text-center">
+        <Badge pill variant="success" className="text-center">
+          {cardVal.alias}
+        </Badge>
+        <PlayerCardStyle border={card.border}>
+          <Card.Title className="text-center">
+            <div>{cardVal.startingRole.name}</div>
+          </Card.Title>
+          <Card.Body>
+            <div>
+              {cardVal.startingRole.options.map((o, i) => (
+                <div key={`card-${cardId}-${i}`}>{o}</div>
+              ))}
+            </div>
+          </Card.Body>
+        </PlayerCardStyle>
+      </div>
+    </div>
+  );
+}
+
 function Messages({ gameRef }) {
   const [userId] = useUserId();
   const [messageSnaps, setMessageSnaps] = useState([]);
@@ -493,33 +584,6 @@ function Messages({ gameRef }) {
           );
         })}
       </div>
-    </div>
-  );
-}
-
-//* PlayerCard *//
-function PlayerCard({ userId, currPlayer, setCurrPlayerRole }) {
-  useEffect(() => {
-    setCurrPlayerRole(currPlayer.startingRole.name);
-  }, [setCurrPlayerRole, currPlayer.startingRole.name]);
-
-  return (
-    <div className="text-center">
-      <Badge pill variant="success" className="text-center">
-        {currPlayer.alias}
-      </Badge>
-      <Card>
-        <Card.Title className="text-center">
-          <div>{currPlayer.startingRole.name}</div>
-        </Card.Title>
-        <Card.Body>
-          <div>
-            {currPlayer.startingRole.options.map((o, i) => (
-              <div key={`card-${userId}-${i}`}>{o}</div>
-            ))}
-          </div>
-        </Card.Body>
-      </Card>
     </div>
   );
 }
