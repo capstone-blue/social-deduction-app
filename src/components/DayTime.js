@@ -71,9 +71,7 @@ function DayTime({match}){
         });
       }, [gameRef, setGameState]);
 
-    function skipToVote(){
-        gameRef.update({"status":"voting"})
-    }
+
     return !initialGameState ||
     loadingHost ||
     loadingCurrPlayer ? (
@@ -93,7 +91,7 @@ function DayTime({match}){
             </Col>
           </Row>
           <Row>
-          <DayCountdown gameRef ={gameRef}/>
+          <DayCountdown gameRef ={gameRef} host = {host}/>
           </Row>
           <Board
             style={{}}
@@ -137,36 +135,26 @@ function DayTime({match}){
             <Button variant="warning" onClick={revealCard}>
               Reveal Card
             </Button>
-            <RoleMarkerButton gameRef = {gameRef} selectedCards = {selectedCards} role = "suspected werewolf" applyMarker = {applyMarker}/>
+            {/* <RoleMarkerButton gameRef = {gameRef} selectedCards = {selectedCards} role = "suspected werewolf" applyMarker = {applyMarker}/> */}
 
           </aside>
         </Col>
       </Row>
     </Container>
   );
-    return(
-        <div>
-            <h1>******placeholder Component******</h1>
-            <h1>it's day time. Try to reconstruct what happened.</h1>
-            <DayCountdown gameRef ={gameRef}/>
-            <button onClick = {()=>skipToVote()}>
-                test use only: skip to voting
-            </button>
-            <h1>******placeholder Component******</h1>
-        </div>
-        
-    )
 }
 
 
-function DayCountdown({gameRef}) {
+
+function DayCountdown({gameRef, host}) {
+    const [userId] = useUserId();
     const [count, setCount] = useState('');
     const [endDayTime, loadingEndTime] = useObjectVal(gameRef.child('endDayTime'));
     const gameHasntStarted = !loadingEndTime && !endDayTime;
     const countDownReached = !gameHasntStarted && endDayTime < new Date().getTime();
-    const timeLeft = Math.floor(endDayTime - new Date().getTime())
-    const minutes = Math.floor((timeLeft / 1000)/60)
-    const seconds = Math.floor((timeLeft/1000) -((minutes)*60))
+    // const timeLeft = Math.floor(endDayTime - new Date().getTime())
+    // const minutes = Math.floor((timeLeft / 1000)/60)
+    // const seconds = Math.floor((timeLeft/1000) -((minutes)*60))
     // EFFECTS
     useEffect(() => {
       function setEndTimeInDB() {
@@ -176,15 +164,19 @@ function DayCountdown({gameRef}) {
           const endDayTime = rightNow + 300000;
           gameRef.child('endDayTime').set(endDayTime);
         });
+      }
+      if(host[userId]){
+          if (gameHasntStarted) {
+            // set an expiration time for 15 seconds into the future
+            setEndTimeInDB();
+          }else if (countDownReached) {
+            gameRef.child('status').set('voting');
+          }
       } 
-        if (gameHasntStarted) {
-          // set an expiration time for 15 seconds into the future
-          setEndTimeInDB();
-        }else if (countDownReached) {
-          gameRef.child('status').set('voting');
-        }
     }, [
       gameRef,
+      host,
+      userId,
       gameHasntStarted,
       countDownReached,
     ]);
@@ -198,22 +190,10 @@ function DayCountdown({gameRef}) {
       return () => clearInterval(interval);
     }, [count, endDayTime]);
   
-    // VIEW
-    return loadingEndTime ? (
-      <h2>loading</h2>
-    ) : (
-        seconds > 9
-            ?
-      <h2>
-        Daytime left
-        {`: ${minutes}:${seconds}`}
-      </h2>
-            :
-            <h2>
-        Daytime left
-        {`: ${minutes}:0${seconds}`}
-      </h2>
-    );
+    return(
+
+        <h2>hey</h2>
+    )
 }
 
 //* OpponentList *//
@@ -346,7 +326,7 @@ function OpponentCard({
     const [isSelected, setIsSelected] = useState(false);
     const [isPeeked, setIsPeeked] = useState(false);
     const toggleSelected = () => setIsSelected(!isSelected);
-    const werewolfSuspect = useObjectVal(gameRef.child("suspects").child("suspected werewolf"))
+    // const werewolfSuspect = useObjectVal(gameRef.child("suspects").child("suspected werewolf"))
 
     useEffect(() => {
       if (isSelected && isRevealed) {
@@ -371,7 +351,8 @@ function OpponentCard({
     return (
       <div className="text-center" onClick={handleClick}>
         {isSelected ? (
-          werewolfSuspect[0] === cardId ? (
+        //   werewolfSuspect[0] === cardId ? (
+            isPeeked ? (
             <CardActive>
               <Card.Title>suspected werewolf</Card.Title>
             </CardActive>
@@ -380,7 +361,8 @@ function OpponentCard({
               <Card.Title>?</Card.Title>
             </CardActive>
           )
-        ) : werewolfSuspect[0] === cardId ? (
+        // ) : werewolfSuspect[0] === cardId ? (
+            ) : isPeeked ? (
           <CardInactive>
             <Card.Title>suspected werewolf</Card.Title>
           </CardInactive>
@@ -535,10 +517,10 @@ function OpponentCard({
     );
   }
 
-function applyMarker(selectedCards,role,gameRef){
-    if(selectedCards.length ===1){
-        const roleDef = role
-        gameRef.child("suspects").update({[roleDef]: selectedCards[0].cardId})
-    }
-  }
+// function applyMarker(selectedCards,role,gameRef){
+//     if(selectedCards.length ===1){
+//         const roleDef = role
+//         gameRef.child("suspects").update({[roleDef]: selectedCards[0].cardId})
+//     }
+//   }
 export default DayTime
