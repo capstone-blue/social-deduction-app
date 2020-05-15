@@ -24,7 +24,11 @@ const CommonCardStyles = styled(Card)`
 `;
 
 const CardActive = styled(CommonCardStyles)`
-  border: 2px solid green;
+  border: 2px solid
+    ${(props) => {
+      console.log(props);
+      return props.border;
+    }};
 `;
 const CardInactive = styled(CommonCardStyles)``;
 
@@ -109,9 +113,22 @@ function WerewolfGamePage({ match }) {
     firstRef.set(secondVal);
     secondRef.set(firstVal);
 
+    const firstNewBorder = firstCard.border === 'green' ? 'red' : 'green';
+    const secondNewBorder = secondCard.border === 'green' ? 'red' : 'green';
+
     setSelectedCards([
-      { ...firstCard, cardVal: secondVal, isRevealed: false },
-      { ...secondCard, cardVal: firstVal, isRevealed: false },
+      {
+        ...firstCard,
+        cardVal: secondVal,
+        isRevealed: false,
+        border: firstNewBorder,
+      },
+      {
+        ...secondCard,
+        cardVal: firstVal,
+        isRevealed: false,
+        border: secondNewBorder,
+      },
     ]);
   }
   // use 'once' to grab the initial state on load
@@ -415,29 +432,29 @@ function SelectableCard({
       setSelectedCards(selectedCards.filter((c) => c.cardId !== cardId));
       // otherwise, add it to the list
     } else {
-      setSelectedCards([
-        ...selectedCards,
-        { cardId, cardVal, cardRef, isRevealed: false, isSelected: true },
-      ]);
+      if (selectedCards.length === 2)
+        return alert('You may only select 2 cards at a time');
+      const newCard = {
+        cardId,
+        cardVal,
+        cardRef,
+        isRevealed: false,
+        isSelected: true,
+      };
+      // if there is a card in the list already, give the new card a different border
+      const firstCard = selectedCards[0];
+      newCard.border =
+        firstCard && firstCard.border === 'green' ? 'red' : 'green';
+      setSelectedCards([...selectedCards, newCard]);
     }
   }
 
   return (
     <div className="text-center" onClick={handleClick}>
       {card.isSelected ? (
-        card.isRevealed ? (
-          <CardActive>
-            <Card.Title>{cardVal.name}</Card.Title>
-          </CardActive>
-        ) : (
-          <CardActive>
-            <Card.Title>?</Card.Title>
-          </CardActive>
-        )
-      ) : card.isRevealed ? (
-        <CardInactive>
-          <Card.Title>{cardVal.name}</Card.Title>
-        </CardInactive>
+        <CardActive border={card.border}>
+          <Card.Title>{card.isRevealed ? cardVal.name : '?'}</Card.Title>
+        </CardActive>
       ) : (
         <CardInactive>
           <Card.Title>?</Card.Title>
