@@ -320,10 +320,9 @@ function OpponentCard({
   selectedCards,
   isRevealed,
 }) {
-  const [cardSnapshot, loadingCardSnapshot] = useObject(
-    gameRef.child(`players/${opponentId}/actualRole`)
-  );
-  return loadingCardSnapshot ? (
+  const playerRef = gameRef.child(`players/${opponentId}/actualRole`);
+  const [cardSnap, loadingcardSnap] = useObject(playerRef);
+  return loadingcardSnap ? (
     ''
   ) : (
     <div className="text-center">
@@ -331,10 +330,12 @@ function OpponentCard({
         {alias}
       </Badge>
       <SelectableCard
-        cardSnapshot={cardSnapshot}
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}
         isRevealed={isRevealed}
+        cardId={opponentId}
+        cardVal={cardSnap.val()}
+        cardRef={playerRef}
       />
     </div>
   );
@@ -374,27 +375,30 @@ function MiddleCard({
   selectedCards,
   isRevealed,
 }) {
-  const [cardSnapshot, loadingCardSnapshot] = useObject(
-    gameRef.child(`centerCards/${cardId}`)
-  );
-  return loadingCardSnapshot ? (
+  const centerCardRef = gameRef.child(`centerCards/${cardId}`);
+  const [cardSnap, loadingcardSnap] = useObject(centerCardRef);
+  return loadingcardSnap ? (
     ''
   ) : (
     <SelectableCard
-      cardSnapshot={cardSnapshot}
       setSelectedCards={setSelectedCards}
       selectedCards={selectedCards}
       isRevealed={isRevealed}
+      cardId={cardId}
+      cardVal={cardSnap.val()}
+      cardRef={centerCardRef}
     />
   );
 }
 
 //* Selectable Card//
 function SelectableCard({
-  cardSnapshot,
   setSelectedCards,
   selectedCards,
   isRevealed,
+  cardId,
+  cardVal,
+  cardRef,
 }) {
   const [isSelected, setIsSelected] = useState(false);
   const [isPeeked, setIsPeeked] = useState(false);
@@ -411,15 +415,9 @@ function SelectableCard({
   function handleClick() {
     toggleSelected();
     if (!isSelected) {
-      console.log('selected');
-      console.log(cardSnapshot.key);
-      setSelectedCards([...selectedCards, cardSnapshot]);
+      setSelectedCards([...selectedCards, { cardId, cardVal, cardRef }]);
     } else {
-      console.log('unselected');
-      const currKey = cardSnapshot.key;
-      const listWithoutThisCard = selectedCards.filter(
-        (c) => c.key !== currKey
-      );
+      const listWithoutThisCard = selectedCards.filter((c) => c.id !== cardId);
       setSelectedCards(listWithoutThisCard);
     }
   }
@@ -429,7 +427,7 @@ function SelectableCard({
       {isSelected ? (
         isPeeked ? (
           <CardActive>
-            <Card.Title>{cardSnapshot.val().name}</Card.Title>
+            <Card.Title>{cardVal.name}</Card.Title>
           </CardActive>
         ) : (
           <CardActive>
@@ -438,7 +436,7 @@ function SelectableCard({
         )
       ) : isPeeked ? (
         <CardInactive>
-          <Card.Title>{cardSnapshot.val().name}</Card.Title>
+          <Card.Title>{cardVal.name}</Card.Title>
         </CardInactive>
       ) : (
         <CardInactive>
