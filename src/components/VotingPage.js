@@ -26,10 +26,9 @@ const VotingPage = ({ match }) => {
   const [gameSessionRef] = useState(db.ref(`/gameSessions/${gameSessionId}`));
   const [players] = useList(gameSessionRef.child('players'))
   const [playerRef] = useState(db.ref(`/gameSessions/${gameSessionId}/players/${userId}`))
-  const [voteStatusRef] = useState(db.ref(`/gameSessions/${gameSessionId}/players/${userId}/voted`))
+  const [voteStatusRef] = useState(db.ref(`/gameSessions/${gameSessionId}/players/${userId}/votedAgainst`))
   const [playerInfo] = useObjectVal(playerRef)
   const [voted, setVoted] = useState(false)
-  const [voteDone, setVoteDone] = useState(false)
   const [voteLock, setVoteLock] = useState(false)
   const [isHost, setIsHost] = useState(false)
 
@@ -37,8 +36,8 @@ const VotingPage = ({ match }) => {
     function listenOnVoteStatus() {
       try {
         voteStatusRef.on('value', function (snapshot) {
-          if (snapshot.exists()) {
-            setVoted(true)
+          if (snapshot.val() !== false) {
+            setVoted(snapshot.val())
             // voteStatusRef.off()
           } else if (snapshot.val() === false) {
             setVoted(false)
@@ -50,7 +49,7 @@ const VotingPage = ({ match }) => {
     }
     function checkIfHost() {
       db.ref(`/gameSessions/${gameSessionId}/players/${userId}`).once('value').then((snapshot) => {
-        if (snapshot.val().host === true) {
+        if (snapshot.val().host) {
           setIsHost(true)
         }
       })
@@ -67,26 +66,33 @@ const VotingPage = ({ match }) => {
       return alert("You can't vote for yourself!")
     }
     if (!voted) {
-      // updated the selected player's vote count +1
-      await gameSessionRef.child('players').child(selectedPlayer.key).update({ ...selectedPlayer.val(), votes: selectedPlayer.val().votes + 1 })
+      // increment vote count
+      const selectedPlayerVoteRef = gameSessionRef.child('players').child(selectedPlayer.key).child('votes')
+      selectedPlayerVoteRef.transaction(function (votes) {
+        return (votes || 0) +1
+      })
+
       // update the voter's voted status to true
-      await playerRef.update({ ...playerInfo, voted: true })
+      await playerRef.update({ ...playerInfo, votedAgainst: selectedPlayer.key })
     }
   }
 
-  async function unvote(selectedPlayer) {
+  async function unvote() {
     // updated the selected player's vote count -1
     if (voted) {
-      await gameSessionRef.child('players').child(selectedPlayer.key).update({ ...selectedPlayer.val(), votes: selectedPlayer.val().votes - 1 })
+      const selectedPlayerVoteRef = gameSessionRef.child('players').child(voted).child('votes')
+      selectedPlayerVoteRef.transaction(function (votes) {
+        return votes - 1
+      })
       // update the voter's voted status back to false
-      await playerRef.update({ ...playerInfo, voted: false })
+      await playerRef.update({ ...playerInfo, votedAgainst: false })
     }
   }
 
   async function checkIfAllVoted() {
     // go through all players and check vote status
     // if any returns false, return false
-    const voteResults = players.find(player => player.val().voted === false)
+    const voteResults = players.find(player => player.val().votedAgainst === false)
     if (voteResults) {
       console.log(false)
     } else {
@@ -120,7 +126,7 @@ const VotingPage = ({ match }) => {
         <Container>
           <ListGroup>
             {players.map(player =>
-              <ListGroup.Item key={player.key} action onClick={!voted ? () => vote(player) : () => unvote(player)} disabled={voteLock ? true : false}>
+              <ListGroup.Item key={player.key} action onClick={() => vote(player)} disabled={voteLock ? true : false}>
                 <Container>
                   <Badge variant="info">{player.val().alias}</Badge>
                   <Badge variant="danger">Votes: {player.val().votes}</Badge>
@@ -130,6 +136,8 @@ const VotingPage = ({ match }) => {
           </ListGroup>
         </Container>
         <Container>
+          {voted ? <Button variant="success" onClick={() => console.log(voted)}>console.log(voted)</Button> : null}
+          {voted ? <Button variant="warning" onClick={() => unvote()}>Unvote</Button> : null}
           {isHost ? <Button variant="warning" onClick={() => lockVotes()}>Lock In Votes</Button> : null}
           {isHost ? <Button variant="dark" onClick={() => finishVoting()}>Finalize</Button> : null}
         </Container>
