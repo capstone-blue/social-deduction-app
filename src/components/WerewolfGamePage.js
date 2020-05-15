@@ -439,6 +439,7 @@ function SelectableCard({
       );
       setSelectedCards(listWithoutThisCard);
     }
+    console.log(selectedCards)
   }
 
   return (

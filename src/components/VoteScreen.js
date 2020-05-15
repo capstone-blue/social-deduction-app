@@ -12,7 +12,7 @@ function VoteScreen({match}){
             <h1>******placeholder Component******</h1>
             <h1>This is the vote screen. cast a vote for someone!</h1>
             <button onClick = {()=>skipToResults()}>
-                test use only: skip to voting
+                test use only: skip to results
             </button>
             <h1>******placeholder Component******</h1>
         </div>
