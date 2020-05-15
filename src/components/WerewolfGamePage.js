@@ -97,6 +97,20 @@ function WerewolfGamePage({ match }) {
   function revealCard() {
     isRevealed ? setIsRevealed(false) : setIsRevealed(true);
   }
+
+  async function swapCards() {
+    const [firstCard, secondCard] = selectedCards;
+    const { cardRef: firstRef, cardVal: firstVal } = firstCard;
+    const { cardRef: secondRef, cardVal: secondVal } = secondCard;
+
+    firstRef.set(secondVal);
+    secondRef.set(firstVal);
+
+    setSelectedCards([
+      { ...firstCard, cardVal: secondVal },
+      { ...secondCard, cardVal: firstVal },
+    ]);
+  }
   // use 'once' to grab the initial state on load
   // firebase-hooks uses 'on', which we don't want in this case
   useEffect(() => {
@@ -197,6 +211,9 @@ function WerewolfGamePage({ match }) {
             <h2>Commands</h2>
             <Button variant="warning" onClick={revealCard}>
               Reveal Card
+            </Button>
+            <Button variant="warning" onClick={swapCards}>
+              Swap Cards
             </Button>
           </aside>
         </Col>
