@@ -20,7 +20,7 @@ const Title = styled.h1`
 // when the button is selected, the vote should go against that selected player
 
 
-const VotingPage = ({ match }) => {
+const VotingPage = ({ match, history }) => {
   const [userId] = useUserId();
   const [gameSessionId] = useState(match.params.id)
   const [gameSessionRef] = useState(db.ref(`/gameSessions/${gameSessionId}`));
@@ -31,6 +31,7 @@ const VotingPage = ({ match }) => {
   const [voted, setVoted] = useState(false)
   const [voteLock, setVoteLock] = useState(false)
   const [isHost, setIsHost] = useState(false)
+  const [allVoted, setAllVoted] = useState(false)
 
   useEffect(() => {
     function listenOnVoteStatus() {
@@ -38,7 +39,6 @@ const VotingPage = ({ match }) => {
         voteStatusRef.on('value', function (snapshot) {
           if (snapshot.val() !== false) {
             setVoted(snapshot.val())
-            // voteStatusRef.off()
           } else if (snapshot.val() === false) {
             setVoted(false)
           }
@@ -54,9 +54,20 @@ const VotingPage = ({ match }) => {
         }
       })
     }
+    function checkIfAllVoted() {
+      // go through all players and check vote status
+      // if no false is found, return true, else return false
+      const result = players.find(player => player.val().votedAgainst === false)
+      if (result !== undefined) {
+        setAllVoted(false)
+      } else {
+        setAllVoted(true)
+      }
+    }
     checkIfHost()
     listenOnVoteStatus()
-  }, [userId, gameSessionId, voteStatusRef, playerInfo])
+    checkIfAllVoted()
+  }, [userId, gameSessionId, voteStatusRef, playerInfo, players])
 
   async function vote(selectedPlayer) {
     // if you click on a player, it will set a new vote property onto the game session with that player role
@@ -69,7 +80,7 @@ const VotingPage = ({ match }) => {
       // increment vote count
       const selectedPlayerVoteRef = gameSessionRef.child('players').child(selectedPlayer.key).child('votes')
       selectedPlayerVoteRef.transaction(function (votes) {
-        return (votes || 0) +1
+        return (votes || 0) + 1
       })
 
       // update the voter's voted status to true
@@ -89,17 +100,6 @@ const VotingPage = ({ match }) => {
     }
   }
 
-  async function checkIfAllVoted() {
-    // go through all players and check vote status
-    // if any returns false, return false
-    const voteResults = players.find(player => player.val().votedAgainst === false)
-    if (voteResults) {
-      console.log(false)
-    } else {
-      console.log(true)
-    }
-  }
-
   function lockVotes() {
     if (voteLock) {
       setVoteLock(false)
@@ -109,10 +109,9 @@ const VotingPage = ({ match }) => {
   }
 
   function finishVoting() {
-
-    if (checkIfAllVoted() === true) {
-      console.log(playerInfo.host)
-      console.log(players)
+    if (allVoted) {
+      voteStatusRef.off()
+      history.push(`/gamesession/${gameSessionId}/gameover`)
     } else {
       alert("People aren't done voting!")
     }
@@ -136,10 +135,9 @@ const VotingPage = ({ match }) => {
           </ListGroup>
         </Container>
         <Container>
-          {voted ? <Button variant="success" onClick={() => console.log(voted)}>console.log(voted)</Button> : null}
-          {voted ? <Button variant="warning" onClick={() => unvote()}>Unvote</Button> : null}
+          {voted && !voteLock ? <Button variant="success" onClick={() => unvote()}>Unvote</Button> : null}
           {isHost ? <Button variant="warning" onClick={() => lockVotes()}>Lock In Votes</Button> : null}
-          {isHost ? <Button variant="dark" onClick={() => finishVoting()}>Finalize</Button> : null}
+          {isHost && allVoted ? <Button variant="danger" onClick={() => finishVoting()}>Finalize</Button> : null}
         </Container>
       </Container>
     </React.Fragment>
