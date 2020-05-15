@@ -37,7 +37,7 @@ const VotingPage = ({ match }) => {
     function listenOnVoteStatus() {
       try {
         voteStatusRef.on('value', function (snapshot) {
-          if (snapshot.val() === true) {
+          if (snapshot.exists()) {
             setVoted(true)
             // voteStatusRef.off()
           } else if (snapshot.val() === false) {
