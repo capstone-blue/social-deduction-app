@@ -49,25 +49,24 @@ async function werewolfTurn(gameRef) {
         werewolfList.push(w);
       });
     });
-  console.log(werewolfList);
-  if (werewolfList.length > 1) {
-    console.log('2 werewolves');
-    const messageContent = `
+
+  // create a message with different contents depending on # of werewolves
+  const newMessageRef = await gameRef.child('messages').push();
+  const messageContent =
+    werewolfList.length > 1
+      ? `
 ~Secret Message~
 There are two of you...
 ${werewolfList[0].val().alias} and ${werewolfList[1].val().alias}
-    `;
-    const newMessageRef = await gameRef.child('messages').push();
-    newMessageRef.child('contents').set(messageContent);
-    werewolfList.forEach((w) => {
-      const updates = {};
-      updates[`${w.key}/${newMessageRef.key}`] = true;
-      gameRef.child('userMessages').update(updates);
-    });
-  } else {
-    console.log('1 werewolf');
-    werewolfList.forEach((w) => console.log(w.key));
-  }
+`
+      : 'You are the only werewolf...look at a card in the center';
+
+  newMessageRef.child('contents').set(messageContent);
+  werewolfList.forEach((w) => {
+    const updates = {};
+    updates[`${w.key}/${newMessageRef.key}`] = true;
+    gameRef.child('userMessages').update(updates);
+  });
   return werewolfList;
 }
 
