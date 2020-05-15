@@ -16,21 +16,18 @@ import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
 
-const CommonCardStyles = styled(Card)`
+const BoardCard = styled(Card)`
   width: 5rem;
   min-height: 7rem;
   padding: 1rem;
   font-size: 1.5rem;
+  border-width: ${(props) => (props.border ? '2px' : '1px')};
+  border-color: ${(props) => props.border || 'gray'};
 `;
 
-const CardActive = styled(CommonCardStyles)`
-  border: 2px solid
-    ${(props) => {
-      console.log(props);
-      return props.border;
-    }};
+const PlayerCardStyle = styled(Card)`
+  border-color: ${(props) => props.border || 'gray'};
 `;
-const CardInactive = styled(CommonCardStyles)``;
 
 const Board = styled(Container)`
   width: 80%;
@@ -451,15 +448,9 @@ function SelectableCard({
 
   return (
     <div className="text-center" onClick={handleClick}>
-      {card.isSelected ? (
-        <CardActive border={card.border}>
-          <Card.Title>{card.isRevealed ? cardVal.name : '?'}</Card.Title>
-        </CardActive>
-      ) : (
-        <CardInactive>
-          <Card.Title>?</Card.Title>
-        </CardInactive>
-      )}
+      <BoardCard border={card.border}>
+        <Card.Title>{card.isRevealed ? cardVal.name : '?'}</Card.Title>
+      </BoardCard>
     </div>
   );
 }
