@@ -94,8 +94,10 @@ function WerewolfGamePage({ match }) {
   console.log(selectedCards);
 
   function revealCard() {
-    selectedCards.length > 1
-      ? alert('You may only reveal one card at a time!')
+    if (selectedCards.length > 1)
+      return alert('You may only reveal one card at a time!');
+    selectedCards[0].isRevealed
+      ? setSelectedCards([{ ...selectedCards[0], isRevealed: false }])
       : setSelectedCards([{ ...selectedCards[0], isRevealed: true }]);
   }
 
