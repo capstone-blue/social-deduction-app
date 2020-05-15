@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import {
-  useList,
   useListVals,
   useObject,
   useObjectVal,
@@ -92,8 +91,12 @@ function WerewolfGamePage({ match }) {
   const [initialGameState, setGameState] = useState(null);
   const [currPlayerRole, setCurrPlayerRole] = useState('');
   const [selectedCards, setSelectedCards] = useState([]);
+  const [isRevealed, setIsRevealed] = useState(false);
   console.log(selectedCards);
 
+  function revealCard() {
+    isRevealed ? setIsRevealed(false) : setIsRevealed(true);
+  }
   // use 'once' to grab the initial state on load
   // firebase-hooks uses 'on', which we don't want in this case
   useEffect(() => {
@@ -161,12 +164,14 @@ function WerewolfGamePage({ match }) {
               players={initialGameState.players}
               setSelectedCards={setSelectedCards}
               selectedCards={selectedCards}
+              isRevealed={isRevealed}
             />
             <MiddleCardList
               gameRef={gameSessionRef}
               setSelectedCards={setSelectedCards}
               selectedCards={selectedCards}
               centerCards={initialGameState.centerCards}
+              isRevealed={isRevealed}
             />
           </Board>
           <Row>
@@ -188,7 +193,12 @@ function WerewolfGamePage({ match }) {
           </Row>
         </Col>
         <Col md={2}>
-          <div>other stuff</div>
+          <aside className="text-center">
+            <h2>Commands</h2>
+            <Button variant="warning" onClick={revealCard}>
+              Reveal Card
+            </Button>
+          </aside>
         </Col>
       </Row>
     </Container>
@@ -266,7 +276,13 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
 }
 
 //* OpponentList *//
-function OpponentList({ gameRef, setSelectedCards, selectedCards, players }) {
+function OpponentList({
+  gameRef,
+  setSelectedCards,
+  selectedCards,
+  players,
+  isRevealed,
+}) {
   const [userId] = useUserId();
   const [opponents, setOpponents] = useState(null);
   // filter current user out of list
@@ -288,6 +304,7 @@ function OpponentList({ gameRef, setSelectedCards, selectedCards, players }) {
             opponentId={opponentId}
             setSelectedCards={setSelectedCards}
             selectedCards={selectedCards}
+            isRevealed={isRevealed}
           />
         );
       })}
@@ -301,6 +318,7 @@ function OpponentCard({
   alias,
   setSelectedCards,
   selectedCards,
+  isRevealed,
 }) {
   const [cardSnapshot, loadingCardSnapshot] = useObject(
     gameRef.child(`players/${opponentId}/actualRole`)
@@ -316,6 +334,7 @@ function OpponentCard({
         cardSnapshot={cardSnapshot}
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}
+        isRevealed={isRevealed}
       />
     </div>
   );
@@ -327,6 +346,7 @@ function MiddleCardList({
   selectedCards,
   setSelectedCards,
   centerCards,
+  isRevealed,
 }) {
   return (
     <Row className="justify-content-md-center">
@@ -339,6 +359,7 @@ function MiddleCardList({
             cardId={cardId}
             setSelectedCards={setSelectedCards}
             selectedCards={selectedCards}
+            isRevealed={isRevealed}
           />
         );
       })}
@@ -346,7 +367,13 @@ function MiddleCardList({
   );
 }
 
-function MiddleCard({ gameRef, cardId, setSelectedCards, selectedCards }) {
+function MiddleCard({
+  gameRef,
+  cardId,
+  setSelectedCards,
+  selectedCards,
+  isRevealed,
+}) {
   const [cardSnapshot, loadingCardSnapshot] = useObject(
     gameRef.child(`centerCards/${cardId}`)
   );
@@ -357,15 +384,29 @@ function MiddleCard({ gameRef, cardId, setSelectedCards, selectedCards }) {
       cardSnapshot={cardSnapshot}
       setSelectedCards={setSelectedCards}
       selectedCards={selectedCards}
+      isRevealed={isRevealed}
     />
   );
 }
 
 //* Selectable Card//
-function SelectableCard({ cardSnapshot, setSelectedCards, selectedCards }) {
+function SelectableCard({
+  cardSnapshot,
+  setSelectedCards,
+  selectedCards,
+  isRevealed,
+}) {
   const [isSelected, setIsSelected] = useState(false);
   const [isPeeked, setIsPeeked] = useState(false);
   const toggleSelected = () => setIsSelected(!isSelected);
+
+  useEffect(() => {
+    if (isSelected && isRevealed) {
+      setIsPeeked(true);
+    } else {
+      setIsPeeked(false);
+    }
+  }, [isSelected, isPeeked, isRevealed]);
 
   function handleClick() {
     toggleSelected();
