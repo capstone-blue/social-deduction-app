@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import {
-  useList,
   useListVals,
+  useObject,
   useObjectVal,
 } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
@@ -23,13 +23,10 @@ const CommonCardStyles = styled(Card)`
   font-size: 1.5rem;
 `;
 
-const OpponentCardInactive = styled(CommonCardStyles)``;
-
-const OpponentCardActive = styled(CommonCardStyles)`
+const CardActive = styled(CommonCardStyles)`
   border: 2px solid green;
 `;
-
-const MiddleCard = styled(CommonCardStyles)``;
+const CardInactive = styled(CommonCardStyles)``;
 
 const Board = styled(Container)`
   width: 80%;
@@ -95,8 +92,26 @@ function WerewolfGamePage({ match }) {
   const [initialGameState, setGameState] = useState(null);
   const [currPlayerRole, setCurrPlayerRole] = useState('');
   const [selectedCards, setSelectedCards] = useState([]);
+  const [isRevealed, setIsRevealed] = useState(false);
   console.log(selectedCards);
 
+  function revealCard() {
+    isRevealed ? setIsRevealed(false) : setIsRevealed(true);
+  }
+
+  async function swapCards() {
+    const [firstCard, secondCard] = selectedCards;
+    const { cardRef: firstRef, cardVal: firstVal } = firstCard;
+    const { cardRef: secondRef, cardVal: secondVal } = secondCard;
+
+    firstRef.set(secondVal);
+    secondRef.set(firstVal);
+
+    setSelectedCards([
+      { ...firstCard, cardVal: secondVal },
+      { ...secondCard, cardVal: firstVal },
+    ]);
+  }
   // use 'once' to grab the initial state on load
   // firebase-hooks uses 'on', which we don't want in this case
   useEffect(() => {
@@ -133,53 +148,75 @@ function WerewolfGamePage({ match }) {
   ) : (
     <Container>
       <Row>
-        <Col>
-          <h1 className="text-center">
-            {initialGameState.title}{' '}
-            <Badge variant={initialGameState.isNight ? 'dark' : 'light'}>
-              {initialGameState.isNight ? 'Night Phase' : 'Day Phase'}
-            </Badge>
-          </h1>
+        <Col md={10}>
+          <Row>
+            <Col>
+              <h1 className="text-center">
+                {initialGameState.title}{' '}
+                <Badge variant={initialGameState.isNight ? 'dark' : 'light'}>
+                  {initialGameState.isNight ? 'Night Phase' : 'Day Phase'}
+                </Badge>
+              </h1>
+            </Col>
+          </Row>
+          <Row>
+            <TurnCountdown
+              gameRef={gameSessionRef}
+              roles={initialGameState.turnOrder}
+              host={host}
+              currentTurn={currentTurn}
+            />
+          </Row>
+          <Board
+            style={
+              currPlayer.startingRole.name === currentTurn
+                ? { backgroundColor: 'gold' }
+                : {}
+            }
+          >
+            <OpponentList
+              gameRef={gameSessionRef}
+              players={initialGameState.players}
+              setSelectedCards={setSelectedCards}
+              selectedCards={selectedCards}
+              isRevealed={isRevealed}
+            />
+            <MiddleCardList
+              gameRef={gameSessionRef}
+              setSelectedCards={setSelectedCards}
+              selectedCards={selectedCards}
+              centerCards={initialGameState.centerCards}
+              isRevealed={isRevealed}
+            />
+          </Board>
+          <Row>
+            <Col>
+              <Messages gameRef={gameSessionRef} />
+            </Col>
+            <Col>
+              <PlayerCard
+                currPlayer={currPlayer}
+                userId={userId}
+                setCurrPlayerRole={setCurrPlayerRole}
+                setSelectedCards={setSelectedCards}
+                selectedCards={selectedCards}
+              />
+            </Col>
+            <Col>
+              <ResetForm gameRef={gameSessionRef} />
+            </Col>
+          </Row>
         </Col>
-      </Row>
-      <Row>
-        <TurnCountdown
-          gameRef={gameSessionRef}
-          roles={initialGameState.turnOrder}
-          host={host}
-          currentTurn={currentTurn}
-        />
-      </Row>
-      <Board
-        style={
-          currPlayer.startingRole.name === currentTurn
-            ? { backgroundColor: 'gold' }
-            : {}
-        }
-      >
-        <OpponentList
-          gameRef={gameSessionRef}
-          opponents={initialGameState.players}
-          setSelectedCards={setSelectedCards}
-          selectedCards={selectedCards}
-        />
-        <MiddleCardList gameRef={gameSessionRef} />
-      </Board>
-      <Row>
-        <Col>
-          <Messages gameRef={gameSessionRef} />
-        </Col>
-        <Col>
-          <PlayerCard
-            currPlayer={currPlayer}
-            userId={userId}
-            setCurrPlayerRole={setCurrPlayerRole}
-            setSelectedCards={setSelectedCards}
-            selectedCards={selectedCards}
-          />
-        </Col>
-        <Col>
-          <ResetForm gameRef={gameSessionRef} />
+        <Col md={2}>
+          <aside className="text-center">
+            <h2>Commands</h2>
+            <Button variant="warning" onClick={revealCard}>
+              Reveal Card
+            </Button>
+            <Button variant="warning" onClick={swapCards}>
+              Swap Cards
+            </Button>
+          </aside>
         </Col>
       </Row>
     </Container>
@@ -256,46 +293,149 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
 }
 
 //* OpponentList *//
-function OpponentList({ gameRef, setSelectedCards, selectedCards }) {
+function OpponentList({
+  gameRef,
+  setSelectedCards,
+  selectedCards,
+  players,
+  isRevealed,
+}) {
   const [userId] = useUserId();
-  const [playerSnaps, playerSnapsLoading] = useList(gameRef.child('players'));
   const [opponents, setOpponents] = useState(null);
-
   // filter current user out of list
   useEffect(() => {
-    setOpponents(playerSnaps.filter((p) => p.key !== userId));
-  }, [playerSnaps, userId]);
+    setOpponents(Object.entries(players).filter((p) => p[0] !== userId));
+  }, [players, userId]);
 
-  return !opponents || playerSnapsLoading ? (
+  return !opponents ? (
     ''
   ) : (
     <Row className="justify-content-md-center">
-      {opponents.map((o) => (
-        <OpponentCard
-          key={o.key}
-          opponentSnapshot={o}
-          setSelectedCards={setSelectedCards}
-          selectedCards={selectedCards}
-        />
-      ))}
+      {opponents.map((o) => {
+        const [opponentId, opponentData] = o;
+        return (
+          <OpponentCard
+            gameRef={gameRef}
+            key={opponentId}
+            alias={opponentData.alias}
+            opponentId={opponentId}
+            setSelectedCards={setSelectedCards}
+            selectedCards={selectedCards}
+            isRevealed={isRevealed}
+          />
+        );
+      })}
     </Row>
   );
 }
 
-function OpponentCard({ opponentSnapshot, setSelectedCards, selectedCards }) {
+function OpponentCard({
+  gameRef,
+  opponentId,
+  alias,
+  setSelectedCards,
+  selectedCards,
+  isRevealed,
+}) {
+  const playerRef = gameRef.child(`players/${opponentId}/actualRole`);
+  const [cardSnap, loadingcardSnap] = useObject(playerRef);
+  return loadingcardSnap ? (
+    ''
+  ) : (
+    <div className="text-center">
+      <Badge pill variant="info">
+        {alias}
+      </Badge>
+      <SelectableCard
+        setSelectedCards={setSelectedCards}
+        selectedCards={selectedCards}
+        isRevealed={isRevealed}
+        cardId={opponentId}
+        cardVal={cardSnap.val()}
+        cardRef={playerRef}
+      />
+    </div>
+  );
+}
+
+//* MiddleCardList *//
+function MiddleCardList({
+  gameRef,
+  selectedCards,
+  setSelectedCards,
+  centerCards,
+  isRevealed,
+}) {
+  return (
+    <Row className="justify-content-md-center">
+      {Object.entries(centerCards).map((c) => {
+        const [cardId] = c;
+        return (
+          <MiddleCard
+            key={cardId}
+            gameRef={gameRef}
+            cardId={cardId}
+            setSelectedCards={setSelectedCards}
+            selectedCards={selectedCards}
+            isRevealed={isRevealed}
+          />
+        );
+      })}
+    </Row>
+  );
+}
+
+function MiddleCard({
+  gameRef,
+  cardId,
+  setSelectedCards,
+  selectedCards,
+  isRevealed,
+}) {
+  const centerCardRef = gameRef.child(`centerCards/${cardId}`);
+  const [cardSnap, loadingcardSnap] = useObject(centerCardRef);
+  return loadingcardSnap ? (
+    ''
+  ) : (
+    <SelectableCard
+      setSelectedCards={setSelectedCards}
+      selectedCards={selectedCards}
+      isRevealed={isRevealed}
+      cardId={cardId}
+      cardVal={cardSnap.val()}
+      cardRef={centerCardRef}
+    />
+  );
+}
+
+//* Selectable Card//
+function SelectableCard({
+  setSelectedCards,
+  selectedCards,
+  isRevealed,
+  cardId,
+  cardVal,
+  cardRef,
+}) {
   const [isSelected, setIsSelected] = useState(false);
+  const [isPeeked, setIsPeeked] = useState(false);
   const toggleSelected = () => setIsSelected(!isSelected);
+
+  useEffect(() => {
+    if (isSelected && isRevealed) {
+      setIsPeeked(true);
+    } else {
+      setIsPeeked(false);
+    }
+  }, [isSelected, isPeeked, isRevealed]);
 
   function handleClick() {
     toggleSelected();
     if (!isSelected) {
-      console.log('selected');
-      setSelectedCards([...selectedCards, opponentSnapshot]);
+      setSelectedCards([...selectedCards, { cardId, cardVal, cardRef }]);
     } else {
-      console.log('unselected');
-      const currKey = opponentSnapshot.key;
       const listWithoutThisCard = selectedCards.filter(
-        (c) => c.key !== currKey
+        (c) => c.cardId !== cardId
       );
       setSelectedCards(listWithoutThisCard);
     }
@@ -303,36 +443,26 @@ function OpponentCard({ opponentSnapshot, setSelectedCards, selectedCards }) {
 
   return (
     <div className="text-center" onClick={handleClick}>
-      <Badge pill variant="info">
-        {opponentSnapshot.val().alias}
-      </Badge>
       {isSelected ? (
-        <OpponentCardActive>
-          <Card.Title>?</Card.Title>
-        </OpponentCardActive>
+        isPeeked ? (
+          <CardActive>
+            <Card.Title>{cardVal.name}</Card.Title>
+          </CardActive>
+        ) : (
+          <CardActive>
+            <Card.Title>?</Card.Title>
+          </CardActive>
+        )
+      ) : isPeeked ? (
+        <CardInactive>
+          <Card.Title>{cardVal.name}</Card.Title>
+        </CardInactive>
       ) : (
-        <OpponentCardInactive>
+        <CardInactive>
           <Card.Title>?</Card.Title>
-        </OpponentCardInactive>
+        </CardInactive>
       )}
     </div>
-  );
-}
-
-//* MiddleCardList *//
-function MiddleCardList({ gameRef }) {
-  const [cardSnaps, cardSnapsLoading] = useList(gameRef.child('centerCards'));
-
-  return cardSnapsLoading ? (
-    ''
-  ) : (
-    <Row className="justify-content-md-center">
-      {cardSnaps.map((c) => (
-        <MiddleCard key={c.key}>
-          <Card.Title className="text-center">?</Card.Title>
-        </MiddleCard>
-      ))}
-    </Row>
   );
 }
 
