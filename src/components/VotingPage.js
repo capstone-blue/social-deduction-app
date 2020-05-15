@@ -29,7 +29,6 @@ const VotingPage = ({ match, history }) => {
   const [voteStatusRef] = useState(db.ref(`/gameSessions/${gameSessionId}/players/${userId}/votedAgainst`))
   const [playerInfo] = useObjectVal(playerRef)
   const [voted, setVoted] = useState(false)
-  const [voteLock, setVoteLock] = useState(false)
   const [isHost, setIsHost] = useState(false)
   const [allVoted, setAllVoted] = useState(false)
 
@@ -97,14 +96,6 @@ const VotingPage = ({ match, history }) => {
     }
   }
 
-  function lockVotes() {
-    if (voteLock) {
-      setVoteLock(false)
-    } else {
-      setVoteLock(true)
-    }
-  }
-
   function finishVoting() {
     if (allVoted) {
       // turn off listener
@@ -122,7 +113,7 @@ const VotingPage = ({ match, history }) => {
         <Container>
           <ListGroup>
             {players.map(player =>
-              <ListGroup.Item key={player.key} action onClick={() => vote(player)} disabled={voteLock ? true : false}>
+              <ListGroup.Item key={player.key} action onClick={() => vote(player)} disabled={voted ? true : false}>
                 <Container>
                   <Badge variant="info">{player.val().alias}</Badge>
                   <Badge variant="danger">Votes: {player.val().votes}</Badge>
@@ -132,8 +123,7 @@ const VotingPage = ({ match, history }) => {
           </ListGroup>
         </Container>
         <Container>
-          {voted && !voteLock ? <Button variant="success" onClick={() => unvote()}>Unvote</Button> : null}
-          {isHost ? <Button variant="warning" onClick={() => lockVotes()}>Lock In Votes</Button> : null}
+          {voted ? <Button variant="success" onClick={() => unvote()}>Unvote</Button> : null}
           {isHost && allVoted ? <Button variant="danger" onClick={() => finishVoting()}>Finalize</Button> : null}
         </Container>
       </Container>

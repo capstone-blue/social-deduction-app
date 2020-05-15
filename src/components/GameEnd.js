@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { db } from '../firebase'
 import { useUserId } from '../context/userContext';
-import { useList } from 'react-firebase-hooks/database'
+import { useList, useObjectVal } from 'react-firebase-hooks/database'
 import styled from 'styled-components'
 import Container from 'react-bootstrap/Container'
 import Badge from 'react-bootstrap/Badge'
