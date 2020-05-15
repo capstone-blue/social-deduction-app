@@ -103,6 +103,7 @@ const VotingPage = ({ match }) => {
   }
 
   function finishVoting() {
+
     if (checkIfAllVoted() === true) {
       console.log(playerInfo.host)
       console.log(players)
@@ -129,7 +130,6 @@ const VotingPage = ({ match }) => {
           </ListGroup>
         </Container>
         <Container>
-          {isHost ? <Button variant="success" onClick={() => checkIfAllVoted()}>Check if all voted</Button> : null}
           {isHost ? <Button variant="warning" onClick={() => lockVotes()}>Lock In Votes</Button> : null}
           {isHost ? <Button variant="dark" onClick={() => finishVoting()}>Finalize</Button> : null}
         </Container>
