@@ -25,7 +25,6 @@ const Board = styled(Container)`
   background-color: gray;
 `;
 
-//* WerewolfGamePage *//
 function WerewolfGamePage({ match }) {
   // Id
   const [userId] = useUserId();
@@ -47,7 +46,6 @@ function WerewolfGamePage({ match }) {
   const [initialGameState, setGameState] = useState(null);
   const [currPlayerRole, setCurrPlayerRole] = useState('');
   const [selectedCards, setSelectedCards] = useState([]);
-  console.log(selectedCards);
 
   function revealCard() {
     if (selectedCards.length > 1)
@@ -101,11 +99,9 @@ function WerewolfGamePage({ match }) {
   // Background actions for individual roles
   useEffect(() => {
     async function getWerewolves() {
-      const werewolfList = await werewolfTurn(gameSessionRef);
-      console.log(werewolfList);
+      await werewolfTurn(gameSessionRef);
     }
     if (currentTurn === 'Werewolf' && currPlayerRole === 'Werewolf') {
-      console.log('GET WEREWOLVES');
       getWerewolves();
     }
   }, [gameSessionRef, currentTurn, currPlayerRole]);

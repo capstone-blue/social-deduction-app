@@ -19,7 +19,6 @@ function SelectablePlayerCard({
 
   useEffect(() => {
     const thisCard = selectedCards.find((c) => c.cardId === cardId);
-    console.log(thisCard);
     if (thisCard) setCard(thisCard);
     else setCard({});
   }, [selectedCards, cardId]);
