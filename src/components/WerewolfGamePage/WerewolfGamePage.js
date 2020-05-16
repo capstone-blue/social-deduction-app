@@ -15,7 +15,6 @@ import OpponentList from './OpponentList';
 import MiddleCardList from './MiddleCardList';
 import PlayerCard from './PlayerCard';
 import Messages from './Messages';
-import ResetForm from './ResetForm';
 
 const Board = styled(Container)`
   width: 80%;
@@ -160,7 +159,7 @@ function WerewolfGamePage({ match }) {
             <Col>
               <Messages gameRef={gameSessionRef} />
             </Col>
-            <Col>
+            <Col md={6}>
               <PlayerCard
                 gameRef={gameSessionRef}
                 currPlayer={currPlayer}
@@ -170,9 +169,7 @@ function WerewolfGamePage({ match }) {
                 selectedCards={selectedCards}
               />
             </Col>
-            <Col>
-              <ResetForm gameRef={gameSessionRef} />
-            </Col>
+            <Col></Col>
           </Row>
         </Col>
         <Col md={2}>
