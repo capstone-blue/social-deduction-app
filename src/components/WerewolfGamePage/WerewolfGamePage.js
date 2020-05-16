@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../firebase';
-import { werewolfTurn } from '../utils/turns';
+import { db } from '../../firebase';
+import { werewolfTurn } from '../../utils/turns';
 import {
   useListVals,
   useObject,
   useObjectVal,
 } from 'react-firebase-hooks/database';
-import { useUserId } from '../context/userContext';
+import { useUserId } from '../../context/userContext';
 import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
