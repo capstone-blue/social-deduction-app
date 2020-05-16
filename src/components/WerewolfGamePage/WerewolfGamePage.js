@@ -56,6 +56,8 @@ function WerewolfGamePage({ match }) {
   }
 
   async function swapCards() {
+    if (selectedCards.length < 2)
+      return alert('You must have two cards selected to swap');
     const [firstCard, secondCard] = selectedCards;
     const { cardRef: firstRef, cardVal: firstVal } = firstCard;
     const { cardRef: secondRef, cardVal: secondVal } = secondCard;
