@@ -96,6 +96,31 @@ const VotingPage = ({ match, history }) => {
     }
   }
 
+  function calculateResults() {
+    // use a hashmap to save results?
+    // instead of finding who has the most votes, find the most occurences of a votedAgainst?
+    const resultsTable = {}
+    const voteNames = []
+    players.forEach(player => resultsTable[player.key] = 0)
+    players.forEach(player => voteNames.push(player.val().votedAgainst))
+    voteNames.forEach(vote => resultsTable[vote] = resultsTable[vote] += 1)
+
+    const getMax = object => {
+      return Object.keys(object).filter(x => {
+        return object[x] == Math.max.apply(null,
+          Object.values(object));
+      });
+    };
+
+    console.log(voteNames)
+    console.log(resultsTable)
+    console.log(getMax(resultsTable))
+  }
+
+  function showPlayerInfo() {
+    players.forEach(player => console.log(player.val().votedAgainst))
+  }
+
   function finishVoting() {
     if (allVoted) {
       // turn off listener
@@ -104,6 +129,7 @@ const VotingPage = ({ match, history }) => {
       history.push(`/gamesession/${gameSessionId}/gameover`)
     }
   }
+
 
   return (
     <React.Fragment>
@@ -125,6 +151,8 @@ const VotingPage = ({ match, history }) => {
         <Container>
           {voted ? <Button variant="success" onClick={() => unvote()}>Unvote</Button> : null}
           {isHost && allVoted ? <Button variant="danger" onClick={() => finishVoting()}>Finalize</Button> : null}
+          <Button onClick={() => showPlayerInfo()}>Show Players</Button>
+          <Button onClick={() => calculateResults()}>Calculate Results</Button>
         </Container>
       </Container>
     </React.Fragment>
