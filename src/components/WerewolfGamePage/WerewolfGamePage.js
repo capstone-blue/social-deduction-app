@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { werewolfTurn } from '../../utils/turns';
-import { useObject, useObjectVal } from 'react-firebase-hooks/database';
+import { useObjectVal } from 'react-firebase-hooks/database';
 import { useUserId } from '../../context/userContext';
 import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
@@ -13,15 +13,8 @@ import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
 import TurnCountdown from './TurnCountdown';
-
-const BoardCard = styled(Card)`
-  width: 5rem;
-  min-height: 7rem;
-  padding: 1rem;
-  font-size: 1.5rem;
-  border-width: ${(props) => (props.border ? '2px' : '1px')};
-  border-color: ${(props) => props.border || 'gray'};
-`;
+import OpponentList from './OpponentList';
+import MiddleCardList from './MiddleCardList';
 
 const PlayerCardStyle = styled(Card)`
   border-width: ${(props) => (props.border ? '3px' : '1px')};
@@ -207,152 +200,10 @@ function WerewolfGamePage({ match }) {
 export default WerewolfGamePage;
 
 //* OpponentList *//
-function OpponentList({ gameRef, setSelectedCards, selectedCards, players }) {
-  const [userId] = useUserId();
-  const [opponents, setOpponents] = useState(null);
-  // filter current user out of list
-  useEffect(() => {
-    setOpponents(Object.entries(players).filter((p) => p[0] !== userId));
-  }, [players, userId]);
-
-  return !opponents ? (
-    ''
-  ) : (
-    <Row className="justify-content-md-center">
-      {opponents.map((o) => {
-        const [opponentId, opponentData] = o;
-        return (
-          <OpponentCard
-            gameRef={gameRef}
-            key={opponentId}
-            alias={opponentData.alias}
-            opponentId={opponentId}
-            setSelectedCards={setSelectedCards}
-            selectedCards={selectedCards}
-          />
-        );
-      })}
-    </Row>
-  );
-}
-
-function OpponentCard({
-  gameRef,
-  opponentId,
-  alias,
-  setSelectedCards,
-  selectedCards,
-}) {
-  const playerRef = gameRef.child(`players/${opponentId}/actualRole`);
-  const [cardSnap, loadingcardSnap] = useObject(playerRef);
-  return loadingcardSnap ? (
-    ''
-  ) : (
-    <div className="text-center">
-      <Badge pill variant="info">
-        {alias}
-      </Badge>
-      <SelectableBoardCard
-        setSelectedCards={setSelectedCards}
-        selectedCards={selectedCards}
-        cardId={opponentId}
-        cardVal={cardSnap.val()}
-        cardRef={playerRef}
-      />
-    </div>
-  );
-}
 
 //* MiddleCardList *//
-function MiddleCardList({
-  gameRef,
-  selectedCards,
-  setSelectedCards,
-  centerCards,
-}) {
-  return (
-    <Row className="justify-content-md-center">
-      {Object.entries(centerCards).map((c) => {
-        const [cardId] = c;
-        return (
-          <MiddleCard
-            key={cardId}
-            gameRef={gameRef}
-            cardId={cardId}
-            setSelectedCards={setSelectedCards}
-            selectedCards={selectedCards}
-          />
-        );
-      })}
-    </Row>
-  );
-}
-
-function MiddleCard({ gameRef, cardId, setSelectedCards, selectedCards }) {
-  const centerCardRef = gameRef.child(`centerCards/${cardId}`);
-  const [cardSnap, loadingcardSnap] = useObject(centerCardRef);
-  return loadingcardSnap ? (
-    ''
-  ) : (
-    <SelectableBoardCard
-      setSelectedCards={setSelectedCards}
-      selectedCards={selectedCards}
-      cardId={cardId}
-      cardVal={cardSnap.val()}
-      cardRef={centerCardRef}
-    />
-  );
-}
 
 //* Selectable Card//
-function SelectableBoardCard({
-  setSelectedCards,
-  selectedCards,
-  cardId,
-  cardVal,
-  cardRef,
-}) {
-  const [card, setCard] = useState({});
-
-  useEffect(() => {
-    const thisCard = selectedCards.find((c) => c.cardId === cardId);
-    console.log(thisCard);
-    if (thisCard) setCard(thisCard);
-    else setCard({});
-  }, [selectedCards, cardId]);
-
-  function handleClick() {
-    const thisCard = selectedCards.find((c) => c.cardId === cardId);
-    // if this card is in the list, remove it
-    if (thisCard) {
-      setSelectedCards(selectedCards.filter((c) => c.cardId !== cardId));
-      // otherwise, add it to the list
-    } else {
-      if (selectedCards.length === 2)
-        return alert('You may only select 2 cards at a time');
-      const newCard = {
-        cardId,
-        cardVal,
-        cardRef,
-        isRevealed: false,
-        isSelected: true,
-      };
-      // if there is a card in the list already, give the new card a different border
-      const firstCard = selectedCards[0];
-      newCard.border =
-        firstCard && firstCard.border === 'green' ? 'red' : 'green';
-      setSelectedCards([...selectedCards, newCard]);
-    }
-  }
-
-  return (
-    <div className="text-center" onClick={handleClick}>
-      <BoardCard border={card.border}>
-        <Card.Title>{card.isRevealed ? cardVal.name : '?'}</Card.Title>
-      </BoardCard>
-    </div>
-  );
-}
 
 //* PlayerCard *//
 function PlayerCard({
