@@ -9,17 +9,12 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
 import TurnCountdown from './TurnCountdown';
 import OpponentList from './OpponentList';
 import MiddleCardList from './MiddleCardList';
-
-const PlayerCardStyle = styled(Card)`
-  border-width: ${(props) => (props.border ? '3px' : '1px')};
-  border-color: ${(props) => props.border || 'gray'};
-`;
+import PlayerCard from './PlayerCard';
 
 const Board = styled(Container)`
   width: 80%;
@@ -198,101 +193,6 @@ function WerewolfGamePage({ match }) {
 }
 
 export default WerewolfGamePage;
-
-//* OpponentList *//
-
-//* MiddleCardList *//
-
-//* Selectable Card//
-
-//* PlayerCard *//
-function PlayerCard({
-  userId,
-  currPlayer,
-  setCurrPlayerRole,
-  gameRef,
-  setSelectedCards,
-  selectedCards,
-}) {
-  const playerRef = gameRef.child(`players/${userId}/actualRole`);
-
-  useEffect(() => {
-    setCurrPlayerRole(currPlayer.startingRole.name);
-  }, [setCurrPlayerRole, currPlayer.startingRole.name]);
-
-  return (
-    <SelectablePlayerCard
-      setSelectedCards={setSelectedCards}
-      selectedCards={selectedCards}
-      cardId={userId}
-      cardVal={currPlayer}
-      cardRef={playerRef}
-    />
-  );
-}
-
-function SelectablePlayerCard({
-  setSelectedCards,
-  selectedCards,
-  cardId,
-  cardVal,
-  cardRef,
-}) {
-  const [card, setCard] = useState({});
-
-  useEffect(() => {
-    const thisCard = selectedCards.find((c) => c.cardId === cardId);
-    console.log(thisCard);
-    if (thisCard) setCard(thisCard);
-    else setCard({});
-  }, [selectedCards, cardId]);
-
-  function handleClick() {
-    const thisCard = selectedCards.find((c) => c.cardId === cardId);
-    // if this card is in the list, remove it
-    if (thisCard) {
-      setSelectedCards(selectedCards.filter((c) => c.cardId !== cardId));
-      // otherwise, add it to the list
-    } else {
-      if (selectedCards.length === 2)
-        return alert('You may only select 2 cards at a time');
-      const newCard = {
-        cardId,
-        cardVal: cardVal.actualRole,
-        cardRef,
-        isRevealed: false,
-        isSelected: true,
-      };
-      // if there is a card in the list already, give the new card a different border
-      const firstCard = selectedCards[0];
-      newCard.border =
-        firstCard && firstCard.border === 'green' ? 'red' : 'green';
-      setSelectedCards([...selectedCards, newCard]);
-    }
-  }
-
-  return (
-    <div className="text-center" onClick={handleClick}>
-      <div className="text-center">
-        <Badge pill variant="success" className="text-center">
-          {cardVal.alias}
-        </Badge>
-        <PlayerCardStyle border={card.border}>
-          <Card.Title className="text-center">
-            <div>{cardVal.startingRole.name}</div>
-          </Card.Title>
-          <Card.Body>
-            <div>
-              {cardVal.startingRole.options.map((o, i) => (
-                <div key={`card-${cardId}-${i}`}>{o}</div>
-              ))}
-            </div>
-          </Card.Body>
-        </PlayerCardStyle>
-      </div>
-    </div>
-  );
-}
 
 function Messages({ gameRef }) {
   const [userId] = useUserId();
