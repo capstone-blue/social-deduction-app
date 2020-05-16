@@ -9,10 +9,6 @@ import { useObjectVal, useList, useListKeys } from 'react-firebase-hooks/databas
 
 function GameScreen({match,history}){
     const gameRef = db.ref().child('gameSessions').child(match.params.id)
-    const [rolesSet] = useObjectVal(gameRef.child("rolesSet"))
-    const [isNight] = useObjectVal(gameRef.child("isNight"))
-    const [isDay] = useObjectVal(gameRef.child("isDay"))
-    const [voting] = useObjectVal(gameRef.child("voting"))
     const [status] = useObjectVal(gameRef.child("status"))
 
     return(

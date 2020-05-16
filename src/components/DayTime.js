@@ -11,7 +11,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
-import RoleMarkerButton from './roleMarkerButton'
+// import RoleMarkerButton from './roleMarkerButton'
 
 
 const CommonCardStyles = styled(Card)`
@@ -38,7 +38,7 @@ const Board = styled(Container)`
 
 
 function DayTime({match}){
-    const gameRef = db.ref().child('gameSessions').child(match.params.id)
+    const [gameRef] = useState(db.ref().child('gameSessions').child(match.params.id))
     const [userId] = useUserId();
 
   // Listeners
@@ -113,7 +113,6 @@ function DayTime({match}){
           </Board>
           <Row>
             <Col>
-              {/* <Messages gameRef={gameRef} /> */}
             </Col>
             <Col>
               <PlayerCard
@@ -135,8 +134,6 @@ function DayTime({match}){
             <Button variant="warning" onClick={revealCard}>
               Reveal Card
             </Button>
-            {/* <RoleMarkerButton gameRef = {gameRef} selectedCards = {selectedCards} role = "suspected werewolf" applyMarker = {applyMarker}/> */}
-
           </aside>
         </Col>
       </Row>
@@ -149,12 +146,12 @@ function DayTime({match}){
 function DayCountdown({gameRef, host}) {
     const [userId] = useUserId();
     const [count, setCount] = useState('');
-    const [endDayTime, loadingEndTime] = useObjectVal(gameRef.child('endDayTime'));
-    const gameHasntStarted = !loadingEndTime && !endDayTime;
+    const [endDayTime, loadingDayEndTime] = useObjectVal(gameRef.child('endDayTime'));
+    const gameHasntStarted = !loadingDayEndTime && !endDayTime;
     const countDownReached = !gameHasntStarted && endDayTime < new Date().getTime();
-    // const timeLeft = Math.floor(endDayTime - new Date().getTime())
-    // const minutes = Math.floor((timeLeft / 1000)/60)
-    // const seconds = Math.floor((timeLeft/1000) -((minutes)*60))
+    const timeLeft = Math.floor(endDayTime - new Date().getTime())
+    const minutes = Math.floor((timeLeft / 1000)/60)
+    const seconds = Math.floor((timeLeft/1000) -((minutes)*60))
     // EFFECTS
     useEffect(() => {
       function setEndTimeInDB() {
@@ -191,9 +188,10 @@ function DayCountdown({gameRef, host}) {
     }, [count, endDayTime]);
   
     return(
-
-        <h2>hey</h2>
-    )
+        seconds > 9
+        ?<h2>Time Left: {minutes}:{seconds}</h2>
+        :<h2>Time Left: {minutes}:0{seconds}</h2>
+        )
 }
 
 //* OpponentList *//
@@ -303,7 +301,7 @@ function OpponentCard({
       ''
     ) : (
       <SelectableCard
-        gameRef={gameRef}
+        gameRef = {gameRef}
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}
         isRevealed={isRevealed}
@@ -315,7 +313,7 @@ function OpponentCard({
   }
 
   function SelectableCard({
-    gameRef, 
+    gameRef = {gameRef},
     setSelectedCards,
     selectedCards,
     isRevealed,
@@ -326,7 +324,7 @@ function OpponentCard({
     const [isSelected, setIsSelected] = useState(false);
     const [isPeeked, setIsPeeked] = useState(false);
     const toggleSelected = () => setIsSelected(!isSelected);
-    // const werewolfSuspect = useObjectVal(gameRef.child("suspects").child("suspected werewolf"))
+    const werewolfSuspect = useObjectVal(gameRef.child("suspects").child("suspected werewolf"))
 
     useEffect(() => {
       if (isSelected && isRevealed) {
@@ -351,8 +349,8 @@ function OpponentCard({
     return (
       <div className="text-center" onClick={handleClick}>
         {isSelected ? (
-        //   werewolfSuspect[0] === cardId ? (
-            isPeeked ? (
+          werewolfSuspect[0] === cardId ? (
+            // isPeeked ? (
             <CardActive>
               <Card.Title>suspected werewolf</Card.Title>
             </CardActive>
@@ -361,8 +359,8 @@ function OpponentCard({
               <Card.Title>?</Card.Title>
             </CardActive>
           )
-        // ) : werewolfSuspect[0] === cardId ? (
-            ) : isPeeked ? (
+        ) : werewolfSuspect[0] === cardId ? (
+            // ) : isPeeked ? (
           <CardInactive>
             <Card.Title>suspected werewolf</Card.Title>
           </CardInactive>
@@ -517,10 +515,10 @@ function OpponentCard({
     );
   }
 
-// function applyMarker(selectedCards,role,gameRef){
-//     if(selectedCards.length ===1){
-//         const roleDef = role
-//         gameRef.child("suspects").update({[roleDef]: selectedCards[0].cardId})
-//     }
-//   }
+function applyMarker(selectedCards,role,gameRef){
+    if(selectedCards.length ===1){
+        const roleDef = role
+        gameRef.child("suspects").update({[roleDef]: selectedCards[0].cardId})
+    }
+  }
 export default DayTime
