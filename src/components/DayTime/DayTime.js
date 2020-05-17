@@ -160,12 +160,20 @@ function applyMarker(selectedCards,role,gameRef, suspects, markers){
             // gameRef.child("suspects").update({[roleDef]: null})
             gameRef.child("markers").update({[roleDef]:null})
             if(markers.val()[roleDef]){
-              const resetVal = markers.val()[roleDef]
-              gameRef.child("suspects").update({[resetVal]:null})
+              const resetValSus = markers.val()[roleDef]
+              gameRef.child("suspects").update({[resetValSus]:null})
               gameRef.child("suspects").update({[selectedCards[0].cardId]:roleDef})
               gameRef.child("markers").update({[roleDef]:selectedCards[0].cardId})
             }
+            else if(suspects.val()[selectedCards[0].cardId]){
+              const resetValMark = suspects.val()[selectedCards[0].cardId]
+              gameRef.child("markers").update({[resetValMark]:null})
+              gameRef.child("suspects").update({[selectedCards[0].cardId]:roleDef})
+              gameRef.child("markers").update({[roleDef]:selectedCards[0].cardId})
+
+            }
             else{
+              console.log('got here')
               gameRef.child("suspects").update({[selectedCards[0].cardId]:roleDef})
               gameRef.child("markers").update({[roleDef]:selectedCards[0].cardId})
             }

@@ -45,6 +45,9 @@ function SelectableBoardCard({
       if(suspects.val()[playerVal]){
         suspectIdentity = suspects.val()[playerVal]
       }
+      else if(suspects.val()[cardId]){
+        suspectIdentity = suspects.val()[cardId]
+      }
 
     }
 
