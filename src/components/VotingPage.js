@@ -47,8 +47,8 @@ const VotingPage = ({ match, history }) => {
       }
     }
     function checkIfHost() {
-      db.ref(`/gameSessions/${gameSessionId}/players/${userId}`).once('value').then((snapshot) => {
-        if (snapshot.val().host) {
+      db.ref(`/gameSessions/${gameSessionId}/players/${userId}/host`).once('value').then((snapshot) => {
+        if (snapshot.exists()) {
           setIsHost(true)
         }
       })
@@ -194,6 +194,11 @@ const VotingPage = ({ match, history }) => {
     }
   }
 
+  function checkHost() {
+    db.ref(`/gameSessions/${gameSessionId}/players/${userId}`).child('host').once('value').then((snapshot) => {
+      console.log(snapshot.val())
+    })
+  }
 
   return (
     <React.Fragment>
@@ -215,7 +220,7 @@ const VotingPage = ({ match, history }) => {
         <Container>
           {voted ? <Button variant="success" onClick={() => unvote()}>Unvote</Button> : null}
           {isHost && allVoted ? <Button variant="danger" onClick={() => finishVoting()}>Finalize</Button> : null}
-          <Button onClick={() => showPlayerInfo()}>Show Players</Button>
+          <Button onClick={() => checkHost()}>checkHost</Button>
         </Container>
       </Container>
     </React.Fragment>
