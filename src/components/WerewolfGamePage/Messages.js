@@ -31,13 +31,15 @@ function Messages({ gameRef }) {
     <div>
       <h3>Messages</h3>
       <div>
-        {messageSnaps.map((m) => {
-          return (
+        {messageSnaps.map((m) =>
+          m.val() ? (
             <div key={m.key}>
               <div>{m.val().contents}</div>
             </div>
-          );
-        })}
+          ) : (
+            ''
+          )
+        )}
       </div>
     </div>
   );
