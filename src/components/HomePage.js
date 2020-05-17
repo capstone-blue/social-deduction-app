@@ -59,7 +59,7 @@ function LobbyForm({ history }) {
         .orderByChild('name')
         .equalTo(lobbyName)
         .once('value');
-
+      console.log(lobbySnaps)
       if (!lobbySnaps.val()) {
         setLobbyName('');
         throw new Error(`Cannot find lobby with name ${lobbyName}`);

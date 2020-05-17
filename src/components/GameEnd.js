@@ -9,7 +9,6 @@ import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 import Badge from 'react-bootstrap/Badge'
 import Form from 'react-bootstrap/Form'
-import ListGroup from 'react-bootstrap/ListGroup'
 
 const Title = styled.h1`
   font-size: 2.5em;
@@ -23,12 +22,9 @@ const GameEnd = ({ match, history }) => {
   const [gameSessionRef] = useState(db.ref(`/gameSessions/${gameSessionId}`));
   const [players] = useList(gameSessionRef.child('players'))
   const [playerRef] = useState(db.ref(`/gameSessions/${gameSessionId}/players/${userId}`))
-  const [voteStatusRef] = useState(db.ref(`/gameSessions/${gameSessionId}/players/${userId}/votedAgainst`))
   const [playerInfo] = useObjectVal(playerRef)
   const [isHost, setIsHost] = useState(false)
   const [winner, setWinner] = useState('')
-
-
   const [lobbiesRef] = useState(db.ref().child('lobbies'));
   const [usersRef] = useState(db.ref().child('users'));
   const [lobbyName, setLobbyName] = useState('');
@@ -96,10 +92,6 @@ const GameEnd = ({ match, history }) => {
       console.error('Error in joinLobby', e.message);
     }
   }
-
-
-
-
 
   return (
     <React.Fragment>
