@@ -31,7 +31,6 @@ const VotingPage = ({ match, history }) => {
   const [voted, setVoted] = useState(false)
   const [isHost, setIsHost] = useState(false)
   const [allVoted, setAllVoted] = useState(false)
-  const [winner, setWinner] = useState('')
 
   useEffect(() => {
     function listenOnVoteStatus() {
@@ -106,7 +105,7 @@ const VotingPage = ({ match, history }) => {
   // if no werewolves but there is a minion, werewolf team wins if minion lives, but also wins if no one dies? so scratch the official rules, villagers win if minion dies
   // if no werewolf and all votes are equal, villagers win
 
-  function calculateWinner() {
+  async function calculateWinner() {
     // use a hashmap to save results?
     // instead of finding who has the most votes, find the most occurences of a votedAgainst?
     const resultsTable = {}
@@ -133,7 +132,7 @@ const VotingPage = ({ match, history }) => {
       })
     })
 
-    function findHunterVictim() {
+   async function findHunterVictim() {
       // whomever the hunter votes for also dies
       // find whomever was hunter
       const hunter = players.find(player => player.val().actualRole.name === "Hunter")
@@ -143,50 +142,40 @@ const VotingPage = ({ match, history }) => {
       const hunterVictim = players.find(player => player.key === hunterVictimId)
       // find the victim's actualRole
       const hunterVictimRole = hunterVictim.val().actualRole.name;
-      if (hunterVictimRole === 'Werewolf') setWinner("Villagers")
-      else setWinner('Werewolves')
+      if (hunterVictimRole === 'Werewolf') await gameSessionRef.child('winner').set('Villagers')
+      else await gameSessionRef.child('winner').set('Werewolves')
     }
 
-    if (actualRoles.length === players.length && !actualRoles.includes("Werewolf")) setWinner("Villagers")
+    if (actualRoles.length === players.length && !actualRoles.includes("Werewolf")) await gameSessionRef.child('winner').set('Villagers')
     else if (actualRoles.length === 1) {
-      if (actualRoles.includes('Werewolf')) setWinner('Villagers')
-      else if (actualRoles.includes('Minion')) setWinner('Werewolves')
-      else if (actualRoles.includes('Villager')) setWinner('Werewolves')
-      else if (actualRoles.includes("Seer")) setWinner('Werewolves')
-      else if (actualRoles.includes('Robber')) setWinner('Werewolves')
-      else if (actualRoles.includes('Troublemaker')) setWinner('Werewolves')
-      else if (actualRoles.includes('Robber')) setWinner('Werewolves')
-      else if (actualRoles.includes('Mason')) setWinner('Werewolves')
-      else if (actualRoles.includes('Drunk')) setWinner('Werewolves')
-      else if (actualRoles.includes('Insomniac')) setWinner('Werewolves')
-      else if (actualRoles.includes('Tanner')) setWinner('Tanner')
+      if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
       else if (actualRoles.includes('Hunter')) {
         findHunterVictim()
       }
     } else if (actualRoles.length === 2) {
-      if (actualRoles.includes('Werewolf')) setWinner('Villagers')
+      if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
       else if (actualRoles.includes('Hunter')) {
         findHunterVictim()
       }
-      else setWinner('Werewolves')
+      else await gameSessionRef.child('winner').set('Werewolves')
     } else if (actualRoles.length === 3) {
-      if (actualRoles.includes('Werewolf')) setWinner('Villagers')
+      if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
       else if (actualRoles.includes('Hunter')) {
         findHunterVictim()
       }
-      else setWinner('Werewolves')
+      else await gameSessionRef.child('winner').set('Werewolves')
     } else if (actualRoles.length === 4) {
-      if (actualRoles.includes('Werewolf')) setWinner('Villagers')
+      if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
       else if (actualRoles.includes('Hunter')) {
         findHunterVictim()
       }
-      else setWinner('Werewolves')
+      else await gameSessionRef.child('winner').set('Werewolves')
     } else if (actualRoles.length === 5) {
-      if (actualRoles.includes('Werewolf')) setWinner('Villagers')
+      if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
       else if (actualRoles.includes('Hunter')) {
         findHunterVictim()
       }
-      else setWinner('Werewolves')
+      else await gameSessionRef.child('winner').set('Werewolves')
     }
   }
 
@@ -194,10 +183,12 @@ const VotingPage = ({ match, history }) => {
     players.forEach(player => console.log(player.val().votedAgainst))
   }
 
-  function finishVoting() {
+  async function finishVoting() {
     if (allVoted) {
       // turn off listener
       voteStatusRef.off()
+      // calculate winner and set winner into gameSession for retrieval in GameEnd component
+      calculateWinner()
       // go to results page
       history.push(`/gamesession/${gameSessionId}/gameover`)
     }
@@ -225,8 +216,6 @@ const VotingPage = ({ match, history }) => {
           {voted ? <Button variant="success" onClick={() => unvote()}>Unvote</Button> : null}
           {isHost && allVoted ? <Button variant="danger" onClick={() => finishVoting()}>Finalize</Button> : null}
           <Button onClick={() => showPlayerInfo()}>Show Players</Button>
-          <Button onClick={() => calculateWinner()}>Calculate Winner</Button>
-          <Button onClick={() => console.log(winner)}>console.log(winner)</Button>
         </Container>
       </Container>
     </React.Fragment>
