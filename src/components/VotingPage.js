@@ -147,17 +147,17 @@ const VotingPage = ({ match, history }) => {
       else setWinner('Werewolves')
     }
 
-    function minionWinCondition() {
-      // what's the point? villagers always lose
-      const werewolvesInGame = players.forEach(player => player.val().actualRole.name === "Werewolf")
-      if (werewolvesInGame) {
-        setWinner('Werewolves')
-      } else {
-        setWinner('Werewolves')
-      }
-    }
-
-    if (actualRoles.length === 1) {
+    // function minionWinCondition() {
+    //   // what's the point? villagers always lose
+    //   const werewolvesInGame = players.forEach(player => player.val().actualRole.name === "Werewolf")
+    //   if (werewolvesInGame) {
+    //     setWinner('Werewolves')
+    //   } else {
+    //     setWinner('Werewolves')
+    //   }
+    // }
+    if (actualRoles.length === players.length && !actualRoles.includes("Werewolf")) setWinner("Villagers")
+    else if (actualRoles.length === 1) {
       if (actualRoles.includes('Werewolf')) setWinner('Villagers')
       else if (actualRoles.includes('Minion')) setWinner('Werewolves')
       else if (actualRoles.includes('Villager')) setWinner('Werewolves')
