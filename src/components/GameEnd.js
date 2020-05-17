@@ -97,7 +97,7 @@ const GameEnd = ({ match, history }) => {
     <React.Fragment>
       <Container>
         <Title><Badge variant="dark">Result</Badge></Title>
-        <Title><Badge variant="danger">{winner} Win!</Badge></Title>
+        <Title><Badge variant="danger">{winner} {winner === 'Tanner' ? "Wins!" : "Win!"}</Badge></Title>
       </Container>
       <Container>
         <Title>Start New Game?</Title>

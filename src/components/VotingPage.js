@@ -114,8 +114,11 @@ const VotingPage = ({ match, history }) => {
   // if the actual role is not werewolf, werewolfs win
   // if the actual role is tanner, tanner wins
   // if the hunter dies but pointing at a werewolf, villagers win
+  // if the hunter dies but pointing at a tanner, tanner wins
+  // if both tanner and a werewolf dies, tanner and villagers win
+  // if tanner and a villager dies, only the tanner wins. werewolves do not win
   // if a werewolf and villager got same number of votes, villagers win
-  // if no werewolves but there is a minion, werewolf team wins if minion lives, but also wins if no one dies? so scratch the official rules, villagers win if minion dies
+  // if no werewolves but there is a minion, werewolf team wins if minion lives
   // if no werewolf and all votes are equal, villagers win
 
   async function calculateWinner() {
@@ -155,42 +158,65 @@ const VotingPage = ({ match, history }) => {
       const hunterVictim = players.find(player => player.key === hunterVictimId)
       // find the victim's actualRole
       const hunterVictimRole = hunterVictim.val().actualRole.name;
-      if (hunterVictimRole === 'Werewolf') await gameSessionRef.child('winner').set('Villagers')
+      // check whether a tanner also died
+      const tannerDied = actualRoles.includes('Tanner')
+      console.log(actualRoles)
+      console.log(tannerDied)
+      if (hunterVictimRole === 'Werewolf' && tannerDied) await gameSessionRef.child('winner').set('Tanner and Villagers')
+      else if (hunterVictimRole !== 'Werewolf' && tannerDied) await gameSessionRef.child('winner').set('Tanner')
+      else if (hunterVictimRole === "Tanner") await gameSessionRef.child('winner').set('Tanner')
       else await gameSessionRef.child('winner').set('Werewolves')
+    }
+
+    async function minionWinConditions() {
+      // if there is a werewolf and minion dies, werewolves win
+      // if there are no werewolves and someone other than minion dies, werewolves win
+      // if there are no werewolve and minion dies, villagers win
+
+      // check if there is a werewolf among the players
+      const werewolfInGame = players.find(player => player.val().actualRole.name === "Werewolf")
+
+      if (werewolfInGame) await gameSessionRef.child('winner').set('Werewolves')
+      else await gameSessionRef.child('winner').set('Villagers')
     }
 
     if (actualRoles.length === players.length && !actualRoles.includes("Werewolf")) await gameSessionRef.child('winner').set('Villagers')
     else if (actualRoles.length === 1) {
       if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
-      else if (actualRoles.includes('Hunter')) {
-        findHunterVictim()
-      }
+      else if (actualRoles.includes('Hunter')) findHunterVictim()
+      else if (actualRoles.includes('Minion')) minionWinConditions()
+      else if (actualRoles.includes('Tanner')) await gameSessionRef.child('winner').set('Tanner')
     } else if (actualRoles.length === 2) {
-      if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
-      else if (actualRoles.includes('Hunter')) {
-        findHunterVictim()
-      }
+      if (actualRoles.includes('Werewolf') && actualRoles.includes('Tanner')) await gameSessionRef.child('winner').set('Tanner and Villagers')
+      else if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
+      else if (actualRoles.includes('Hunter')) findHunterVictim()
+      else if (actualRoles.includes('Minion')) minionWinConditions()
+      else if (actualRoles.includes('Tanner')) await gameSessionRef.child('winner').set('Tanner')
       else await gameSessionRef.child('winner').set('Werewolves')
     } else if (actualRoles.length === 3) {
-      if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
-      else if (actualRoles.includes('Hunter')) {
-        findHunterVictim()
-      }
+      if (actualRoles.includes('Werewolf') && actualRoles.includes('Tanner')) await gameSessionRef.child('winner').set('Tanner and Villagers')
+      else if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
+      else if (actualRoles.includes('Hunter')) findHunterVictim()
+      else if (actualRoles.includes('Minion')) minionWinConditions()
+      else if (actualRoles.includes('Tanner')) await gameSessionRef.child('winner').set('Tanner')
       else await gameSessionRef.child('winner').set('Werewolves')
     } else if (actualRoles.length === 4) {
-      if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
-      else if (actualRoles.includes('Hunter')) {
-        findHunterVictim()
-      }
+      if (actualRoles.includes('Werewolf') && actualRoles.includes('Tanner')) await gameSessionRef.child('winner').set('Tanner and Villagers')
+      else if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
+      else if (actualRoles.includes('Hunter')) findHunterVictim()
+      else if (actualRoles.includes('Minion')) minionWinConditions()
+      else if (actualRoles.includes('Tanner')) await gameSessionRef.child('winner').set('Tanner')
       else await gameSessionRef.child('winner').set('Werewolves')
     } else if (actualRoles.length === 5) {
-      if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
-      else if (actualRoles.includes('Hunter')) {
-        findHunterVictim()
-      }
-      else await gameSessionRef.child('winner').set('Werewolves')
+      if (actualRoles.includes('Werewolf') && actualRoles.includes('Tanner')) await gameSessionRef.child('winner').set('Tanner and Villagers')
+      else if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
+      else if (actualRoles.includes('Hunter')) findHunterVictim()
+      else if (actualRoles.includes('Minion')) minionWinConditions()
+      else if (actualRoles.includes('Tanner')) await gameSessionRef.child('winner').set('Tanner')
     }
+    else await gameSessionRef.child('winner').set('Werewolves')
   }
+
 
   async function finishVoting() {
     if (allVoted) {
