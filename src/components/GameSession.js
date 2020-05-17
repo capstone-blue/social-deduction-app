@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { db } from '../firebase/index'
+import React from 'react'
+// import { db } from '../firebase/index'
 
 function GameSession({match}) {
-  const [gameSessionRef] = useState(db.ref(`/gameSessions/${match.params.id}`));
-  const [players] = useState(gameSessionRef.child('players'))
+  // const [gameSessionRef] = useState(db.ref(`/gameSessions/${match.params.id}`));
+  // const [players] = useState(gameSessionRef.child('players'))
 
   // maybe destroy lobby in here instead?
 
