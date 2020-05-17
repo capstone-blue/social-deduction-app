@@ -105,7 +105,7 @@ const GameEnd = ({ match, history }) => {
     <React.Fragment>
       <Container>
         <Title><Badge variant="dark">Result</Badge></Title>
-        <Title><Title><Badge variant="danger">{winner} Win!</Badge></Title></Title>
+        <Title><Badge variant="danger">{winner} Win!</Badge></Title>
       </Container>
       <Container>
         <Title>Start New Game?</Title>

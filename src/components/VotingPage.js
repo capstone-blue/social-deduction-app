@@ -27,6 +27,7 @@ const VotingPage = ({ match, history }) => {
   const [players] = useList(gameSessionRef.child('players'))
   const [playerRef] = useState(db.ref(`/gameSessions/${gameSessionId}/players/${userId}`))
   const [voteStatusRef] = useState(db.ref(`/gameSessions/${gameSessionId}/players/${userId}/votedAgainst`))
+  const [winnerRef] = useState(db.ref(`gameSessions/${gameSessionId}/winner`))
   const [playerInfo] = useObjectVal(playerRef)
   const [voted, setVoted] = useState(false)
   const [isHost, setIsHost] = useState(false)
@@ -44,6 +45,17 @@ const VotingPage = ({ match, history }) => {
         })
       } catch (e) {
         console.error('Error in VotingPage vote status listener', e.message)
+      }
+    }
+    function listenOnWinner() {
+      try {
+        winnerRef.on('value', function (snapshot) {
+          if (snapshot.val() !== false) {
+            history.push(`/gamesession/${gameSessionId}/gameover`);
+          }
+        })
+      } catch (e) {
+        console.error('Error in GameStart lobby listener', e.message)
       }
     }
     function checkIfHost() {
@@ -66,7 +78,8 @@ const VotingPage = ({ match, history }) => {
     checkIfHost()
     listenOnVoteStatus()
     checkIfAllVoted()
-  }, [userId, gameSessionId, voteStatusRef, playerInfo, players])
+    listenOnWinner()
+  }, [userId, gameSessionId, voteStatusRef, playerInfo, players, gameSessionRef, history, winnerRef])
 
   async function vote(selectedPlayer) {
     if (selectedPlayer.key === userId) {
@@ -132,7 +145,7 @@ const VotingPage = ({ match, history }) => {
       })
     })
 
-   async function findHunterVictim() {
+    async function findHunterVictim() {
       // whomever the hunter votes for also dies
       // find whomever was hunter
       const hunter = players.find(player => player.val().actualRole.name === "Hunter")
@@ -179,25 +192,15 @@ const VotingPage = ({ match, history }) => {
     }
   }
 
-  function showPlayerInfo() {
-    players.forEach(player => console.log(player.val().votedAgainst))
-  }
-
   async function finishVoting() {
     if (allVoted) {
       // turn off listener
       voteStatusRef.off()
       // calculate winner and set winner into gameSession for retrieval in GameEnd component
       calculateWinner()
-      // go to results page
-      history.push(`/gamesession/${gameSessionId}/gameover`)
+      // turn off winner listener
+      winnerRef.off()
     }
-  }
-
-  function checkHost() {
-    db.ref(`/gameSessions/${gameSessionId}/players/${userId}`).child('host').once('value').then((snapshot) => {
-      console.log(snapshot.val())
-    })
   }
 
   return (
@@ -220,7 +223,6 @@ const VotingPage = ({ match, history }) => {
         <Container>
           {voted ? <Button variant="success" onClick={() => unvote()}>Unvote</Button> : null}
           {isHost && allVoted ? <Button variant="danger" onClick={() => finishVoting()}>Finalize</Button> : null}
-          <Button onClick={() => checkHost()}>checkHost</Button>
         </Container>
       </Container>
     </React.Fragment>
