@@ -115,8 +115,8 @@ const GameEnd = ({ match, history }) => {
         </Row>
         <Row>
           <Col>
-            <Button variant="dark" onClick={joinLobby}>Join Lobby</Button>
-            {isHost ? <Button variant="dark" onClick={createLobby}>Create Lobby</Button> : <p>Waitong on host...</p>}
+            {!isHost ? <Button variant="dark" onClick={joinLobby}>Join Lobby</Button> : null}
+            {isHost ? <Button variant="dark" onClick={createLobby}>Create Lobby</Button> : <p>Waiting on host to create new lobby...</p>}
           </Col>
         </Row>
       </Container>
