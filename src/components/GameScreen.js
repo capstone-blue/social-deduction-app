@@ -1,6 +1,6 @@
 import RoleAssignment from './RoleAssignment'
 import WerewolfGamePage from './WerewolfGamePage'
-import DayTime from './DayTime'
+import DayTime from './DayTime/DayTime'
 import VotingPage from './VotingPage'
 import NavigationBar from './NavigationBar'
 import React, { useEffect, useState } from 'react';
