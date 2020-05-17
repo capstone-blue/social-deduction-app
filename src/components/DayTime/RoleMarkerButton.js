@@ -5,7 +5,7 @@ function RoleMarkerButton(props){
         props.applyMarker(props.selectedCards,props.role,props.gameRef, props.suspects)
     }
     return(
-        <Button variant="warning" onClick={clickActivate} >
+        <Button variant="warning" name = {props.role} onClick={clickActivate} >
         Mark this player as {props.role}
       </Button>
     )

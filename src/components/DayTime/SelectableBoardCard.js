@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {useObjectVal} from 'react-firebase-hooks/database'
+import {useObjectVal, useObject} from 'react-firebase-hooks/database'
 import Card from 'react-bootstrap/Card';
 
 const BoardCard = styled(Card)`
@@ -21,8 +21,10 @@ function SelectableBoardCard({
   cardRef,
 }) {
   const [card, setCard] = useState({});
-  const werewolfSuspect = useObjectVal(gameRef.child("suspects").child("werewolf"))
-
+  const [suspectVals, loadSuspectVals] = useObjectVal(
+    gameRef.child('suspects')
+  )
+    console.log(suspectVals)
   useEffect(() => {
     const thisCard = selectedCards.find((c) => c.cardId === cardId);
     if (thisCard) setCard(thisCard);
@@ -56,7 +58,10 @@ function SelectableBoardCard({
   return (
     <div className="text-center" onClick={handleClick}>
       <BoardCard border={card.border}>
-        <Card.Title>{werewolfSuspect[0] === cardId ? 'suspected werewolf' : '?'}</Card.Title>
+        {suspectVals
+          ?<Card.Title>{suspectVals["werewolf 1"] === cardId ? 'suspected werewolf' : '?'}</Card.Title>
+          : null
+        }
       </BoardCard>
     </div>
   );
