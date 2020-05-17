@@ -31,6 +31,7 @@ const VotingPage = ({ match, history }) => {
   const [voted, setVoted] = useState(false)
   const [isHost, setIsHost] = useState(false)
   const [allVoted, setAllVoted] = useState(false)
+  const [winner, setWinner] = useState('')
 
   useEffect(() => {
     function listenOnVoteStatus() {
@@ -96,7 +97,16 @@ const VotingPage = ({ match, history }) => {
     }
   }
 
-  function calculateResults() {
+  // the results should checked which player had the most votes, and see their actual role
+  // if the actual role is werewolf, villagers win
+  // if the actual role is not werewolf, werewolfs win
+  // if the actual role is tanner, tanner wins
+  // if the hunter dies but pointing at a werewolf, villagers win
+  // if a werewolf and villager got same number of votes, villagers win
+  // if no werewolves but there is a minion, werewolf team wins if minion lives, but also wins if no one dies? so scratch the official rules, villagers win if minion dies
+  // if no werewolf and all votes are equal, villagers win
+
+  function calculateWinner() {
     // use a hashmap to save results?
     // instead of finding who has the most votes, find the most occurences of a votedAgainst?
     const resultsTable = {}
@@ -105,16 +115,88 @@ const VotingPage = ({ match, history }) => {
     players.forEach(player => voteNames.push(player.val().votedAgainst))
     voteNames.forEach(vote => resultsTable[vote] = resultsTable[vote] += 1)
 
-    const getMax = object => {
+    const getPlayersWithMostVotes = object => {
       return Object.keys(object).filter(x => {
         return object[x] == Math.max.apply(null,
           Object.values(object));
       });
     };
 
-    console.log(voteNames)
-    console.log(resultsTable)
-    console.log(getMax(resultsTable))
+    const mostVotes = getPlayersWithMostVotes(resultsTable)
+
+    const actualRoles = []
+    mostVotes.forEach(vote => {
+      players.forEach(player => {
+        if (player.key === vote) {
+          actualRoles.push(player.val().actualRole.name)
+        }
+      })
+    })
+
+    function findHunterVictim() {
+      // whomever the hunter votes for also dies
+      // find whomever was hunter
+      const hunter = players.find(player => player.val().actualRole.name === "Hunter")
+      // then find ID of whomever the hunter voted against
+      const hunterVictimId = hunter.val().votedAgainst
+      // find the victim using said ID
+      const hunterVictim = players.find(player => player.key === hunterVictimId)
+      // find the victim's actualRole
+      const hunterVictimRole = hunterVictim.val().actualRole.name;
+      if (hunterVictimRole === 'Werewolf') setWinner("Villagers")
+      else setWinner('Werewolves')
+    }
+
+    function minionWinCondition() {
+      // what's the point? villagers always lose
+      const werewolvesInGame = players.forEach(player => player.val().actualRole.name === "Werewolf")
+      if (werewolvesInGame) {
+        setWinner('Werewolves')
+      } else {
+        setWinner('Werewolves')
+      }
+    }
+
+    if (actualRoles.length === 1) {
+      if (actualRoles.includes('Werewolf')) setWinner('Villagers')
+      else if (actualRoles.includes('Minion')) setWinner('Werewolves')
+      else if (actualRoles.includes('Villager')) setWinner('Werewolves')
+      else if (actualRoles.includes("Seer")) setWinner('Werewolves')
+      else if (actualRoles.includes('Robber')) setWinner('Werewolves')
+      else if (actualRoles.includes('Troublemaker')) setWinner('Werewolves')
+      else if (actualRoles.includes('Robber')) setWinner('Werewolves')
+      else if (actualRoles.includes('Mason')) setWinner('Werewolves')
+      else if (actualRoles.includes('Drunk')) setWinner('Werewolves')
+      else if (actualRoles.includes('Insomniac')) setWinner('Werewolves')
+      else if (actualRoles.includes('Tanner')) setWinner('Tanner')
+      else if (actualRoles.includes('Hunter')) {
+        findHunterVictim()
+      }
+    } else if (actualRoles.length === 2) {
+      if (actualRoles.includes('Werewolf')) setWinner('Villagers')
+      else if (actualRoles.includes('Hunter')) {
+        findHunterVictim()
+      } else if (actualRoles.includes('Minion')) setWinner('Werewolves')
+      else setWinner('Werewolves')
+    } else if (actualRoles.length === 3) {
+      if (actualRoles.includes('Werewolf')) setWinner('Villagers')
+      else if (actualRoles.includes('Hunter')) {
+        findHunterVictim()
+      } else if (actualRoles.includes('Minion')) setWinner('Werewolves')
+      else setWinner('Werewolves')
+    } else if (actualRoles.length === 4) {
+      if (actualRoles.includes('Werewolf')) setWinner('Villagers')
+      else if (actualRoles.includes('Hunter')) {
+        findHunterVictim()
+      } else if (actualRoles.includes('Minion')) setWinner('Werewolves')
+      else setWinner('Werewolves')
+    } else if (actualRoles.length === 5) {
+      if (actualRoles.includes('Werewolf')) setWinner('Villagers')
+      else if (actualRoles.includes('Hunter')) {
+        findHunterVictim()
+      } else if (actualRoles.includes('Minion')) setWinner('Werewolves')
+      else setWinner('Werewolves')
+    }
   }
 
   function showPlayerInfo() {
@@ -152,7 +234,8 @@ const VotingPage = ({ match, history }) => {
           {voted ? <Button variant="success" onClick={() => unvote()}>Unvote</Button> : null}
           {isHost && allVoted ? <Button variant="danger" onClick={() => finishVoting()}>Finalize</Button> : null}
           <Button onClick={() => showPlayerInfo()}>Show Players</Button>
-          <Button onClick={() => calculateResults()}>Calculate Results</Button>
+          <Button onClick={() => calculateWinner()}>Calculate Winner</Button>
+          <Button onClick={() => console.log(winner)}>console.log(winner)</Button>
         </Container>
       </Container>
     </React.Fragment>
