@@ -1,0 +1,14 @@
+{
+  "root": true,
+  "extends": [
+    "fullstack",
+    "prettier",
+    "prettier/react",
+    "plugin:react/recommended"
+  ],
+  "plugins": ["react"],
+  "rules": {
+    "semi": 1,
+    "react/prop-types": 0
+  }
+}
