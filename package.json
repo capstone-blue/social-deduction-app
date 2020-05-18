@@ -30,7 +30,7 @@
     }
   },
   "lint-staged": {
-    "./**.{js,jsx}": [
+    "*.{js,jsx}": [
       "npx prettier --write",
       "yarn lint-fix"
     ],
