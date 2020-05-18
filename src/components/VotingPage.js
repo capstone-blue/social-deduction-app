@@ -132,13 +132,13 @@ const VotingPage = ({ match, history }) => {
 
     const getPlayersWithMostVotes = object => {
       return Object.keys(object).filter(x => {
-        return object[x] == Math.max.apply(null,
+        return object[x] === Math.max.apply(null,
           Object.values(object));
       });
     };
 
     const mostVotes = getPlayersWithMostVotes(resultsTable)
-    console.log(mostVotes)
+    // console.log(mostVotes)
     const actualRoles = []
     mostVotes.forEach(vote => {
       players.forEach(player => {
@@ -150,7 +150,7 @@ const VotingPage = ({ match, history }) => {
     console.log(actualRoles)
 
     async function findHunterVictim() {
-      console.log('got here with',actualRoles)
+      // console.log('got here with',actualRoles)
       // whomever the hunter votes for also dies
       // find whomever was hunter
       const hunter = players.find(player => player.val().actualRole.name === "Hunter")

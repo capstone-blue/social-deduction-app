@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from 'react-bootstrap/Button';
 function RoleLockButton(props){
-    const [active, setActive] = useState(false)
     function clickActivate(){
       props.wolfy(props.roles,props.players, props.playersRef, props.roleList, props.gameRef)
       props.gameRef.update({

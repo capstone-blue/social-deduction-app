@@ -19,7 +19,7 @@ function RoleAssignment({ match }) {
   const [userId] = useUserId()
   const [playerVals] = useObjectVal(lobbiesRef.child(match.params.id).child('players').child(userId))
   const [players]=useListKeys(lobbiesRef.child(match.params.id).child('players'))
-  const [roleList,loading,error] = useObjectVal(db.ref().child('games').child('werewolf').child('roles'))
+  const [roleList] = useObjectVal(db.ref().child('games').child('werewolf').child('roles'))
   const playersRef = lobbiesRef.child(match.params.id).child('players')
   const gameRef = lobbiesRef.child(match.params.id)
   const [currentRolesList] =  useObjectVal(gameRef.child("currentRoles"))
@@ -76,7 +76,7 @@ function RoleAssignment({ match }) {
 
       <div>
         {currentRolesList
-        ? currentRolesList.length - (players.length+3) != 0
+        ? currentRolesList.length - (players.length+3) !== 0
           ?
             <div>
             {currentRolesList.length - (players.length+3) > 0

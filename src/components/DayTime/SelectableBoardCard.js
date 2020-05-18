@@ -22,8 +22,9 @@ function SelectableBoardCard({
   cardRef,
 }) {
   const [card, setCard] = useState({});
-  const [suspects, loadingSuspects] = useObject(gameRef.child('suspects'))
-  const [markers, loadingmarkers] = useObject(gameRef.child('markers'))
+  // const [suspects, loadingSuspects] = useObject(gameRef.child('suspects'))
+  const [suspects] = useObject(gameRef.child('suspects'))
+  // const [markers, loadingmarkers] = useObject(gameRef.child('markers'))
 //  console.log(markers)
   let suspectIdentity = undefined
   if(suspects){

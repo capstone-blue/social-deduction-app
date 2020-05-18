@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
-import {useObjectVal} from 'react-firebase-hooks/database'
+
 
 const PlayerCardStyle = styled(Card)`
   border-width: ${(props) => (props.border ? '3px' : '1px')};

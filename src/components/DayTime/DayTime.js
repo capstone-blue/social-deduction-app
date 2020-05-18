@@ -39,23 +39,23 @@ function DayTime({match}){
     gameRef.child('players').orderByChild('host').equalTo(true)
   );
 
-  const [suspects, loadingSuspect] = useObject(
+  const [suspects] = useObject(
     gameRef.child('suspects')
   )
 
-  const [allRoles, loadingAllRoles] = useObjectVal(
+  const [allRoles] = useObjectVal(
     gameRef.child('currentRoles')
   );
-  const [markers, loadingMarker] = useObject(gameRef.child("markers"))
+  const [markers] = useObject(gameRef.child("markers"))
 
     // State - should only influence current user's own screen
     const [initialGameState, setGameState] = useState(null);
     const [currPlayerRole, setCurrPlayerRole] = useState('');
     const [selectedCards, setSelectedCards] = useState([]);
-    const [isRevealed, setIsRevealed] = useState(false);
-    function revealCard() {
-        isRevealed ? setIsRevealed(false) : setIsRevealed(true);
-      }
+    const [isRevealed] = useState(false);
+    // function revealCard() {
+    //     isRevealed ? setIsRevealed(false) : setIsRevealed(true);
+    //   }
 
     useEffect(() => {
         gameRef.once('value', (gameSessionSnap) => {
@@ -152,7 +152,6 @@ function DayTime({match}){
 function applyMarker(selectedCards,role,gameRef, suspects, markers){
     if(selectedCards.length ===1){
         const roleDef = role
-        console.log(suspects.val(), markers.val())
         if(suspects.val()&& markers.val()){
           if(suspects.val()[selectedCards[0].cardId] !== roleDef && markers.val()[roleDef] !== selectedCards[0].cardId){
             // gameRef.child("suspects").update({[roleDef]: null})
@@ -171,7 +170,6 @@ function applyMarker(selectedCards,role,gameRef, suspects, markers){
 
             }
             else{
-              console.log('got here')
               gameRef.child("suspects").update({[selectedCards[0].cardId]:roleDef})
               gameRef.child("markers").update({[roleDef]:selectedCards[0].cardId})
             }
