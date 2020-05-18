@@ -1,19 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { db } from '../../firebase';
-import { useObjectVal, useList, useListKeys } from 'react-firebase-hooks/database';
+import { useObjectVal,useListKeys } from 'react-firebase-hooks/database';
 import { useUserId } from '../../context/userContext';
 import EvilButton from './EvilButton'
 import VillageButton from './VillageButton'
 import MasonButton from './MasonButton'
 import RoleLockButton from './RoleLockButton'
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 
-//immediate needs
-  // conditional rendering based on if you are host versus player
-  // actually writing roles to the db when changing roles
-    // FUGGG,  this has slightly larger implications than I thought 
+
+ 
 //possible further work
 
   // default setup button for given number of players
@@ -22,9 +18,7 @@ function RoleAssignment({ match }) {
   const [lobbiesRef] = useState(db.ref().child('gameSessions'));
   const [userId] = useUserId()
   const [playerVals] = useObjectVal(lobbiesRef.child(match.params.id).child('players').child(userId))
-  const [lobby, lobbyLoading] = useObjectVal(lobbiesRef.child(match.params.id));
   const [players]=useListKeys(lobbiesRef.child(match.params.id).child('players'))
-  // const [roles,setRoles] = useState([])
   const [roleList,loading,error] = useObjectVal(db.ref().child('games').child('werewolf').child('roles'))
   const playersRef = lobbiesRef.child(match.params.id).child('players')
   const gameRef = lobbiesRef.child(match.params.id)
