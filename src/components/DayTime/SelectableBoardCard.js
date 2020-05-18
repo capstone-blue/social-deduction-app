@@ -85,12 +85,15 @@ function SelectableBoardCard({
 
   return (
     <div className="text-center" onClick={handleClick}>
-      <BoardCard border={card.border}>
-        {suspectIdentity
-          ?<Card.Title> suspected {suspectIdentity} </Card.Title>
-          : <Card.Title> ? </Card.Title>
+      {suspectIdentity
+      ?  <BoardCard border={card.border}>
+            <Card.Title> suspected {suspectIdentity} </Card.Title>
+            {/* <Card.Body>suspected {suspectIdentity}</Card.Body> */}
+          </BoardCard>
+      : <BoardCard border={card.border}>
+          <Card.Title> ? </Card.Title>
+        </BoardCard>
         }
-      </BoardCard>
     </div>
   );
 }

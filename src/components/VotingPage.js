@@ -47,17 +47,17 @@ const VotingPage = ({ match, history }) => {
         console.error('Error in VotingPage vote status listener', e.message)
       }
     }
-    function listenOnWinner() {
-      try {
-        winnerRef.on('value', function (snapshot) {
-          if (snapshot.val() !== false) {
-            history.push(`/gamesession/${gameSessionId}/gameover`);
-          }
-        })
-      } catch (e) {
-        console.error('Error in GameStart lobby listener', e.message)
-      }
-    }
+    // function listenOnWinner() {
+    //   try {
+    //     winnerRef.on('value', function (snapshot) {
+    //       if (snapshot.val() !== false) {
+    //         history.push(`/gamesession/${gameSessionId}/gameover`);
+    //       }
+    //     })
+    //   } catch (e) {
+    //     console.error('Error in GameStart lobby listener', e.message)
+    //   }
+    // }
     function checkIfHost() {
       db.ref(`/gameSessions/${gameSessionId}/players/${userId}/host`).once('value').then((snapshot) => {
         if (snapshot.exists()) {
@@ -78,7 +78,7 @@ const VotingPage = ({ match, history }) => {
     checkIfHost()
     listenOnVoteStatus()
     checkIfAllVoted()
-    listenOnWinner()
+    // listenOnWinner()
   }, [userId, gameSessionId, voteStatusRef, playerInfo, players, gameSessionRef, history, winnerRef])
 
   async function vote(selectedPlayer) {
@@ -138,17 +138,19 @@ const VotingPage = ({ match, history }) => {
     };
 
     const mostVotes = getPlayersWithMostVotes(resultsTable)
-
+    console.log(mostVotes)
     const actualRoles = []
     mostVotes.forEach(vote => {
       players.forEach(player => {
         if (player.key === vote) {
           actualRoles.push(player.val().actualRole.name)
         }
-      })
+      }) 
     })
+    console.log(actualRoles)
 
     async function findHunterVictim() {
+      console.log('got here with',actualRoles)
       // whomever the hunter votes for also dies
       // find whomever was hunter
       const hunter = players.find(player => player.val().actualRole.name === "Hunter")
@@ -169,6 +171,7 @@ const VotingPage = ({ match, history }) => {
     }
 
     async function minionWinConditions() {
+      console.log('got here with',actualRoles)
       // if there is a werewolf and minion dies, werewolves win
       // if there are no werewolves and someone other than minion dies, werewolves win
       // if there are no werewolve and minion dies, villagers win
@@ -182,10 +185,12 @@ const VotingPage = ({ match, history }) => {
 
     if (actualRoles.length === players.length && !actualRoles.includes("Werewolf")) await gameSessionRef.child('winner').set('Villagers')
     else if (actualRoles.length === 1) {
+      console.log('got here with',actualRoles)
       if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
       else if (actualRoles.includes('Hunter')) findHunterVictim()
       else if (actualRoles.includes('Minion')) minionWinConditions()
       else if (actualRoles.includes('Tanner')) await gameSessionRef.child('winner').set('Tanner')
+      else if (actualRoles.includes('Villager')) await gameSessionRef.child('winner').set('Werewolves')       
     } else if (actualRoles.length === 2) {
       if (actualRoles.includes('Werewolf') && actualRoles.includes('Tanner')) await gameSessionRef.child('winner').set('Tanner and Villagers')
       else if (actualRoles.includes('Werewolf')) await gameSessionRef.child('winner').set('Villagers')
@@ -226,6 +231,7 @@ const VotingPage = ({ match, history }) => {
       calculateWinner()
       // turn off winner listener
       winnerRef.off()
+      gameSessionRef.update({"status":"results"})
     }
   }
 
