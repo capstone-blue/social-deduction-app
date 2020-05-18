@@ -38,6 +38,7 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
         setNextTurnInDB();
       } else if (countDownReached && roleList.length === 1) {
         // the turns are done
+        gameRef.child('isNight').set(false)
         gameRef.child('status').set('dayPhase');
       }
     }

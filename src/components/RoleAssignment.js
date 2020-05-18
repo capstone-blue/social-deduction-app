@@ -6,6 +6,9 @@ import EvilButton from './EvilButton'
 import VillageButton from './VillageButton'
 import MasonButton from './MasonButton'
 import RoleLockButton from './RoleLockButton'
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 //immediate needs
   // conditional rendering based on if you are host versus player
@@ -26,8 +29,7 @@ function RoleAssignment({ match }) {
   const playersRef = lobbiesRef.child(match.params.id).child('players')
   const gameRef = lobbiesRef.child(match.params.id)
   const [currentRolesList] =  useObjectVal(gameRef.child("currentRoles"))
-  console.log(playerVals)
-  console.log(roleList)
+
 
   function buttonClicked(role){
     if(playerVals.host){
@@ -60,20 +62,23 @@ function RoleAssignment({ match }) {
   return(
     playerVals
     ?
-    <div>
-      <h1>werewolves</h1>
+    <Container>
+      <h1 className = "text-center">werewolves</h1>
       <div className = 'werewolfTeam'>
-        <EvilButton buttonClicked = {buttonClicked} role = "werewolf 1"/>
-        <EvilButton buttonClicked = {buttonClicked} role = "werewolf 2"/>
+        <EvilButton buttonClicked = {buttonClicked} role = "werewolf 1" currentRolesList = {currentRolesList}/>{` `}
+        <EvilButton buttonClicked = {buttonClicked} role = "werewolf 2" currentRolesList ={currentRolesList}/>{` `}
       </div>
-      <h1>Villagers</h1>
-      <div className = 'villagerTeam'>
-        <VillageButton buttonClicked = {buttonClicked} role = "villager 1"/>
-        <VillageButton buttonClicked = {buttonClicked} role = "villager 2"/>
-        <VillageButton buttonClicked = {buttonClicked} role = "villager 3"/>
-        <VillageButton buttonClicked = {buttonClicked} role = "seer"/>
-        <VillageButton buttonClicked = {buttonClicked} role = "robber"/>
-      </div>
+      
+
+
+      <h1 className = "text-center">Villagers</h1>
+        <VillageButton buttonClicked = {buttonClicked} role = "villager 1" currentRolesList = {currentRolesList}/>{' '}
+
+
+        <VillageButton buttonClicked = {buttonClicked} role = "villager 2" currentRolesList = {currentRolesList}/>{' '}
+        <VillageButton buttonClicked = {buttonClicked} role = "villager 3" currentRolesList = {currentRolesList}/>{' '}
+        <VillageButton buttonClicked = {buttonClicked} role = "seer" currentRolesList = {currentRolesList}/>{' '}
+        <VillageButton buttonClicked = {buttonClicked} role = "robber" currentRolesList = {currentRolesList}/>{' '}
 
       <div>
         {currentRolesList
@@ -82,32 +87,55 @@ function RoleAssignment({ match }) {
             <div>
             {currentRolesList.length - (players.length+3) > 0
               ? playerVals.host 
-                ? <h4>select {currentRolesList.length - (players.length+3)} fewer roles to start the game </h4>
-                : <h4>host needs to select {currentRolesList.length - (players.length+3)} fewer roles to start the game </h4>
+                ? <div className = "text-center">
+                    <h1>Start Game</h1>
+                    <h4 className = "text-center">select {currentRolesList.length - (players.length+3)} fewer roles to start the game </h4>
+                  </div>
+                : <div className = "text-center">
+                    <h1>Start Game</h1>
+                    <h4 className = "text-center">host needs to select {currentRolesList.length - (players.length+3)} fewer roles to start the game </h4>
+                  </div>
               : playerVals.host
-                ? <h4>select {(players.length+3)-currentRolesList.length} more roles to start the game</h4>
-                : <h4>host needs to select {(players.length+3)-currentRolesList.length} more roles to start the game</h4>
+                ? <div className = "text-center">
+                    <h1>Start Game</h1>
+                    <h4 className = "text-center">select {(players.length+3)-currentRolesList.length} more roles to start the game</h4>
+                </div>
+                : <div className = "text-center">
+                    <h1>Start Game</h1>
+                    <h4 className = "text-center">host needs to select {(players.length+3)-currentRolesList.length} more roles to start the game</h4>
+                </div>
             }
           </div>
           : playerVals.host 
-            ?<RoleLockButton wolfy = {wolfy} roles = {currentRolesList} players = {players} playersRef = {playersRef} roleList = {roleList} gameRef = {gameRef}/>
-            : <h4>waiting for host to start the game</h4>
-        :<h4>select {players.length+3} more roles to start the game</h4>
+            ?<div className = "text-center">
+              <h1>Start Game</h1>
+              <RoleLockButton wolfy = {wolfy} roles = {currentRolesList} players = {players} playersRef = {playersRef} roleList = {roleList} gameRef = {gameRef}/>
+            </div>
+            : <div className = "text-center">
+                <h1>Start Game</h1>
+                <h4>waiting for host to start the game</h4>
+              </div>
+        :<div className = "text-center">
+            <h1>Start Game</h1>
+            <h4>select {players.length+3} more roles to start the game</h4>
+
+        </div>
+
         }
       </div>
       <div>
-        <h3>Coming "Soon"</h3>
+        <h3 className = "text-center">Coming "Soon"</h3>
+        <EvilButton buttonClicked = {buttonClicked} role = "minion"/>{' '}
+        <EvilButton buttonClicked = {buttonClicked} role = "alpha wolf"/>{' '}
+        <VillageButton buttonClicked = {buttonClicked} role = "TroubleMaker"/>{' '}
+        <VillageButton buttonClicked = {buttonClicked} role = "Drunk"/>{' '}
+        <VillageButton buttonClicked = {buttonClicked} role = "Tanner"/>{' '}
+        <VillageButton buttonClicked = {buttonClicked} role = "Hunter"/>{' '}
+        <VillageButton buttonClicked = {buttonClicked} role = "Insomniac"/>{' '}
+        <VillageButton buttonClicked = {buttonClicked} role = "dopplegänger"/>{' '}
         <MasonButton masonButtonClicked = {masonButtonClicked}/>
-        <EvilButton buttonClicked = {buttonClicked} role = "minion"/>
-        <EvilButton buttonClicked = {buttonClicked} role = "alpha wolf"/>
-        <VillageButton buttonClicked = {buttonClicked} role = "TroubleMaker"/>
-        <VillageButton buttonClicked = {buttonClicked} role = "Drunk"/>
-        <VillageButton buttonClicked = {buttonClicked} role = "Tanner"/>
-        <VillageButton buttonClicked = {buttonClicked} role = "Hunter"/>
-        <VillageButton buttonClicked = {buttonClicked} role = "Insomniac"/>
-        <VillageButton buttonClicked = {buttonClicked} role = "dopplegänger"/>
       </div>
-    </div>
+    </Container>
     : <h1>loading</h1>
   );
 }
@@ -137,13 +165,11 @@ function wolfy(inputArray,players,playersRef,roleList,gameRef){
         }
       }
     }
-    console.log("these are assigned",inPlay, "these are in the center",spliceArray)
+    // console.log("these are assigned",inPlay, "these are in the center",spliceArray)
     function setTheRoles(players,playersRef,roleList){
      for (let i = 0; i<players.length; i++){
-       console.log(players[i])
        const individualRef = playersRef.child(players[i])
         if(inPlay[i].includes("villager")){
-          console.log('villager')
           const roleUpdate = roleList["villager"]
           individualRef.update({
             "startingRole": roleUpdate,
@@ -151,7 +177,6 @@ function wolfy(inputArray,players,playersRef,roleList,gameRef){
         })
         }
         else if(inPlay[i].includes("werewolf")){
-          console.log('wolf')
           const roleUpdate = roleList["werewolf"]
           individualRef.update({
             "startingRole": roleUpdate,
@@ -159,7 +184,6 @@ function wolfy(inputArray,players,playersRef,roleList,gameRef){
         })
         }
         else{
-          console.log('else')
           const roleUpdate = roleList[inPlay[i]]
           individualRef.update({
             "startingRole": roleUpdate,

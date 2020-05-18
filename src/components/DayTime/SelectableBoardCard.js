@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {useObjectVal} from 'react-firebase-hooks/database'
+import {useObjectVal, useObject, useListKeys} from 'react-firebase-hooks/database'
 import Card from 'react-bootstrap/Card';
 
 const BoardCard = styled(Card)`
@@ -17,11 +17,41 @@ function SelectableBoardCard({
   setSelectedCards,
   selectedCards,
   cardId,
+  playerVal,
   cardVal,
   cardRef,
 }) {
   const [card, setCard] = useState({});
-  const werewolfSuspect = useObjectVal(gameRef.child("suspects").child("werewolf"))
+  const [suspects, loadingSuspects] = useObject(gameRef.child('suspects'))
+  const [markers, loadingmarkers] = useObject(gameRef.child('markers'))
+//  console.log(markers)
+  let suspectIdentity = undefined
+  if(suspects){
+    if(suspects.val()){
+      // const suspectKeys = Object.keys(suspects.val())
+      // if(suspectKeys){
+      //   const valIndex = suspectKeys.indexOf(playerVal)
+      //   console.log(valIndex)
+      //   if(valIndex >= 0){
+      //     console.log('got here')
+      //     const susValues = Object.values(suspects.val())
+      //     suspectIdentity = susValues[valIndex]
+      //     console.log(suspectIdentity)
+      //   }
+    
+    
+    
+      // }
+      if(suspects.val()[playerVal]){
+        suspectIdentity = suspects.val()[playerVal]
+      }
+      else if(suspects.val()[cardId]){
+        suspectIdentity = suspects.val()[cardId]
+      }
+
+    }
+
+  }
 
   useEffect(() => {
     const thisCard = selectedCards.find((c) => c.cardId === cardId);
@@ -55,9 +85,15 @@ function SelectableBoardCard({
 
   return (
     <div className="text-center" onClick={handleClick}>
-      <BoardCard border={card.border}>
-        <Card.Title>{werewolfSuspect[0] === cardId ? 'suspected werewolf' : '?'}</Card.Title>
-      </BoardCard>
+      {suspectIdentity
+      ?  <BoardCard border={card.border}>
+            <Card.Title> suspected {suspectIdentity} </Card.Title>
+            {/* <Card.Body>suspected {suspectIdentity}</Card.Body> */}
+          </BoardCard>
+      : <BoardCard border={card.border}>
+          <Card.Title> ? </Card.Title>
+        </BoardCard>
+        }
     </div>
   );
 }

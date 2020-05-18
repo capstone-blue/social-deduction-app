@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import Button from 'react-bootstrap/Button';
 function RoleLockButton(props){
     const [active, setActive] = useState(false)
     function clickActivate(){
@@ -10,9 +10,9 @@ function RoleLockButton(props){
     })
     }
     return(
-      <button onClick ={()=>clickActivate()} >
+      <Button variant="success" onClick ={()=>clickActivate()} size="lg" block>
             Lock In Roles
-      </button>
+      </Button>
     )
 }
 

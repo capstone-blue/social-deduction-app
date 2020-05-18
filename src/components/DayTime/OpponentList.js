@@ -55,6 +55,7 @@ function OpponentCard({
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}
         cardId={opponentId}
+        playerVal = {opponentId}
         cardVal={cardSnap.val()}
         cardRef={playerRef}
       />
