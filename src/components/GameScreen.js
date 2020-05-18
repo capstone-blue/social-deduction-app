@@ -1,12 +1,12 @@
-import RoleAssignment from './RoleAssignment'
+import RoleAssignment from './RoleSelect/RoleAssignment'
 import WerewolfGamePage from './WerewolfGamePage'
 import DayTime from './DayTime/DayTime'
 import VotingPage from './VotingPage'
 import NavigationBar from './NavigationBar'
 import GameEnd from './GameEnd'
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { db } from '../firebase';
-import { useObjectVal, useList, useListKeys } from 'react-firebase-hooks/database';
+import { useObjectVal} from 'react-firebase-hooks/database';
 
 function GameScreen({match,history}){
     const gameRef = db.ref().child('gameSessions').child(match.params.id)

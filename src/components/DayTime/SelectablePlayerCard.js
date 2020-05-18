@@ -18,7 +18,6 @@ function SelectablePlayerCard({
   cardRef,
 }) {
   const [card, setCard] = useState({});
-  const werewolfSuspect = useObjectVal(gameRef.child("suspects").child("werewolf"))
 
   useEffect(() => {
     const thisCard = selectedCards.find((c) => c.cardId === cardId);

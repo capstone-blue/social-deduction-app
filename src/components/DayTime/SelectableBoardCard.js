@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {useObjectVal, useObject, useListKeys} from 'react-firebase-hooks/database'
+import {useObject} from 'react-firebase-hooks/database'
 import Card from 'react-bootstrap/Card';
 
 const BoardCard = styled(Card)`
@@ -28,20 +28,6 @@ function SelectableBoardCard({
   let suspectIdentity = undefined
   if(suspects){
     if(suspects.val()){
-      // const suspectKeys = Object.keys(suspects.val())
-      // if(suspectKeys){
-      //   const valIndex = suspectKeys.indexOf(playerVal)
-      //   console.log(valIndex)
-      //   if(valIndex >= 0){
-      //     console.log('got here')
-      //     const susValues = Object.values(suspects.val())
-      //     suspectIdentity = susValues[valIndex]
-      //     console.log(suspectIdentity)
-      //   }
-    
-    
-    
-      // }
       if(suspects.val()[playerVal]){
         suspectIdentity = suspects.val()[playerVal]
       }
