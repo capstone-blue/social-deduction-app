@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { db } from '../firebase';
 import { useUserId } from '../context/userContext';
-import Modal from 'react-bootstrap/Modal'
-import Button from 'react-bootstrap/Button'
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 function AliasModal({ match }) {
   const [show, setShow] = useState(false);
@@ -41,7 +41,7 @@ function AliasModal({ match }) {
             />
             <Button type="submit" variant="dark" onClick={handleClose}>
               Save Changes
-          </Button>
+            </Button>
           </form>
         </Modal.Body>
         <Modal.Footer>
@@ -54,4 +54,4 @@ function AliasModal({ match }) {
   );
 }
 
-export default AliasModal
+export default AliasModal;
