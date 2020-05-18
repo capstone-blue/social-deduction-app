@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { useObjectVal, useList, useListKeys } from 'react-firebase-hooks/database';
-import { useUserId } from '../context/userContext';
+import { useUserId } from '../../context/userContext';
 import EvilButton from './EvilButton'
 import VillageButton from './VillageButton'
 import MasonButton from './MasonButton'
