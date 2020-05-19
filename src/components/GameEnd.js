@@ -8,6 +8,7 @@ import {
 } from 'react-firebase-hooks/database';
 import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
+import Table from 'react-bootstrap/Table';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
@@ -131,6 +132,34 @@ const GameEnd = ({ match, history }) => {
             {winner} {winner === 'Tanner' ? 'Wins!' : 'Win!'}
           </Badge>
         </Title>
+        <Container>
+          <Table striped bordered hover variant="dark">
+            <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+              </tr>
+              <tr>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td colSpan="2">Larry the Bird</td>
+                <td>@twitter</td>
+              </tr>
+            </tbody>
+          </Table>
+        </Container>
       </Container>
       <Container>
         <Title>Start New Game?</Title>
