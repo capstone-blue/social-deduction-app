@@ -10,11 +10,27 @@ h6 {
   font-family: 'Lilita One', cursive;
 }
 
-html {
+html,
+body {
   height: 100%;
+  background: linear-gradient(black, #2a4365);
+  background-repeat: no-repeat;
+  overflow: auto;
+  font-family: 'Lilita One', cursive;
+  color: white;
+  z-index: -2;
 }
 
-body {
-  background: radial-gradient(#141739, #14110f);
-  font-family: 'Lilita One', cursive;
+input[type='text'],
+textarea {
+  background-color: #a0aec0;
+  border: none;
+  background-image: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+.logo {
+  background-image: url(../assets/graveyard.svg);
 }

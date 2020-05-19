@@ -1,10 +1,32 @@
 import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import { auth, db } from './firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useUserId } from './context/userContext';
-
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { HomePage, LobbyPage, RoleAssignment, GameScreen } from './components';
+import { ReactComponent as Graveyard } from './assets/graveyard.svg';
+
+import {
+  HomePage,
+  LobbyPage,
+  RoleAssignment,
+  GameScreen,
+  NavigationBar,
+} from './components';
+
+const OuterPage = styled.div`
+  position: relative;
+  height: 100%;
+  z-index: 0;
+  min-height: 100vh;
+`;
+
+const GraveyardContainer = styled.div`
+  position: absolute;
+  width: 100%;
+  z-index: -1;
+  bottom: 0;
+`;
 
 // const userList = db.ref('users');
 // function UserRef(props) {
@@ -58,7 +80,13 @@ function App() {
     <div>...Loading</div>
   ) : (
     <div>
-      <Routes user={user} />
+      <NavigationBar />
+      <OuterPage>
+        <Routes user={user} />
+        <GraveyardContainer>
+          <Graveyard viewBox="0 0 2000 1100" />
+        </GraveyardContainer>
+      </OuterPage>
     </div>
   );
 }
