@@ -22,10 +22,10 @@ const GameEnd = ({ match, history }) => {
   const [gameSessionRef] = useState(db.ref(`/gameSessions/${gameSessionId}`));
   const [players] = useList(gameSessionRef.child('players'))
   const [playerRef] = useState(db.ref(`/gameSessions/${gameSessionId}/players/${userId}`))
-  const [playerInfo] = useObjectVal(playerRef)
   const [isHost, setIsHost] = useState(false)
   const [winner, setWinner] = useState('')
   const [lobbiesRef] = useState(db.ref().child('lobbies'));
+  const [newLobbyRef] = useState(gameSessionRef.child('newLobby'))
   const [usersRef] = useState(db.ref().child('users'));
   const [lobbyName, setLobbyName] = useState('');
   const [userSnap, userLoading] = useObject(usersRef.child(userId));
@@ -50,7 +50,7 @@ const GameEnd = ({ match, history }) => {
     }
     function listenOnNewLobby() {
       try {
-        gameSessionRef.child('newLobby').once('value').then(function (snapshot) {
+        newLobbyRef.on('value', function (snapshot) {
           if (snapshot.exists() && !isHost) {
             setLobbyName(snapshot.val())
           }
@@ -73,8 +73,7 @@ const GameEnd = ({ match, history }) => {
       });
       await db.ref().child('users').child(userId).update({ ...userSnap.val, inLobby: true })
       await gameSessionRef.child('newLobby').set(lobbyName)
-      setLobbyName('');
-      // history.push(`/lobbies/${lobbySnap.key}`);
+      history.push(`/lobbies/${lobbySnap.key}`);
     } catch (e) {
       console.error('Error in createLobby', e.message);
     }
@@ -98,6 +97,7 @@ const GameEnd = ({ match, history }) => {
         return true;
       });
       await db.ref().child('users').child(userId).update({ ...userSnap.val, inLobby: true })
+      await newLobbyRef.off()
     } catch (e) {
       console.error('Error in joinLobby', e.message);
     }
@@ -117,8 +117,9 @@ const GameEnd = ({ match, history }) => {
         </Row>
         <Row>
           <Col>
-            {!isHost ? <Button variant="dark" onClick={joinLobby}>Join Lobby</Button> : null}
-            {isHost ? <Button variant="dark" onClick={createLobby}>Create Lobby</Button> : <p>Waiting on host to create new lobby...</p>}
+            {!isHost && lobbyName ? <Button variant="dark" onClick={joinLobby}>Join Lobby</Button> : null}
+            {!isHost && !lobbyName ? <p>Waiting on host to create new lobby...</p> : null}
+            {isHost ? <Button variant="dark" onClick={createLobby}>Create Lobby</Button> : null}
           </Col>
         </Row>
       </Container>
