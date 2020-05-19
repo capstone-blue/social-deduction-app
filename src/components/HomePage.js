@@ -2,18 +2,29 @@ import React, { useState } from 'react';
 import { db } from '../firebase';
 import { useObject } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
-import { NavigationBar } from './index'
+import { NavigationBar } from './index';
 import styled from 'styled-components';
 import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container'
-import Form from 'react-bootstrap/Form'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
+import Container from 'react-bootstrap/Container';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
-const Title = styled.h1`
-  font-size: 1.5em;
+const PageContainer = styled(Container)`
+  margin-top: 2rem;
+  height: 100vh;
   text-align: center;
-  color: darkslateblue;
+`;
+
+const ContentContainer = styled(Container)`
+  height: 50%;
+  border-radius: 0.5rem;
+  border: 1rem solid #718096;
+  background-color: #a0aec0;
+`;
+
+const PageTitle = styled('h1')`
+  color: #f6e05e;
 `;
 
 function HomePage(props) {
@@ -31,20 +42,24 @@ function LobbyForm({ history }) {
   const [userId] = useUserId();
   const [userSnap, userLoading] = useObject(usersRef.child(userId));
 
-  async function checkIfAlreadyInALobby() {
+  function checkIfAlreadyInALobby() {
     // await db.ref().child('users').child(userId);
     // .set({ signedIn: true })
-    console.log(userSnap.val().inLobby)
+    console.log(userSnap.val().inLobby);
   }
 
   async function createLobby() {
     try {
       const lobbySnap = await lobbiesRef.push({
         name: lobbyName,
-        status: "pending",
+        status: 'pending',
         players: { [userSnap.key]: { ...userSnap.val(), host: true } },
       });
-      await db.ref().child('users').child(userId).update({ ...userSnap.val, inLobby: true })
+      await db
+        .ref()
+        .child('users')
+        .child(userId)
+        .update({ ...userSnap.val, inLobby: true });
       setLobbyName('');
       history.push(`/lobbies/${lobbySnap.key}`);
     } catch (e) {
@@ -52,14 +67,13 @@ function LobbyForm({ history }) {
     }
   }
 
-
   async function joinLobby() {
     try {
       const lobbySnaps = await lobbiesRef
         .orderByChild('name')
         .equalTo(lobbyName)
         .once('value');
-      console.log(lobbySnaps)
+      console.log(lobbySnaps);
       if (!lobbySnaps.val()) {
         setLobbyName('');
         throw new Error(`Cannot find lobby with name ${lobbyName}`);
@@ -74,7 +88,11 @@ function LobbyForm({ history }) {
         history.push(`/lobbies/${l.key}`);
         return true;
       });
-      await db.ref().child('users').child(userId).update({ ...userSnap.val, inLobby: true })
+      await db
+        .ref()
+        .child('users')
+        .child(userId)
+        .update({ ...userSnap.val, inLobby: true });
     } catch (e) {
       console.error('Error in joinLobby', e.message);
     }
@@ -83,24 +101,44 @@ function LobbyForm({ history }) {
   return userLoading ? (
     <div>Loading...</div>
   ) : (
-      <React.Fragment>
-        <NavigationBar />
-        <Container>
-          <Title>Create or Join a Lobby</Title>
+    <React.Fragment>
+      <NavigationBar />
+      <PageContainer>
+        <PageTitle>One Night: Ultimate Werewolf</PageTitle>
+
+        <ContentContainer>
           <Row>
-            <Form.Control size="sm" type="text" placeholder="Lobby Name" onChange={(e) => setLobbyName(e.target.value)}
-              value={lobbyName} />
-          </Row>
-          <Row>
-            <Col>
-              <Button variant="dark" onClick={joinLobby}>Join Lobby</Button>
-              <Button variant="dark" onClick={createLobby}>Create Lobby</Button>
-              <Button variant="dark" onClick={checkIfAlreadyInALobby}>Check if already in a lobby</Button>
+            <Col />
+            <Col md={8}>
+              <Form.Control
+                size="sm"
+                type="text"
+                placeholder="Lobby Name"
+                onChange={(e) => setLobbyName(e.target.value)}
+                value={lobbyName}
+              />
             </Col>
+            <Col />
           </Row>
-        </Container>
-      </React.Fragment>
-    );
+          <Row>
+            <Col />
+            <Col md={6}>
+              <Button variant="dark" onClick={joinLobby}>
+                Join Lobby
+              </Button>
+              <Button variant="dark" onClick={createLobby}>
+                Create Lobby
+              </Button>
+              <Button variant="dark" onClick={checkIfAlreadyInALobby}>
+                Check if already in a lobby
+              </Button>
+            </Col>
+            <Col />
+          </Row>
+        </ContentContainer>
+      </PageContainer>
+    </React.Fragment>
+  );
 }
 
 export default HomePage;
