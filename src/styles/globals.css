@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Spectral:wght@700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Lilita One', cursive;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  background: radial-gradient(#141739, #14110f);
+  font-family: 'Lilita One', cursive;
+}
