@@ -2,33 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { auth, db } from './firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useUserId } from './context/userContext';
-import {useList} from 'react-firebase-hooks/database';
+// import {useList} from 'react-firebase-hooks/database';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { HomePage, LobbyPage, GameSession, RoleAssignment,WerewolfGamePage,GameScreen,VotingPage, GameEnd} from './components';
+import { HomePage, LobbyPage, RoleAssignment,GameScreen} from './components';
 
 
 
-const userList = db.ref("users");
-function UserRef(props){
-  const [snapshot,loading,error] = useList(userList)
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error!</p>;
-  return (
-    <div>
-      <ul>
-        {snapshot.map(user=>(
-          <li key = {user.key}>
-            <h1>{user.val()}</h1>
-            <h1>hey</h1>
+// const userList = db.ref("users");
+// function UserRef(props){
+//   const [snapshot,loading,error] = useList(userList)
+//   if (loading) return <p>Loading...</p>;
+//   if (error) return <p>Error!</p>;
+//   return (
+//     <div>
+//       <ul>
+//         {snapshot.map(user=>(
+//           <li key = {user.key}>
+//             <h1>{user.val()}</h1>
+//             <h1>hey</h1>
 
-          </li>
-        )
-        )}
-      </ul>
-    </div>
-  );
-}
+//           </li>
+//         )
+//         )}
+//       </ul>
+//     </div>
+//   );
+// }
 function App() {
   const [userId, setUserId] = useUserId();
   const [usersRef] = useState(db.ref().child('users'));
