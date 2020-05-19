@@ -225,7 +225,7 @@ const VotingPage = ({ match, history }) => {
 
   async function finishVoting() {
     if (allVoted) {
-      // turn off listener
+      // asdasd
       voteStatusRef.off()
       // calculate winner and set winner into gameSession for retrieval in GameEnd component
       calculateWinner()
