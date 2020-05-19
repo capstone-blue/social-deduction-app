@@ -48,12 +48,21 @@ const GameEnd = ({ match, history }) => {
         }
       })
     }
+    function listenOnNewLobby() {
+      try {
+        gameSessionRef.child('newLobby').once('value').then(function (snapshot) {
+          if (snapshot.exists() && !isHost) {
+            setLobbyName(snapshot.val())
+          }
+        })
+      } catch (e) {
+        console.error('Error in GameStart lobby listener', e.message)
+      }
+    }
     setWinningTeam()
     checkIfHost()
-  }, [gameSessionRef, gameSessionId, userId])
-
-
-
+    listenOnNewLobby()
+  }, [gameSessionRef, gameSessionId, userId, isHost])
 
   async function createLobby() {
     try {
@@ -63,8 +72,9 @@ const GameEnd = ({ match, history }) => {
         players: { [userSnap.key]: { ...userSnap.val(), host: true } },
       });
       await db.ref().child('users').child(userId).update({ ...userSnap.val, inLobby: true })
+      await gameSessionRef.child('newLobby').set(lobbyName)
       setLobbyName('');
-      history.push(`/lobbies/${lobbySnap.key}`);
+      // history.push(`/lobbies/${lobbySnap.key}`);
     } catch (e) {
       console.error('Error in createLobby', e.message);
     }
