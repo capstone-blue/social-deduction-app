@@ -1,8 +1,8 @@
+/* eslint no-unneeded-ternary: 0 */
 import React, { useState } from 'react';
 import { db } from '../firebase';
 import { useObject } from 'react-firebase-hooks/database';
 import { useUserId } from '../context/userContext';
-import { NavigationBar } from './index';
 import styled from 'styled-components';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -11,20 +11,35 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 const PageContainer = styled(Container)`
+  position: relative;
   margin-top: 2rem;
-  height: 100vh;
   text-align: center;
+  z-index: 1;
 `;
 
-const ContentContainer = styled(Container)`
-  height: 50%;
-  border-radius: 0.5rem;
-  border: 1rem solid #718096;
-  background-color: #a0aec0;
-`;
-
-const PageTitle = styled('h1')`
+const PageTitle = styled.h1`
   color: #f6e05e;
+  margin-bottom: 3rem;
+`;
+
+const ContentContainer = styled.div`
+  height: auto;
+  margin: 0 auto;
+  width: 40%;
+  padding: 1rem 1rem;
+  border-radius: 0.5rem;
+  border-bottom: 6px solid #9b2c2c;
+  background-color: #718096;
+`;
+
+const LobbyInput = styled(Form.Control)`
+  &[type='text'] {
+    background-color: white;
+  }
+  margin-bottom: 1rem;
+  ::placeholder {
+    color: #a0aec0;
+  }
 `;
 
 function HomePage(props) {
@@ -42,11 +57,11 @@ function LobbyForm({ history }) {
   const [userId] = useUserId();
   const [userSnap, userLoading] = useObject(usersRef.child(userId));
 
-  function checkIfAlreadyInALobby() {
-    // await db.ref().child('users').child(userId);
-    // .set({ signedIn: true })
-    console.log(userSnap.val().inLobby);
-  }
+  // function checkIfAlreadyInALobby() {
+  //   // await db.ref().child('users').child(userId);
+  //   // .set({ signedIn: true })
+  //   console.log(userSnap.val().inLobby);
+  // }
 
   async function createLobby() {
     try {
@@ -101,43 +116,45 @@ function LobbyForm({ history }) {
   return userLoading ? (
     <div>Loading...</div>
   ) : (
-    <React.Fragment>
-      <NavigationBar />
-      <PageContainer>
-        <PageTitle>One Night: Ultimate Werewolf</PageTitle>
+    <PageContainer>
+      <PageTitle>One Night: Ultimate Werewolf</PageTitle>
 
-        <ContentContainer>
-          <Row>
-            <Col />
-            <Col md={8}>
-              <Form.Control
-                size="sm"
-                type="text"
-                placeholder="Lobby Name"
-                onChange={(e) => setLobbyName(e.target.value)}
-                value={lobbyName}
-              />
-            </Col>
-            <Col />
-          </Row>
-          <Row>
-            <Col />
-            <Col md={6}>
-              <Button variant="dark" onClick={joinLobby}>
-                Join Lobby
-              </Button>
-              <Button variant="dark" onClick={createLobby}>
-                Create Lobby
-              </Button>
-              <Button variant="dark" onClick={checkIfAlreadyInALobby}>
+      <ContentContainer>
+        <Row>
+          <Col>
+            <LobbyInput
+              type="text"
+              placeholder="enter a lobby name"
+              onChange={(e) => setLobbyName(e.target.value)}
+              value={lobbyName}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col />
+          <Col lg="auto">
+            <Button
+              variant="dark"
+              onClick={joinLobby}
+              disabled={lobbyName ? false : true}
+            >
+              Join Lobby
+            </Button>
+            <Button
+              variant="dark"
+              onClick={createLobby}
+              disabled={lobbyName ? false : true}
+            >
+              Create Lobby
+            </Button>
+            {/* <Button variant="dark" onClick={checkIfAlreadyInALobby}>
                 Check if already in a lobby
-              </Button>
-            </Col>
-            <Col />
-          </Row>
-        </ContentContainer>
-      </PageContainer>
-    </React.Fragment>
+              </Button> */}
+          </Col>
+          <Col />
+        </Row>
+      </ContentContainer>
+    </PageContainer>
   );
 }
 
