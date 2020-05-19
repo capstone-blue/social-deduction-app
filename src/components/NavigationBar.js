@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
+// import Nav from 'react-bootstrap/Nav';
 import logo from '../assets/logo.jpeg';
 
 const CustomNavbar = styled(Navbar)`
   background-color: #2a4365;
+  z-index: 1;
 `;
 
 const NavigationBar = () => {
@@ -21,12 +22,12 @@ const NavigationBar = () => {
         />{' '}
         One Night: Ultimate Werewolf
       </Navbar.Brand>
-      <Nav.Link style={{ color: '#63B3ED' }} href="/">
+      {/* <Nav.Link style={{ color: '#63B3ED' }} href="/">
         Return to Lobby (not working)
       </Nav.Link>
       <Nav.Link style={{ color: '#63B3ED' }} href="/">
         Return to Game (not working)
-      </Nav.Link>
+      </Nav.Link> */}
     </CustomNavbar>
   );
 };
