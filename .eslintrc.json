@@ -9,6 +9,9 @@
   "plugins": ["react"],
   "rules": {
     "semi": 1,
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "no-alert": 0,
+    "complexity": ["error", 10],
+    "react/no-unescaped-entities": 0
   }
 }
