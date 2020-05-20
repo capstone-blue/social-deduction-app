@@ -1,4 +1,4 @@
-import RoleAssignment from './RoleAssignment';
+import RoleAssignment from './RoleSelect/RoleAssignment';
 import WerewolfGamePage from './WerewolfGamePage';
 import DayTime from './DayTime/DayTime';
 import VotingPage from './VotingPage';
