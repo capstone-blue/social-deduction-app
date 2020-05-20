@@ -40,6 +40,15 @@ const ContentText = styled.p`
   color: #23272b;
 `;
 
+const WerewolfLink = styled.a`
+  color: #23272b;
+  text-decoration: underline;
+  text-decoration-color: #c22c31;
+  &:hover {
+    color: #c22c31;
+  }
+`;
+
 const LobbyInput = styled(Form.Control)`
   &[type='text'] {
     background-color: #eaeaea;
@@ -144,9 +153,12 @@ function LobbyForm({ history }) {
           <Col className="mx-auto">
             <ContentText>
               Welcome to the{' '}
-              <span style={{ color: '#c22c31' }}>
+              <WerewolfLink
+                href="https://boardgamegeek.com/boardgame/147949/one-night-ultimate-werewolf"
+                target="_blank"
+              >
                 One Night: Ultimate Werewolf
-              </span>{' '}
+              </WerewolfLink>{' '}
               clone. If you&apos;re hosting a match, go ahead and create a
               lobby. Otherwise, enter your friend&apos;s lobby name and join
               their game!
