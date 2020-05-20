@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import { useUserId } from '../context/userContext';
 import Modal from 'react-bootstrap/Modal';
@@ -6,11 +6,18 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 function AliasModal({ match, players }) {
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
   const [userId] = useUserId();
   const [alias, setAlias] = useState('');
   const [aliasError, setAliasError] = useState('');
   const [isValidated, setIsValidated] = useState(false);
+
+  useEffect(() => {
+    const currPlayer = players.find((p) => userId === p[0]);
+    if (!currPlayer[1].alias) {
+      setShow(true);
+    }
+  }, [players, userId]);
 
   function handleSubmit(e) {
     e.preventDefault();
