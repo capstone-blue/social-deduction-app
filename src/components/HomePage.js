@@ -18,7 +18,7 @@ const PageContainer = styled(Container)`
 `;
 
 const PageTitle = styled.h1`
-  color: #f6e05e;
+  color: #c22c31;
   margin-bottom: 3rem;
 `;
 
@@ -26,20 +26,37 @@ const ContentContainer = styled.div`
   height: auto;
   margin: 0 auto;
   width: 40%;
-  padding: 1rem 1rem;
-  border-radius: 0.5rem;
-  border-bottom: 6px solid #9b2c2c;
-  background-color: #718096;
+  padding: 2rem 2rem;
+  border-radius: 0.25rem;
+  border-top: 8px solid #3182ce;
+  border-bottom: 8px solid #3182ce;
+  background-color: #eaeaea;
+`;
+
+const ContentText = styled.p`
+  color: #23272b;
 `;
 
 const LobbyInput = styled(Form.Control)`
   &[type='text'] {
-    background-color: white;
+    background-color: #eaeaea;
+    border-bottom: 2px solid #a0aec0;
+    border-radius: 0px;
+    &:focus {
+      outline: none !important;
+      border-bottom: 2px solid #c22c31;
+      box-shadow: none;
+      color: #c22c31;
+    }
   }
   margin-bottom: 1rem;
   ::placeholder {
     color: #a0aec0;
   }
+  background-image: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
 `;
 
 function HomePage(props) {
@@ -121,7 +138,20 @@ function LobbyForm({ history }) {
 
       <ContentContainer>
         <Row>
-          <Col>
+          <Col className="mx-auto">
+            <ContentText>
+              Welcome to the{' '}
+              <span style={{ color: '#c22c31' }}>
+                One Night: Ultimate Werewolf
+              </span>{' '}
+              clone. If you&apos;re hosting a match, go ahead and create a
+              lobby. Otherwise, enter your friend&apos;s lobby name and join
+              their game!
+            </ContentText>
+          </Col>
+        </Row>
+        <Row>
+          <Col className="mx-auto text-center">
             <LobbyInput
               type="text"
               placeholder="enter a lobby name"
@@ -130,9 +160,8 @@ function LobbyForm({ history }) {
             />
           </Col>
         </Row>
-        <Row>
-          <Col />
-          <Col lg="auto">
+        <Row className="mb-1">
+          <Col className="mx-auto" lg="auto">
             <Button
               variant="dark"
               onClick={joinLobby}
@@ -140,6 +169,10 @@ function LobbyForm({ history }) {
             >
               Join Lobby
             </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col className="mx-auto" lg="auto">
             <Button
               variant="dark"
               onClick={createLobby}
@@ -151,7 +184,6 @@ function LobbyForm({ history }) {
                 Check if already in a lobby
               </Button> */}
           </Col>
-          <Col />
         </Row>
       </ContentContainer>
     </PageContainer>
