@@ -8,13 +8,13 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
-import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import TurnCountdown from './TurnCountdown';
 import OpponentList from './OpponentList';
 import MiddleCardList from './MiddleCardList';
 import PlayerCard from './PlayerCard';
 import Messages from './Messages';
+import PlayerCommands from './PlayerCommandsButtons/PlayerCommands';
 
 const Board = styled(Container)`
   width: 80%;
@@ -46,42 +46,66 @@ function WerewolfGamePage({ match }) {
   const [currPlayerRole, setCurrPlayerRole] = useState('');
   const [selectedCards, setSelectedCards] = useState([]);
 
-  function revealCard() {
-    if (selectedCards.length > 1)
-      return alert('You may only reveal one card at a time!');
-    selectedCards[0].isRevealed
-      ? setSelectedCards([{ ...selectedCards[0], isRevealed: false }])
-      : setSelectedCards([{ ...selectedCards[0], isRevealed: true }]);
-  }
+  // function revealCard() {
+  //   if(currPlayer.startingRole.name ==="Doppelganger" || currPlayer.startingRole.name === "Robber" || currPlayer.startingRole.name ==="Seer" || currPlayer.startingRole.name === "Insomniac"){
+  //     if (selectedCards.length > 1){
+  //       return alert('You may only reveal one card at a time!');
+  //     }
+  //     else if(currPlayer.startingRole.name === currentTurn){
+  //       console.log(currPlayer.startingRole.name, currentTurn)
+  //       selectedCards[0].isRevealed
+  //         ? setSelectedCards([{ ...selectedCards[0], isRevealed: false }])
+  //         : setSelectedCards([{ ...selectedCards[0], isRevealed: true }]);
+  //     }
+  //     else{
+  //       return alert("It is not your turn")
+  //     }
+  //   }
+  //   else{
+  //     return alert("your role can not perform that action")
+  //   }
+  // }
 
-  async function swapCards() {
-    if (selectedCards.length < 2)
-      return alert('You must have two cards selected to swap');
-    const [firstCard, secondCard] = selectedCards;
-    const { cardRef: firstRef, cardVal: firstVal } = firstCard;
-    const { cardRef: secondRef, cardVal: secondVal } = secondCard;
+  // async function swapCards() {
+  //   if(currPlayer.startingRole.name ==="Drunk" || currPlayer.startingRole.name === "Robber" || currPlayer.startingRole.naame === "Troublemaker"){
+  //     if (selectedCards.length < 2){
+  //       return alert('You must have two cards selected to swap');
+  //     }
+  //     else if( currPlayer.startingRole.name === currentTurn){
+  //       console.log(currPlayer.startingRole.name, currentTurn)
+  //       const [firstCard, secondCard] = selectedCards;
+  //       const { cardRef: firstRef, cardVal: firstVal } = firstCard;
+  //       const { cardRef: secondRef, cardVal: secondVal } = secondCard;
 
-    firstRef.set(secondVal);
-    secondRef.set(firstVal);
+  //       firstRef.set(secondVal);
+  //       secondRef.set(firstVal);
 
-    const firstNewBorder = firstCard.border === 'green' ? 'red' : 'green';
-    const secondNewBorder = secondCard.border === 'green' ? 'red' : 'green';
+  //       const firstNewBorder = firstCard.border === 'green' ? 'red' : 'green';
+  //       const secondNewBorder = secondCard.border === 'green' ? 'red' : 'green';
 
-    setSelectedCards([
-      {
-        ...firstCard,
-        cardVal: secondVal,
-        isRevealed: false,
-        border: firstNewBorder,
-      },
-      {
-        ...secondCard,
-        cardVal: firstVal,
-        isRevealed: false,
-        border: secondNewBorder,
-      },
-    ]);
-  }
+  //       setSelectedCards([
+  //         {
+  //           ...firstCard,
+  //           cardVal: secondVal,
+  //           isRevealed: false,
+  //           border: firstNewBorder,
+  //         },
+  //         {
+  //           ...secondCard,
+  //           cardVal: firstVal,
+  //           isRevealed: false,
+  //           border: secondNewBorder,
+  //         },
+  //       ]);
+  //     }
+  //     else{
+  //       return alert("It is not your turn")
+  //     }
+  //   }
+  //     else{
+  //       return alert("your role can not perform that action")
+  //     }
+  // }
   // use 'once' to grab the initial state on load
   // firebase-hooks uses 'on', which we don't want in this case
   useEffect(() => {
@@ -169,18 +193,26 @@ function WerewolfGamePage({ match }) {
                 selectedCards={selectedCards}
               />
             </Col>
-            <Col></Col>
+            <Col />
           </Row>
         </Col>
         <Col md={2}>
           <aside className="text-center">
             <h2>Commands</h2>
-            <Button variant="warning" onClick={revealCard}>
+            {/* <Button variant="warning" onClick={revealCard}>
               Reveal Card
             </Button>
             <Button variant="warning" onClick={swapCards}>
               Swap Cards
-            </Button>
+            </Button> */}
+            {currPlayer && currPlayer.startingRole.name === currentTurn ? (
+              <PlayerCommands
+                currPlayer={currPlayer}
+                setSelectedCards={setSelectedCards}
+                selectedCards={selectedCards}
+                currentTurn={currentTurn}
+              />
+            ) : null}
           </aside>
         </Col>
       </Row>

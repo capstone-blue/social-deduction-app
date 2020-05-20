@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { db } from '../firebase'
 import { useUserId } from '../context/userContext';
-import { useList, useObject, useObjectVal } from 'react-firebase-hooks/database'
+import { useObject } from 'react-firebase-hooks/database'
 import styled from 'styled-components'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -20,15 +20,16 @@ const GameEnd = ({ match, history }) => {
   const [userId] = useUserId();
   const [gameSessionId] = useState(match.params.id)
   const [gameSessionRef] = useState(db.ref(`/gameSessions/${gameSessionId}`));
-  const [players] = useList(gameSessionRef.child('players'))
-  const [playerRef] = useState(db.ref(`/gameSessions/${gameSessionId}/players/${userId}`))
-  const [playerInfo] = useObjectVal(playerRef)
+  // const [players] = useList(gameSessionRef.child('players'))
+  // const [playerRef] = useState(db.ref(`/gameSessions/${gameSessionId}/players/${userId}`))
+  // const [playerInfo] = useObjectVal(playerRef)
   const [isHost, setIsHost] = useState(false)
   const [winner, setWinner] = useState('')
   const [lobbiesRef] = useState(db.ref().child('lobbies'));
   const [usersRef] = useState(db.ref().child('users'));
   const [lobbyName, setLobbyName] = useState('');
-  const [userSnap, userLoading] = useObject(usersRef.child(userId));
+  // const [userSnap, userLoading] = useObject(usersRef.child(userId));
+  const [userSnap] = useObject(usersRef.child(userId));
 
 
   useEffect(() => {

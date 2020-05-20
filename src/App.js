@@ -51,7 +51,6 @@ const Footer = styled.footer`
 //     </div>
 //   );
 // }
-
 function App() {
   const [userId, setUserId] = useUserId();
   const [usersRef] = useState(db.ref().child('users'));
