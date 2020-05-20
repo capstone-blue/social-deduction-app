@@ -11,6 +11,13 @@ import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
+import UIfx from 'uifx';
+import victoryMP3 from '../assets/sounds/victory.mp3';
+
+const victory = new UIfx(victoryMP3, {
+  volume: 0.9, // value must be between 0.0 ⇔ 1.0
+  throttleMs: 50,
+});
 
 const Title = styled.h1`
   font-size: 2.5em;
@@ -65,6 +72,7 @@ const GameEnd = ({ match, history }) => {
         console.error('Error in GameStart lobby listener', e.message);
       }
     }
+    victory.play();
     setWinningTeam();
     checkIfHost();
     listenOnNewLobby();
