@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import { useUserId } from '../context/userContext';
-import {
-  useList,
-  useObject,
-  useObjectVal,
-} from 'react-firebase-hooks/database';
+import { useList, useObject } from 'react-firebase-hooks/database';
 import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
@@ -14,6 +10,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import Form from 'react-bootstrap/Form';
+import ListGroup from 'react-bootstrap/ListGroup';
 
 const Title = styled.h1`
   font-size: 2.5em;
@@ -26,16 +23,14 @@ const GameEnd = ({ match, history }) => {
   const [gameSessionId] = useState(match.params.id);
   const [gameSessionRef] = useState(db.ref(`/gameSessions/${gameSessionId}`));
   const [players] = useList(gameSessionRef.child('players'));
-  const [playerRef] = useState(
-    db.ref(`/gameSessions/${gameSessionId}/players/${userId}`)
-  );
   const [isHost, setIsHost] = useState(false);
   const [winner, setWinner] = useState('');
   const [lobbiesRef] = useState(db.ref().child('lobbies'));
   const [newLobbyRef] = useState(gameSessionRef.child('newLobby'));
   const [usersRef] = useState(db.ref().child('users'));
   const [lobbyName, setLobbyName] = useState('');
-  const [userSnap, userLoading] = useObject(usersRef.child(userId));
+  const [userSnap] = useObject(usersRef.child(userId));
+  const [deadPlayers] = useList(gameSessionRef.child('deadPlayers'));
 
   useEffect(() => {
     function setWinningTeam() {
@@ -121,42 +116,43 @@ const GameEnd = ({ match, history }) => {
     }
   }
 
+  console.log(players);
+
   return (
     <React.Fragment>
       <Container>
-        <Title>
-          <Badge variant="dark">Result</Badge>
-        </Title>
         <Title>
           <Badge variant="danger">
             {winner} {winner === 'Tanner' ? 'Wins!' : 'Win!'}
           </Badge>
         </Title>
+        <Badge variant="dark">Who died?</Badge>
+        <ListGroup horizontal>
+          {deadPlayers ? (
+            deadPlayers.map((player) => (
+              <ListGroup.Item key={player.key}>{player.val()}</ListGroup.Item>
+            ))
+          ) : (
+            <ListGroup.Item>Nobody died!</ListGroup.Item>
+          )}
+        </ListGroup>
         <Container>
-          <Table striped bordered hover variant="dark">
+          <Table size="sm" striped bordered variant="dark">
             <thead>
               <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Username</th>
+                <th>Player</th>
+                <th>Starting Role</th>
+                <th>Final Role</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td colSpan="2">Larry the Bird</td>
-                <td>@twitter</td>
-              </tr>
+              {players.map((player) => (
+                <tr key={player.key}>
+                  <td>{player.val().alias}</td>
+                  <td>{player.val().startingRole.name}</td>
+                  <td>{player.val().actualRole.name}</td>
+                </tr>
+              ))}
             </tbody>
           </Table>
         </Container>
