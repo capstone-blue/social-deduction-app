@@ -28,7 +28,7 @@ function RoleAssignment({ match }) {
   const playersRef = lobbiesRef.child(match.params.id).child('players');
   const gameRef = lobbiesRef.child(match.params.id);
   const [currentRolesList] = useObjectVal(gameRef.child('currentRoles'));
-
+  console.log(currentRolesList);
   function buttonClicked(role) {
     if (playerVals.host) {
       if (currentRolesList) {
@@ -73,6 +73,47 @@ function RoleAssignment({ match }) {
       <h1 className="text-center">Villagers</h1>
       <VillageButton
         buttonClicked={buttonClicked}
+        role="seer"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="robber"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="Troublemaker"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="Drunk"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="Tanner"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="Hunter"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="Insomniac"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="dopplegänger"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <MasonButton masonButtonClicked={masonButtonClicked} />
+      <VillageButton
+        buttonClicked={buttonClicked}
         role="villager 1"
         currentRolesList={currentRolesList}
       />{' '}
@@ -84,16 +125,6 @@ function RoleAssignment({ match }) {
       <VillageButton
         buttonClicked={buttonClicked}
         role="villager 3"
-        currentRolesList={currentRolesList}
-      />{' '}
-      <VillageButton
-        buttonClicked={buttonClicked}
-        role="seer"
-        currentRolesList={currentRolesList}
-      />{' '}
-      <VillageButton
-        buttonClicked={buttonClicked}
-        role="robber"
         currentRolesList={currentRolesList}
       />{' '}
       <div>
@@ -165,15 +196,12 @@ function RoleAssignment({ match }) {
       </div>
       <div>
         <h3 className="text-center">Coming "Soon"</h3>
-        <EvilButton buttonClicked={buttonClicked} role="minion" />{' '}
         <EvilButton buttonClicked={buttonClicked} role="alpha wolf" />{' '}
-        <VillageButton buttonClicked={buttonClicked} role="TroubleMaker" />{' '}
-        <VillageButton buttonClicked={buttonClicked} role="Drunk" />{' '}
-        <VillageButton buttonClicked={buttonClicked} role="Tanner" />{' '}
-        <VillageButton buttonClicked={buttonClicked} role="Hunter" />{' '}
-        <VillageButton buttonClicked={buttonClicked} role="Insomniac" />{' '}
-        <VillageButton buttonClicked={buttonClicked} role="dopplegänger" />{' '}
-        <MasonButton masonButtonClicked={masonButtonClicked} />
+        <EvilButton
+          buttonClicked={buttonClicked}
+          role="minion"
+          currentRolesList={currentRolesList}
+        />{' '}
       </div>
     </Container>
   ) : (

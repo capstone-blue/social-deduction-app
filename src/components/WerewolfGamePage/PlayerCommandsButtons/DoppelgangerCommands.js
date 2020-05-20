@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 
-function DoppleGangerCommands({
+function DoppelgangerCommands({
   currPlayer,
   setSelectedCards,
   selectedCards,
@@ -24,4 +24,4 @@ function DoppleGangerCommands({
   );
 }
 
-export default DoppleGangerCommands;
+export default DoppelgangerCommands;
