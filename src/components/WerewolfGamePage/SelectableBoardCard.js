@@ -17,9 +17,11 @@ function SelectableBoardCard({
   cardId,
   cardVal,
   cardRef,
+  currPlayer,
+  currentTurn,
 }) {
   const [card, setCard] = useState({});
-
+  console.log(currPlayer);
   useEffect(() => {
     const thisCard = selectedCards.find((c) => c.cardId === cardId);
     if (thisCard) setCard(thisCard);
@@ -41,6 +43,8 @@ function SelectableBoardCard({
         cardRef,
         isRevealed: false,
         isSelected: true,
+        currPlayer,
+        currentTurn,
       };
       // if there is a card in the list already, give the new card a different border
       const firstCard = selectedCards[0];
@@ -49,11 +53,14 @@ function SelectableBoardCard({
       setSelectedCards([...selectedCards, newCard]);
     }
   }
-
   return (
     <div className="text-center" onClick={handleClick}>
       <BoardCard border={card.border}>
-        <Card.Title>{card.isRevealed ? cardVal.name : '?'}</Card.Title>
+        <Card.Title>
+          {card.isRevealed && currPlayer.startingRole.name === currentTurn
+            ? cardVal.name
+            : '?'}
+        </Card.Title>
       </BoardCard>
     </div>
   );

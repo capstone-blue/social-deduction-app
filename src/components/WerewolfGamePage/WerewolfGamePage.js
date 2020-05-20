@@ -45,7 +45,7 @@ function WerewolfGamePage({ match }) {
   const [initialGameState, setGameState] = useState(null);
   const [currPlayerRole, setCurrPlayerRole] = useState('');
   const [selectedCards, setSelectedCards] = useState([]);
-
+  console.log(currPlayer);
   // function revealCard() {
   //   if(currPlayer.startingRole.name ==="Doppelganger" || currPlayer.startingRole.name === "Robber" || currPlayer.startingRole.name ==="Seer" || currPlayer.startingRole.name === "Insomniac"){
   //     if (selectedCards.length > 1){
@@ -171,12 +171,16 @@ function WerewolfGamePage({ match }) {
               players={initialGameState.players}
               setSelectedCards={setSelectedCards}
               selectedCards={selectedCards}
+              currPlayer={currPlayer}
+              currentTurn={currentTurn}
             />
             <MiddleCardList
               gameRef={gameSessionRef}
               setSelectedCards={setSelectedCards}
               selectedCards={selectedCards}
               centerCards={initialGameState.centerCards}
+              currPlayer={currPlayer}
+              currentTurn={currentTurn}
             />
           </Board>
           <Row>

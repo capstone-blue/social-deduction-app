@@ -40,6 +40,8 @@ function OpponentCard({
   alias,
   setSelectedCards,
   selectedCards,
+  currPlayer,
+  currentTurn,
 }) {
   const playerRef = gameRef.child(`players/${opponentId}/actualRole`);
   const [cardSnap, loadingcardSnap] = useObject(playerRef);
@@ -56,6 +58,8 @@ function OpponentCard({
         cardId={opponentId}
         cardVal={cardSnap.val()}
         cardRef={playerRef}
+        currPlayer={currPlayer}
+        currentTurn={currentTurn}
       />
     </div>
   );
