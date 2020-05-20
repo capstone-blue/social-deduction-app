@@ -28,6 +28,11 @@ const GraveyardContainer = styled.div`
   bottom: 0;
 `;
 
+const Footer = styled.footer`
+  background-color: black;
+  height: 10rem;
+`;
+
 // const userList = db.ref('users');
 // function UserRef(props) {
 //   const [snapshot, loading, error] = useList(userList);
@@ -87,6 +92,21 @@ function App() {
           <Graveyard viewBox="0 0 2000 1100" />
         </GraveyardContainer>
       </OuterPage>
+      <Footer className="text-center ">
+        {/*
+        If we use the wolf icon, we're supposed to credit the site
+        <small>
+          Icons made by{' '}
+          <a href="https://smashicons.com/" title="Smashicons">
+            Smashicons
+          </a>{' '}
+          from{' '}
+          <a href="https://www.flaticon.com/" title="Flaticon">
+            {' '}
+            www.flaticon.com
+          </a>
+        </small> */}
+      </Footer>
     </div>
   );
 }
