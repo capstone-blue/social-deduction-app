@@ -18,19 +18,22 @@ const PageContainer = styled(Container)`
 `;
 
 const PageTitle = styled.h1`
-  color: #c22c31;
+  color: #ffc108;
   margin-bottom: 3rem;
 `;
 
 const ContentContainer = styled.div`
   height: auto;
   margin: 0 auto;
-  width: 40%;
+  min-width: 40%;
   padding: 2rem 2rem;
   border-radius: 0.25rem;
-  border-top: 8px solid #3182ce;
-  border-bottom: 8px solid #3182ce;
+  border-top: 8px solid #c22c31;
+  border-bottom: 8px solid #c22c31;
   background-color: #eaeaea;
+  @media (min-width: 768px) {
+    width: 70%;
+  }
 `;
 
 const ContentText = styled.p`

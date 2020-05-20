@@ -15,7 +15,7 @@ const CustomNavbarBrand = styled(Nav.Link)`
   &:hover {
     color: white;
     text-decoration: underline;
-    text-decoration-color: #c22c31;
+    text-decoration-color: #ffc108;
   }
 `;
 
