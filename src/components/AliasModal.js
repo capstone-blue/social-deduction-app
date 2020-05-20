@@ -3,14 +3,23 @@ import { db } from '../firebase';
 import { useUserId } from '../context/userContext';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 function AliasModal({ match }) {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
   const [userId] = useUserId();
   const [alias, setAlias] = useState('');
+  const [aliasError, setAliasError] = useState('');
+  const [isValidated, setIsValidated] = useState(false);
 
   function handleSubmit(e) {
     e.preventDefault();
+    setIsValidated(true);
+    // if the name is blank, don't set it in the database
+    if (e.currentTarget.checkValidity() === false) {
+      return e.stopPropagation();
+    }
+
     const lobbyId = match.params.id;
     const updates = {
       [`users/${userId}/alias`]: alias,
@@ -19,7 +28,17 @@ function AliasModal({ match }) {
     db.ref().update(updates);
   }
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    try {
+      setIsValidated(true);
+      if (!alias) {
+        throw new Error('you must provide an alias before continuing');
+      }
+      setShow(false);
+    } catch (e) {
+      setAliasError(e.message);
+    }
+  };
   const handleShow = () => setShow(true);
 
   return (
@@ -30,19 +49,26 @@ function AliasModal({ match }) {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>What would you like to set your name as?</Modal.Title>
+          <Modal.Title>What would you like to set your alias as?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              value={alias}
-              onChange={(e) => setAlias(e.target.value)}
-            />
+          <Form noValidate validated={isValidated} onSubmit={handleSubmit}>
+            <Form.Group>
+              <Form.Control
+                required
+                type="text"
+                placeholder="enter an alias"
+                value={alias}
+                onChange={(e) => setAlias(e.target.value)}
+              />
+              <Form.Control.Feedback type="invalid">
+                {aliasError}
+              </Form.Control.Feedback>
+            </Form.Group>
             <Button type="submit" variant="dark" onClick={handleClose}>
               Save Changes
             </Button>
-          </form>
+          </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="dark" onClick={handleClose}>
