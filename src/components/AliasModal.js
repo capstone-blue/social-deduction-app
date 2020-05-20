@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-function AliasModal({ match }) {
+function AliasModal({ match, players }) {
   const [show, setShow] = useState(true);
   const [userId] = useUserId();
   const [alias, setAlias] = useState('');
@@ -29,11 +29,13 @@ function AliasModal({ match }) {
   }
 
   const handleClose = () => {
+    const currPlayer = players.find((p) => userId === p[0]);
     try {
       setIsValidated(true);
-      if (!alias) {
+      if (!alias && !currPlayer[1].alias) {
         throw new Error('you must provide an alias before continuing');
       }
+      setAliasError('');
       setShow(false);
     } catch (e) {
       setAliasError(e.message);
