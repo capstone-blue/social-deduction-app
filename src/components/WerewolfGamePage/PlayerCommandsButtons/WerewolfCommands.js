@@ -8,9 +8,7 @@ function WerewolfCommands({
   currentTurn,
 }) {
   function revealCard() {
-    if (selectedCards.length > 1) {
-      return null;
-    } else if (currPlayer.startingRole.name === currentTurn) {
+    if (currPlayer.startingRole.name === currentTurn) {
       console.log(currPlayer.startingRole.name, currentTurn);
       selectedCards[0].isRevealed
         ? setSelectedCards([{ ...selectedCards[0], isRevealed: false }])
