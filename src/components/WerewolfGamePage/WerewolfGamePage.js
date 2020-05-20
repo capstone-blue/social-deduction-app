@@ -131,6 +131,28 @@ function WerewolfGamePage({ match }) {
     }
   }, [gameSessionRef, currentTurn, currPlayerRole]);
 
+  useEffect(() => {
+    if (currPlayer) {
+      if (currentTurn !== currPlayer.startingRole.name) {
+        if (selectedCards.length === 1) {
+          if (selectedCards[0].isRevealed === true) {
+            selectedCards[0].isRevealed = false;
+            setSelectedCards([...selectedCards]);
+          }
+        }
+        if (selectedCards.length === 2) {
+          if (
+            selectedCards[0].isRevealed === true ||
+            selectedCards[1].isRevealed === true
+          ) {
+            selectedCards[0].isRevealed = false;
+            selectedCards[1].isRevealed = false;
+            setSelectedCards([...selectedCards]);
+          }
+        }
+      }
+    }
+  }, [currentTurn, currPlayer, setSelectedCards, selectedCards]);
   // View
   return !initialGameState ||
     loadingHost ||
@@ -171,16 +193,12 @@ function WerewolfGamePage({ match }) {
               players={initialGameState.players}
               setSelectedCards={setSelectedCards}
               selectedCards={selectedCards}
-              currPlayer={currPlayer}
-              currentTurn={currentTurn}
             />
             <MiddleCardList
               gameRef={gameSessionRef}
               setSelectedCards={setSelectedCards}
               selectedCards={selectedCards}
               centerCards={initialGameState.centerCards}
-              currPlayer={currPlayer}
-              currentTurn={currentTurn}
             />
           </Board>
           <Row>

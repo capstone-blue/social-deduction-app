@@ -8,8 +8,6 @@ function MiddleCardList({
   selectedCards,
   setSelectedCards,
   centerCards,
-  currPlayer,
-  currentTurn,
 }) {
   return (
     <Row className="justify-content-md-center">
@@ -22,8 +20,6 @@ function MiddleCardList({
             cardId={cardId}
             setSelectedCards={setSelectedCards}
             selectedCards={selectedCards}
-            currPlayer={currPlayer}
-            currentTurn={currentTurn}
           />
         );
       })}
@@ -31,15 +27,7 @@ function MiddleCardList({
   );
 }
 
-function MiddleCard({
-  gameRef,
-  cardId,
-  setSelectedCards,
-  selectedCards,
-  currPlayer,
-  currentTurn,
-}) {
-  console.log(currPlayer);
+function MiddleCard({ gameRef, cardId, setSelectedCards, selectedCards }) {
   const centerCardRef = gameRef.child(`centerCards/${cardId}`);
   const [cardSnap, loadingcardSnap] = useObject(centerCardRef);
   return loadingcardSnap ? (
@@ -51,8 +39,6 @@ function MiddleCard({
       cardId={cardId}
       cardVal={cardSnap.val()}
       cardRef={centerCardRef}
-      currPlayer={currPlayer}
-      currentTurn={currentTurn}
     />
   );
 }
