@@ -1,25 +1,39 @@
-import React from 'react'
+import React from 'react';
+import styled from 'styled-components';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import logo from '../assets/logo.jpeg'
+import logo from '../assets/animals.svg';
+
+const CustomNavbar = styled(Navbar)`
+  color: #ffffff;
+  z-index: 1;
+`;
+
+const CustomNavbarBrand = styled(Nav.Link)`
+  color: white;
+  font-size: 1.5rem;
+  &:hover {
+    color: white;
+    text-decoration: underline;
+    text-decoration-color: #ffc108;
+  }
+`;
 
 const NavigationBar = () => {
   return (
-    <Navbar bg="dark" variant="dark">
-      <Navbar.Brand href="/">
-        <img
-          alt=""
-          src={logo}
-          width="30"
-          height="30"
-          className="d-inline-block align-top"
-        /> One Night Ultimate Werewolf
-    </Navbar.Brand>
-      <Nav.Link href="/">Return to Lobby (not working)</Nav.Link>
-      <Nav.Link href="/">Return to Game (not working)</Nav.Link>
-    </Navbar>
-  )
-}
+    <CustomNavbar>
+      <CustomNavbarBrand className="d-flex align-items-center" href="/">
+        <img alt="" src={logo} width="30" height="30" />{' '}
+        <div className="ml-2">Ultimate Werewolf</div>
+      </CustomNavbarBrand>
+      {/* <Nav.Link style={{ color: '#63B3ED' }} href="/">
+        Return to Lobby (not working)
+      </Nav.Link>
+      <Nav.Link style={{ color: '#63B3ED' }} href="/">
+        Return to Game (not working)
+      </Nav.Link> */}
+    </CustomNavbar>
+  );
+};
 
-export default NavigationBar
-
+export default NavigationBar;
