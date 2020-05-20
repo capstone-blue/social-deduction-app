@@ -9,10 +9,14 @@ function SeerCommands({
 }) {
   function revealCard() {
     if (currPlayer.startingRole.name === currentTurn) {
-      console.log(currPlayer.startingRole.name, currentTurn);
-      selectedCards[0].isRevealed
-        ? setSelectedCards([{ ...selectedCards[0], isRevealed: false }])
-        : setSelectedCards([{ ...selectedCards[0], isRevealed: true }]);
+      console.log(console.log(selectedCards[0].isRevealed), currentTurn);
+      if (selectedCards[0].isRevealed && selectedCards[0].isRevealed) {
+        selectedCards[0].isRevealed = false;
+        selectedCards[1].isRevealed = false;
+      } else {
+        selectedCards[0].isRevealed = true;
+        selectedCards[1].isRevealed = true;
+      }
     } else {
       return null;
     }
