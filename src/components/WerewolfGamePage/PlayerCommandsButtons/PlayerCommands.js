@@ -8,6 +8,8 @@ import DoppelgangerCommands from './DoppelgangerCommands';
 import TroubleMakerCommands from './TroubleMakerCommands';
 
 function PlayerCommands({
+  userId,
+  gameRef,
   currPlayer,
   setSelectedCards,
   selectedCards,
@@ -27,6 +29,8 @@ function PlayerCommands({
   } else if (currPlayer.startingRole.name === 'Robber') {
     return (
       <RobberCommands
+        userId={userId}
+        gameRef={gameRef}
         currPlayer={currPlayer}
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}
@@ -72,6 +76,8 @@ function PlayerCommands({
   } else if (currPlayer.startingRole.name === 'Drunk') {
     return (
       <DrunkCommands
+        userId={userId}
+        gameRef={gameRef}
         currPlayer={currPlayer}
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}

@@ -13,6 +13,7 @@ function DoppelgangerCommands({
       selectedCards[0].isRevealed
         ? setSelectedCards([{ ...selectedCards[0], isRevealed: false }])
         : setSelectedCards([{ ...selectedCards[0], isRevealed: true }]);
+      // currPlayer.update({[currPlayer.action]:[currPlayer.action-1]})
     } else {
       return null;
     }

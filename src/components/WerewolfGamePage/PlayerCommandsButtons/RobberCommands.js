@@ -1,50 +1,63 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 
-function SeerCommands({
+function RobberCommands({
+  userId,
+  gameRef,
   currPlayer,
   setSelectedCards,
   selectedCards,
   currentTurn,
 }) {
   function swapCards() {
-    if (selectedCards.length < 2) {
+    if (selectedCards.length !== 1) {
       return null;
     } else if (currPlayer.startingRole.name === currentTurn) {
       console.log(currPlayer.startingRole.name, currentTurn);
-      const [firstCard, secondCard] = selectedCards;
+      const [firstCard] = selectedCards;
+      console.log(firstCard);
       const { cardRef: firstRef, cardVal: firstVal } = firstCard;
-      const { cardRef: secondRef, cardVal: secondVal } = secondCard;
+      console.log(currPlayer);
+      const secondRef = gameRef.child(`players/${userId}/actualRole`);
+      const secondVal = currPlayer.actualRole;
+      console.log(firstRef, firstVal, secondRef, secondVal);
 
       firstRef.set(secondVal);
       secondRef.set(firstVal);
-
-      const firstNewBorder = firstCard.border === 'green' ? 'red' : 'green';
-      const secondNewBorder = secondCard.border === 'green' ? 'red' : 'green';
+      gameRef
+        .child(`players/${userId}/startingRole`)
+        .update({ actions: currPlayer.startingRole.actions - 1 });
+      // const firstNewBorder = firstCard.border === 'green' ? 'red' : 'green';
+      // const secondNewBorder = secondCard.border === 'green' ? 'red' : 'green';
 
       setSelectedCards([
         {
           ...firstCard,
           cardVal: secondVal,
           isRevealed: false,
-          border: firstNewBorder,
+          // border: firstNewBorder,
         },
-        {
-          ...secondCard,
-          cardVal: firstVal,
-          isRevealed: false,
-          border: secondNewBorder,
-        },
+        // ,
+        // {
+        //   ...secondCard,
+        //   cardVal: firstVal,
+        //   isRevealed: false,
+        //   border: secondNewBorder,
+        // },
       ]);
     } else {
       return alert('It is not your turn');
     }
   }
-  return (
+  return currPlayer.startingRole.actions > 0 ? (
     <Button variant="warning" onClick={swapCards}>
       swap cards
+    </Button>
+  ) : (
+    <Button variant="warning" onClick={swapCards} disabled>
+      you swapped roles with {currPlayer.actualRole.name}
     </Button>
   );
 }
 
-export default SeerCommands;
+export default RobberCommands;

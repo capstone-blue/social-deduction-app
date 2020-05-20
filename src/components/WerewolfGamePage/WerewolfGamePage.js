@@ -207,6 +207,8 @@ function WerewolfGamePage({ match }) {
             </Button> */}
             {currPlayer && currPlayer.startingRole.name === currentTurn ? (
               <PlayerCommands
+                userId={userId}
+                gameRef={gameSessionRef}
                 currPlayer={currPlayer}
                 setSelectedCards={setSelectedCards}
                 selectedCards={selectedCards}

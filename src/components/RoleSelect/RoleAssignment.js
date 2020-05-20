@@ -108,7 +108,7 @@ function RoleAssignment({ match }) {
       />{' '}
       <VillageButton
         buttonClicked={buttonClicked}
-        role="dopplegänger"
+        role="Doppelganger"
         currentRolesList={currentRolesList}
       />{' '}
       <MasonButton masonButtonClicked={masonButtonClicked} />
