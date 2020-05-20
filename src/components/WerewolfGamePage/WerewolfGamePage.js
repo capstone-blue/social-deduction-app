@@ -130,7 +130,7 @@ function WerewolfGamePage({ match }) {
       getWerewolves();
     }
   }, [gameSessionRef, currentTurn, currPlayerRole]);
-
+  // if its not your turn, let's make sure you can't have any cards revealed
   useEffect(() => {
     if (currPlayer) {
       if (currentTurn !== currPlayer.startingRole.name) {

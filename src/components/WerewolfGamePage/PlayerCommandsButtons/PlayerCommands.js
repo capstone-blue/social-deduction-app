@@ -40,6 +40,8 @@ function PlayerCommands({
   } else if (currPlayer.startingRole.name === 'Seer') {
     return (
       <SeerCommands
+        userId={userId}
+        gameRef={gameRef}
         currPlayer={currPlayer}
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}
