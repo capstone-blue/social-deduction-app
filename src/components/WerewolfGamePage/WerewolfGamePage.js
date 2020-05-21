@@ -14,7 +14,12 @@ import OpponentList from './OpponentList';
 import MiddleCardList from './MiddleCardList';
 import PlayerCard from './PlayerCard';
 // import Messages from './Messages';
-import { werewolfMessages, insomniacMessages } from '../NewMessaging';
+import {
+  werewolfMessages,
+  insomniacMessages,
+  minionMessages,
+  masonMessages,
+} from '../NewMessaging';
 import Messages from '../NewMessaging/Messages';
 import PlayerCommands from './PlayerCommandsButtons/PlayerCommands';
 
@@ -128,20 +133,38 @@ function WerewolfGamePage({ match }) {
 
   // Background actions for individual roles
   useEffect(() => {
-    // async function getWerewolves() {
-    //   await werewolfTurn(gameSessionRef);
-    // }
+    async function getWerewolves() {
+      await werewolfMessages(gameSessionRef, userId);
+    }
+    async function getMinions() {
+      await minionMessages(gameSessionRef, userId);
+    }
+    async function getMasons() {
+      await masonMessages(gameSessionRef, userId);
+    }
     if (currPlayer) {
+      console.log(currentTurn, currPlayer.startingRole.name);
       if (
         currentTurn === 'Werewolf' &&
         currPlayer.startingRole.name === 'Werewolf'
       ) {
-        werewolfMessages(gameSessionRef, userId);
+        getWerewolves();
       } else if (
         currentTurn === 'Insomniac' &&
         currPlayer.startingRole.name === 'Insomniac'
       ) {
         insomniacMessages(gameSessionRef, currPlayer, userId);
+      } else if (
+        currentTurn === 'Minion' &&
+        currPlayer.startingRole.name === 'Minion'
+      ) {
+        console.log('got here');
+        getMinions();
+      } else if (
+        currentTurn === 'Mason' &&
+        currPlayer.startingRole.name === 'Mason'
+      ) {
+        getMasons();
       }
     }
   }, [gameSessionRef, currentTurn, currPlayer, userId]);

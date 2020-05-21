@@ -45,11 +45,11 @@ function RoleAssignment({ match }) {
     }
   }
   function masonButtonClicked() {
-    if (currentRolesList.includes('mason')) {
-      const newRoles = currentRolesList.filter((el) => el !== 'mason');
+    if (currentRolesList.includes('Mason')) {
+      const newRoles = currentRolesList.filter((el) => el !== 'Mason');
       gameRef.update({ currentRoles: newRoles });
     } else {
-      const newRoles = [...currentRolesList, 'mason', 'mason'];
+      const newRoles = [...currentRolesList, 'Mason', 'Mason'];
       gameRef.update({ currentRoles: newRoles });
     }
   }
@@ -69,6 +69,11 @@ function RoleAssignment({ match }) {
           currentRolesList={currentRolesList}
         />
         {` `}
+        <EvilButton
+          buttonClicked={buttonClicked}
+          role="Minion"
+          currentRolesList={currentRolesList}
+        />{' '}
       </div>
       <h1 className="text-center">Villagers</h1>
       <VillageButton
@@ -104,11 +109,6 @@ function RoleAssignment({ match }) {
       <VillageButton
         buttonClicked={buttonClicked}
         role="Insomniac"
-        currentRolesList={currentRolesList}
-      />{' '}
-      <VillageButton
-        buttonClicked={buttonClicked}
-        role="Doppelganger"
         currentRolesList={currentRolesList}
       />{' '}
       <MasonButton masonButtonClicked={masonButtonClicked} />
@@ -197,9 +197,9 @@ function RoleAssignment({ match }) {
       <div>
         <h3 className="text-center">Coming "Soon"</h3>
         <EvilButton buttonClicked={buttonClicked} role="alpha wolf" />{' '}
-        <EvilButton
+        <VillageButton
           buttonClicked={buttonClicked}
-          role="minion"
+          role="Doppelganger"
           currentRolesList={currentRolesList}
         />{' '}
       </div>

@@ -3,7 +3,6 @@ import WereWolfCommands from './WerewolfCommands';
 import RobberCommands from './RobberCommands';
 import SeerCommands from './SeerCommands';
 import DrunkCommands from './DrunkCommands';
-import InsomniacCommands from './InsomniacCommands';
 import DoppelgangerCommands from './DoppelgangerCommands';
 import TroubleMakerCommands from './TroubleMakerCommands';
 
@@ -49,14 +48,7 @@ function PlayerCommands({
       />
     );
   } else if (currPlayer.startingRole.name === 'Insomniac') {
-    return (
-      <InsomniacCommands
-        currPlayer={currPlayer}
-        setSelectedCards={setSelectedCards}
-        selectedCards={selectedCards}
-        currentTurn={currentTurn}
-      />
-    );
+    return null;
   } else if (currPlayer.startingRole.name === 'Werewolf') {
     return (
       <WereWolfCommands

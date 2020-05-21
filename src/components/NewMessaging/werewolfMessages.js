@@ -1,6 +1,6 @@
-export function werewolfMessages(gameRef, userId) {
+export async function werewolfMessages(gameRef, userId) {
   const werewolfList = [];
-  gameRef
+  await gameRef
     .child('players')
     .orderByChild('startingRole/name')
     .equalTo('Werewolf')
