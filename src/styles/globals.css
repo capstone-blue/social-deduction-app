@@ -1,6 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Spectral:wght@700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
 
+:root {
+  --main-light: #eaeaea;
+  --second-light: #a0aec0;
+  --main-dark: #23272b;
+  --main-red: #c22c31;
+  --main-yellow: #ffc108;
+  --main-blue: #2a4365;
+  --second-blue: #2b6cb0;
+  --tert-blue: #8eb1c7;
+  --fun-blue: #18a2b8;
+  --fun-green: #28a745;
+}
+
 h1,
 h2,
 h3,
@@ -13,7 +26,7 @@ h6 {
 html,
 body {
   min-height: 100%;
-  background: linear-gradient(#000000, #2b6cb0);
+  background: linear-gradient(#000000, var(--second-blue));
   background-repeat: no-repeat;
   /* overflow: auto; */
   font-family: 'Lilita One', cursive;
@@ -23,12 +36,23 @@ body {
 
 input[type='text'],
 textarea {
-  background-color: #a0aec0;
+  color: var(--main-red);
+  background-color: var(--main-light);
   border: none;
+  border-bottom: 2px solid var(--second-light);
+  border-radius: 0;
   background-image: none;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
+}
+
+input[type='text']:focus {
+  color: var(--main-red);
+  box-shadow: none;
+  outline: none !important;
+  border-bottom: 2px solid var(--main-red);
+  background-color: var(--main-light);
 }
 
 .logo {
@@ -36,5 +60,9 @@ textarea {
 }
 
 .modal-title {
-  color: #23272b;
+  color: var(--main-dark);
+}
+
+.modal-content {
+  background-color: var(--main-light);
 }
