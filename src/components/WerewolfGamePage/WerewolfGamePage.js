@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { werewolfTurn } from '../../utils/turns';
+// import { werewolfTurn } from '../../utils/turns';
 import { useObjectVal } from 'react-firebase-hooks/database';
 import { useUserId } from '../../context/userContext';
 import styled from 'styled-components';
@@ -13,7 +13,9 @@ import TurnCountdown from './TurnCountdown';
 import OpponentList from './OpponentList';
 import MiddleCardList from './MiddleCardList';
 import PlayerCard from './PlayerCard';
-import Messages from './Messages';
+// import Messages from './Messages';
+import { werewolfMessages, insomniacMessages } from '../NewMessaging';
+import Messages from '../NewMessaging/Messages';
 import PlayerCommands from './PlayerCommandsButtons/PlayerCommands';
 
 const Board = styled(Container)`
@@ -40,6 +42,9 @@ function WerewolfGamePage({ match }) {
   );
   const [currentTurn, loadingCurrentTurn] = useObjectVal(
     gameSessionRef.child('currentTurn')
+  );
+  const [messages, loadingMessages] = useObjectVal(
+    gameSessionRef.child(`players/${userId}/messages`)
   );
   // State - should only influence current user's own screen
   const [initialGameState, setGameState] = useState(null);
@@ -123,13 +128,23 @@ function WerewolfGamePage({ match }) {
 
   // Background actions for individual roles
   useEffect(() => {
-    async function getWerewolves() {
-      await werewolfTurn(gameSessionRef);
+    // async function getWerewolves() {
+    //   await werewolfTurn(gameSessionRef);
+    // }
+    if (currPlayer) {
+      if (
+        currentTurn === 'Werewolf' &&
+        currPlayer.startingRole.name === 'Werewolf'
+      ) {
+        werewolfMessages(gameSessionRef, userId);
+      } else if (
+        currentTurn === 'Insomniac' &&
+        currPlayer.startingRole.name === 'Insomniac'
+      ) {
+        insomniacMessages(gameSessionRef, currPlayer, userId);
+      }
     }
-    if (currentTurn === 'Werewolf' && currPlayerRole === 'Werewolf') {
-      getWerewolves();
-    }
-  }, [gameSessionRef, currentTurn, currPlayerRole]);
+  }, [gameSessionRef, currentTurn, currPlayer, userId]);
   // if its not your turn, let's make sure you can't have any cards revealed
   useEffect(() => {
     if (currPlayer) {
@@ -203,7 +218,7 @@ function WerewolfGamePage({ match }) {
           </Board>
           <Row>
             <Col>
-              <Messages gameRef={gameSessionRef} />
+              <Messages messages={messages} />
             </Col>
             <Col md={6}>
               <PlayerCard
