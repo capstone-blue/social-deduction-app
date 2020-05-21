@@ -7,7 +7,7 @@ import Container from 'react-bootstrap/Container';
 import AliasModal from './AliasModal';
 
 const PlayerTitle = styled.h2`
-  color: #18a2b8;
+  color: #ffc108;
 `;
 
 const PlayerContainer = styled.div`
@@ -31,7 +31,7 @@ function PlayersList({ players, match }) {
             <Row key={id}>
               <Col>
                 {alias ? alias : '(...)'}{' '}
-                {host ? <span style={{ color: '#18A2B8' }}>(host)</span> : ''}{' '}
+                {host ? <span style={{ color: '#ffc108' }}>(host)</span> : ''}{' '}
               </Col>
               <Col xs={3}>
                 {id === userId ? (
