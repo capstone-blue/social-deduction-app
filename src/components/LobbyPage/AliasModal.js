@@ -58,7 +58,10 @@ function AliasModal({ match, players }) {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>What would you like to set your alias as?</Modal.Title>
+          <Modal.Title>
+            What would you like to set your{' '}
+            <span style={{ color: '#c22c31' }}>alias</span> to?
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form noValidate validated={isValidated} onSubmit={handleSubmit}>
@@ -79,11 +82,6 @@ function AliasModal({ match, players }) {
             </Button>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="dark" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );
