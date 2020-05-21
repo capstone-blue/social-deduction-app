@@ -19,7 +19,6 @@ function SelectableBoardCard({
   cardRef,
 }) {
   const [card, setCard] = useState({});
-
   useEffect(() => {
     const thisCard = selectedCards.find((c) => c.cardId === cardId);
     if (thisCard) setCard(thisCard);
@@ -49,7 +48,6 @@ function SelectableBoardCard({
       setSelectedCards([...selectedCards, newCard]);
     }
   }
-
   return (
     <div className="text-center" onClick={handleClick}>
       <BoardCard border={card.border}>
