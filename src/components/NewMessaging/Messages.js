@@ -1,7 +1,6 @@
 import React from 'react';
 
 function Messages({ messages }) {
-  console.log(messages);
   let messageVals = undefined;
   if (messages) {
     messageVals = Object.values(messages);
