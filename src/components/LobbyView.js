@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container'
+import Container from 'react-bootstrap/Container';
 import styled from 'styled-components';
 
 const Title = styled.h1`
@@ -51,7 +51,11 @@ function LobbyView({ name, players }) {
           <Container>
             {members.map((m) => {
               const [id, player] = m;
-              return <Container key={id}>{player.alias ? player.alias : '(...)'}</Container>;
+              return (
+                <Container key={id}>
+                  {player.alias ? player.alias : '(...)'}
+                </Container>
+              );
             })}
           </Container>
         </Container>
@@ -60,4 +64,4 @@ function LobbyView({ name, players }) {
   );
 }
 
-export default LobbyView
+export default LobbyView;
