@@ -5,6 +5,8 @@ import { useUserId } from '../context/userContext';
 import { useList, useObjectVal } from 'react-firebase-hooks/database';
 import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import Badge from 'react-bootstrap/Badge';
@@ -20,7 +22,7 @@ const Title = styled.h1`
 // when the user clicks on a player, the button should be selected
 // when the button is selected, the vote should go against that selected player
 
-const VotingPage = ({ match, history }) => {
+const VotingPage = ({ match }) => {
   const [userId] = useUserId();
   const [gameSessionId] = useState(match.params.id);
   const [gameSessionRef] = useState(db.ref(`/gameSessions/${gameSessionId}`));
@@ -51,17 +53,6 @@ const VotingPage = ({ match, history }) => {
         console.error('Error in VotingPage vote status listener', e.message);
       }
     }
-    // function listenOnWinner() {
-    //   try {
-    //     winnerRef.on('value', function (snapshot) {
-    //       if (snapshot.val() !== false) {
-    //         history.push(`/gamesession/${gameSessionId}/gameover`);
-    //       }
-    //     })
-    //   } catch (e) {
-    //     console.error('Error in GameStart lobby listener', e.message)
-    //   }
-    // }
     function checkIfHost() {
       db.ref(`/gameSessions/${gameSessionId}/players/${userId}/host`)
         .once('value')
@@ -86,7 +77,6 @@ const VotingPage = ({ match, history }) => {
     checkIfHost();
     listenOnVoteStatus();
     checkIfAllVoted();
-    // listenOnWinner()
   }, [
     userId,
     gameSessionId,
@@ -94,14 +84,9 @@ const VotingPage = ({ match, history }) => {
     playerInfo,
     players,
     gameSessionRef,
-    history,
-    winnerRef,
   ]);
 
   async function vote(selectedPlayer) {
-    if (selectedPlayer.key === userId) {
-      return alert("You can't vote for yourself!");
-    }
     if (!voted) {
       // increment vote count
       const selectedPlayerVoteRef = gameSessionRef
@@ -147,9 +132,9 @@ const VotingPage = ({ match, history }) => {
   // if no werewolves but there is a minion, werewolf team wins if minion lives
   // if no werewolf and all votes are equal, villagers win
 
+  // eslint-disable-next-line complexity
   async function calculateWinner() {
-    // use a hashmap to save results?
-    // instead of finding who has the most votes, find the most occurences of a votedAgainst?
+    // find the most occurences of a votedAgainst
     const resultsTable = {};
     const voteNames = [];
     players.forEach((player) => (resultsTable[player.key] = 0));
@@ -165,14 +150,20 @@ const VotingPage = ({ match, history }) => {
     const mostVotes = getPlayersWithMostVotes(resultsTable);
     // console.log(mostVotes)
     const actualRoles = [];
+    const deadPlayers = [];
     mostVotes.forEach((vote) => {
       players.forEach((player) => {
         if (player.key === vote) {
           actualRoles.push(player.val().actualRole.name);
+          deadPlayers.push(
+            `${player.val().actualRole.name} (${player.val().alias})`
+          );
         }
       });
     });
     console.log(actualRoles);
+
+    await gameSessionRef.child('deadPlayers').set(deadPlayers);
 
     async function findHunterVictim() {
       // console.log('got here with',actualRoles)
@@ -275,7 +266,7 @@ const VotingPage = ({ match, history }) => {
     } else await gameSessionRef.child('winner').set('Werewolves');
   }
 
-  async function finishVoting() {
+  function finishVoting() {
     if (allVoted) {
       // asdasd
       voteStatusRef.off();
@@ -283,7 +274,7 @@ const VotingPage = ({ match, history }) => {
       calculateWinner();
       // turn off winner listener
       winnerRef.off();
-      await gameSessionRef.update({ status: 'results' });
+      gameSessionRef.update({ status: 'results' });
     }
   }
 
@@ -291,37 +282,49 @@ const VotingPage = ({ match, history }) => {
     <React.Fragment>
       <Container>
         <Title>
-          <Badge variant="dark">Vote</Badge>
+          <Badge variant="dark">Who's A Werewolf?</Badge>
+          <p variant="dark">Vote for the player you think is a werewolf!</p>
+          <Container>
+            <Col>
+              {voted ? (
+                <Button variant="success" onClick={() => unvote()}>
+                  Unvote
+                </Button>
+              ) : null}
+            </Col>
+            <Col>
+              {isHost && allVoted ? (
+                <Button variant="danger" onClick={() => finishVoting()}>
+                  Everyone's Done Voting
+                </Button>
+              ) : null}
+            </Col>
+          </Container>
         </Title>
         <ProgressBar now={70} label="Time Remaining: (Not working)" />
         <Container>
           <ListGroup>
             {players.map((player) => (
-              <ListGroup.Item
-                key={player.key}
-                action
-                onClick={() => vote(player)}
-                disabled={voted && true}
-              >
-                <Container>
-                  <Badge variant="info">{player.val().alias}</Badge>
-                  <Badge variant="danger">Votes: {player.val().votes}</Badge>
-                </Container>
+              <ListGroup.Item variant="info" key={player.key}>
+                <Row>
+                  <Col>
+                    <p>{player.val().alias}</p>
+                  </Col>
+                  <Col>
+                    <Badge variant="danger">Votes: {player.val().votes}</Badge>
+                  </Col>
+                  <Col>
+                    <Button
+                      onClick={() => vote(player)}
+                      disabled={!!voted || player.key === userId}
+                    >
+                      Vote
+                    </Button>
+                  </Col>
+                </Row>
               </ListGroup.Item>
             ))}
           </ListGroup>
-        </Container>
-        <Container>
-          {voted ? (
-            <Button variant="success" onClick={() => unvote()}>
-              Unvote
-            </Button>
-          ) : null}
-          {isHost && allVoted ? (
-            <Button variant="danger" onClick={() => finishVoting()}>
-              Finalize
-            </Button>
-          ) : null}
         </Container>
       </Container>
     </React.Fragment>

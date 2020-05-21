@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 
-
 const PlayerCardStyle = styled(Card)`
   border-width: ${(props) => (props.border ? '3px' : '1px')};
   border-color: ${(props) => props.border || 'gray'};
