@@ -12,10 +12,30 @@ import Badge from 'react-bootstrap/Badge';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
 import UIfx from 'uifx';
-import victoryMP3 from '../assets/sounds/victory.mp3';
+import victorySound from '../assets/sounds/victory.mp3';
+import deathbellSound from '../assets/sounds/deathbell.wav';
+import wowSound from '../assets/sounds/wow.wav';
+import jingleSound from '../assets/sounds/jingle.wav';
+import startSound from '../assets/sounds/start.mp3';
 
-const victory = new UIfx(victoryMP3, {
-  volume: 0.9, // value must be between 0.0 ⇔ 1.0
+const victory = new UIfx(victorySound, {
+  volume: 0.9,
+  throttleMs: 50,
+});
+const deathbell = new UIfx(deathbellSound, {
+  volume: 0.5,
+  throttleMs: 50,
+});
+const wow = new UIfx(wowSound, {
+  volume: 0.9,
+  throttleMs: 50,
+});
+const jingle = new UIfx(jingleSound, {
+  volume: 0.3,
+  throttleMs: 50,
+});
+const start = new UIfx(startSound, {
+  volume: 0.5,
   throttleMs: 50,
 });
 
@@ -25,6 +45,7 @@ const Title = styled.h1`
   color: darkslateblue;
 `;
 
+// eslint-disable-next-line complexity
 const GameEnd = ({ match, history }) => {
   const [userId] = useUserId();
   const [gameSessionId] = useState(match.params.id);
@@ -72,14 +93,24 @@ const GameEnd = ({ match, history }) => {
         console.error('Error in GameStart lobby listener', e.message);
       }
     }
-    victory.play();
+    function playSound() {
+      if (winner === 'Villagers') {
+        victory.play();
+      } else if (winner === 'Werewolves') {
+        deathbell.play();
+      } else if (winner === 'Tanner') {
+        wow.play();
+      }
+    }
     setWinningTeam();
     checkIfHost();
+    playSound();
     listenOnNewLobby();
-  }, [gameSessionRef, gameSessionId, userId, isHost]);
+  }, [gameSessionRef, gameSessionId, userId, isHost, winner]);
 
   async function createLobby() {
     try {
+      start.play();
       const lobbySnap = await lobbiesRef.push({
         name: lobbyName,
         status: 'pending',
@@ -99,6 +130,7 @@ const GameEnd = ({ match, history }) => {
 
   async function joinLobby() {
     try {
+      start.play();
       const lobbySnaps = await lobbiesRef
         .orderByChild('name')
         .equalTo(lobbyName)
@@ -118,7 +150,7 @@ const GameEnd = ({ match, history }) => {
         .child('users')
         .child(userId)
         .update({ ...userSnap.val, inLobby: true });
-      await newLobbyRef.off();
+      newLobbyRef.off();
     } catch (e) {
       console.error('Error in joinLobby', e.message);
     }
@@ -166,7 +198,7 @@ const GameEnd = ({ match, history }) => {
         </Container>
       </Container>
       <Container>
-        <Title>Start New Game?</Title>
+        <Title>{!lobbyName ? 'Start New Game?' : 'Ready to Join!'}</Title>
         <Row>
           <Form.Control
             size="sm"
@@ -178,11 +210,13 @@ const GameEnd = ({ match, history }) => {
         </Row>
         <Row>
           <Col>
-            {!isHost && lobbyName ? (
-              <Button variant="dark" onClick={joinLobby}>
-                Join Lobby
-              </Button>
-            ) : null}
+            {!isHost && lobbyName
+              ? jingle.play() && (
+                  <Button variant="dark" onClick={joinLobby}>
+                    Join Lobby
+                  </Button>
+                )
+              : null}
             {!isHost && !lobbyName ? (
               <p>Waiting on host to create new lobby...</p>
             ) : null}
