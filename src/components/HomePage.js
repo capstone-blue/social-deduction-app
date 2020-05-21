@@ -50,25 +50,10 @@ const WerewolfLink = styled.a`
 `;
 
 const LobbyInput = styled(Form.Control)`
-  &[type='text'] {
-    background-color: #eaeaea;
-    border-bottom: 2px solid #a0aec0;
-    border-radius: 0px;
-    &:focus {
-      outline: none !important;
-      border-bottom: 2px solid #c22c31;
-      box-shadow: none;
-      color: #c22c31;
-    }
-  }
   margin-bottom: 1rem;
   ::placeholder {
     color: #a0aec0;
   }
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
 `;
 
 function HomePage(props) {
