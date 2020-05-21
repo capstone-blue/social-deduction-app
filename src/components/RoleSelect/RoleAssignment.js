@@ -237,6 +237,7 @@ function wolfy(inputArray, players, playersRef, roleList, gameRef) {
     }
   }
   function setTheRoles() {
+    let count = 0;
     for (let i = 0; i < players.length; i++) {
       const individualRef = playersRef.child(players[i]);
       if (inPlay[i].includes('villager')) {
@@ -253,6 +254,8 @@ function wolfy(inputArray, players, playersRef, roleList, gameRef) {
           startingRole: roleUpdate,
           actualRole: roleUpdate,
         });
+        count++;
+        gameRef.update({ wolfCount: count });
       } else {
         const roleUpdate = roleList[inPlay[i]];
         availTurnVals.push(roleList[[inPlay[i]]]);

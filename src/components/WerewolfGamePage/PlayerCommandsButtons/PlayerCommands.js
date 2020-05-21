@@ -60,6 +60,8 @@ function PlayerCommands({
   } else if (currPlayer.startingRole.name === 'Werewolf') {
     return (
       <WereWolfCommands
+        userId={userId}
+        gameRef={gameRef}
         currPlayer={currPlayer}
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}
@@ -69,6 +71,8 @@ function PlayerCommands({
   } else if (currPlayer.startingRole.name === 'Troublemaker') {
     return (
       <TroubleMakerCommands
+        userId={userId}
+        gameRef={gameRef}
         currPlayer={currPlayer}
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}
