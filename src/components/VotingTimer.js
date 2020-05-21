@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { useObjectVal } from 'react-firebase-hooks/database';
 
-function VotingTimer({ gameRef, host }) {
+function VotingTimer({ gameRef, host, finishVoting }) {
   const [count, setCount] = useState('');
   const [endVotingTime, loadingVotingTime] = useObjectVal(
-    gameRef.child('endDayTime')
+    gameRef.child('endVotingTime')
   );
   const votingHasntStarted = !loadingVotingTime && !endVotingTime;
   const countDownReached =
@@ -19,8 +19,8 @@ function VotingTimer({ gameRef, host }) {
       db.ref('/.info/serverTimeOffset').once('value', function (snap) {
         const offset = snap.val();
         const rightNow = new Date().getTime() + offset;
-        const endVoteTime = rightNow + 300000;
-        gameRef.child('endDayTime').set(endVoteTime);
+        const endVoteTime = rightNow + 2500;
+        gameRef.child('endVotingTime').set(endVoteTime);
       });
     }
     if (host) {
@@ -28,7 +28,7 @@ function VotingTimer({ gameRef, host }) {
         // set an expiration time for 15 seconds into the future
         setEndTimeInDB();
       } else if (countDownReached) {
-        gameRef.child('status').set('voting');
+        finishVoting();
       }
     }
   }, [gameRef, host, votingHasntStarted, countDownReached]);

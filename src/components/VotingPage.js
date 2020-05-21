@@ -282,9 +282,13 @@ const VotingPage = ({ match }) => {
   return (
     <React.Fragment>
       <Container>
-        <VotingTimer gameRef={gameSessionRef} host={isHost} />
+        <VotingTimer
+          gameRef={gameSessionRef}
+          host={isHost}
+          finishVoting={finishVoting}
+        />
         <Title>
-          <Badge variant="dark">Who's A Werewolf?</Badge>
+          <Badge variant="dark">Decision Time!</Badge>
           <p variant="dark">Vote for the player you think is a werewolf!</p>
           <Container>
             <Col>
@@ -294,13 +298,13 @@ const VotingPage = ({ match }) => {
                 </Button>
               ) : null}
             </Col>
-            <Col>
+            {/* <Col>
               {isHost && allVoted ? (
                 <Button variant="danger" onClick={() => finishVoting()}>
                   Everyone's Done Voting
                 </Button>
               ) : null}
-            </Col>
+            </Col> */}
           </Container>
         </Title>
         <ProgressBar now={70} label="Time Remaining: (Not working)" />
