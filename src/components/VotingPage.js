@@ -1,5 +1,6 @@
 /* eslint-disable complexity */
 import React, { useState, useEffect } from 'react';
+import { VotingTimer } from './index';
 import { db } from '../firebase';
 import { useUserId } from '../context/userContext';
 import { useList, useObjectVal } from 'react-firebase-hooks/database';
@@ -281,6 +282,7 @@ const VotingPage = ({ match }) => {
   return (
     <React.Fragment>
       <Container>
+        <VotingTimer gameRef={gameSessionRef} host={isHost} />
         <Title>
           <Badge variant="dark">Who's A Werewolf?</Badge>
           <p variant="dark">Vote for the player you think is a werewolf!</p>

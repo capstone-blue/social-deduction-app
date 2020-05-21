@@ -1,18 +1,16 @@
-import { useObjectVal } from 'react-firebase-hooks/database';
-import { useUserId } from '../../context/userContext';
 import React, { useEffect, useState } from 'react';
-import { db } from '../../firebase';
+import { db } from '../firebase';
+import { useObjectVal } from 'react-firebase-hooks/database';
 
-function DayCountDown({ gameRef, host }) {
-  const [userId] = useUserId();
+function VotingTimer({ gameRef, host }) {
   const [count, setCount] = useState('');
-  const [endDayTime, loadingDayEndTime] = useObjectVal(
+  const [endVotingTime, loadingVotingTime] = useObjectVal(
     gameRef.child('endDayTime')
   );
-  const gameHasntStarted = !loadingDayEndTime && !endDayTime;
+  const votingHasntStarted = !loadingVotingTime && !endVotingTime;
   const countDownReached =
-    !gameHasntStarted && endDayTime < new Date().getTime();
-  const timeLeft = Math.floor(endDayTime - new Date().getTime());
+    !votingHasntStarted && endVotingTime < new Date().getTime();
+  const timeLeft = Math.floor(endVotingTime - new Date().getTime());
   const minutes = Math.floor(timeLeft / 1000 / 60);
   const seconds = Math.floor(timeLeft / 1000 - minutes * 60);
   // EFFECTS
@@ -21,28 +19,30 @@ function DayCountDown({ gameRef, host }) {
       db.ref('/.info/serverTimeOffset').once('value', function (snap) {
         const offset = snap.val();
         const rightNow = new Date().getTime() + offset;
-        const endDayTime = rightNow + 300000;
-        gameRef.child('endDayTime').set(endDayTime);
+        const endVoteTime = rightNow + 300000;
+        gameRef.child('endDayTime').set(endVoteTime);
       });
     }
-    if (host[userId]) {
-      if (gameHasntStarted) {
+    if (host) {
+      if (votingHasntStarted) {
         // set an expiration time for 15 seconds into the future
         setEndTimeInDB();
       } else if (countDownReached) {
         gameRef.child('status').set('voting');
       }
     }
-  }, [gameRef, host, userId, gameHasntStarted, countDownReached]);
+  }, [gameRef, host, votingHasntStarted, countDownReached]);
 
   // every second, client checks their time against server end time
   useEffect(() => {
     const interval = setInterval(() => {
-      let secondsLeft = Math.floor((endDayTime - new Date().getTime()) / 1000);
+      let secondsLeft = Math.floor(
+        (endVotingTime - new Date().getTime()) / 1000
+      );
       setCount(secondsLeft);
     }, 1000);
     return () => clearInterval(interval);
-  }, [count, endDayTime]);
+  }, [count, endVotingTime]);
 
   return seconds > 9 ? (
     <h2>
@@ -55,4 +55,4 @@ function DayCountDown({ gameRef, host }) {
   );
 }
 
-export default DayCountDown;
+export default VotingTimer;
