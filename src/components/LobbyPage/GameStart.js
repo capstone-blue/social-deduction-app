@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase';
 import { useUserId } from '../../context/userContext';
+import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import { useObjectVal } from 'react-firebase-hooks/database';
+
+const StartButton = styled(Button)`
+  font-size: 2rem;
+`;
 
 function GameStart({ match, players, history }) {
   const [userId] = useUserId();
@@ -67,24 +72,21 @@ function GameStart({ match, players, history }) {
   return (
     <Container>
       {isHost ? (
-        <Button variant="dark" onClick={createGameSession}>
+        <StartButton variant="danger" onClick={createGameSession}>
           Start Game
-        </Button>
+        </StartButton>
       ) : (
         <Container>
           <Button variant="dark" disabled>
+            Waiting for host{' '}
             <Spinner
               as="span"
               animation="grow"
               size="sm"
               role="status"
               aria-hidden="true"
-            />
-            Waiting for host...
+            />{' '}
           </Button>
-          <Spinner animation="border" role="status">
-            Waiting for host...
-          </Spinner>
         </Container>
       )}
     </Container>

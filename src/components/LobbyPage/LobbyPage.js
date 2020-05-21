@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import GameStart from './GameStart';
-import AliasModal from './AliasModal';
 import PlayersList from './PlayersList';
 import Container from 'react-bootstrap/Container';
 
@@ -27,24 +26,28 @@ const TitleSpan = styled.span`
   text-decoration-color: #c22c31;
 `;
 
+const PlayerCol = styled(Col)`
+  margin-bottom: 1rem;
+`;
+
 // Main logic should be handled in this component
 function LobbyPage({ match, history }) {
   const [lobbiesRef] = useState(db.ref().child('lobbies'));
   const [lobby, lobbyLoading] = useObjectVal(lobbiesRef.child(match.params.id));
   const [gameStarted, setGameStarted] = useState(false);
-
   return lobbyLoading ? (
     <Container>...Loading</Container>
   ) : (
     <PageContainer>
+      {console.log(lobby.players)}
       <PageTitle>
         Lobby <TitleSpan>{lobby.name}</TitleSpan>
       </PageTitle>
       <Row>
-        <Col>
-          <PlayersList players={Object.entries(lobby.players)} />
-        </Col>
-        <Col className="d-flex align-items-center">
+        <PlayerCol>
+          <PlayersList players={Object.entries(lobby.players)} match={match} />
+        </PlayerCol>
+        <Col lg={4} className="d-flex align-items-center">
           <GameStart
             players={Object.entries(lobby.players)}
             match={match}
@@ -54,7 +57,6 @@ function LobbyPage({ match, history }) {
           />
         </Col>
       </Row>
-      <AliasModal match={match} players={Object.entries(lobby.players)} />
     </PageContainer>
   );
 }
