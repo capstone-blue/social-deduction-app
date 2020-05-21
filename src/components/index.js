@@ -1,11 +1,8 @@
-export {default as HomePage} from './HomePage'
-export {default as LobbyPage} from './LobbyPage'
-export {default as GameStart} from './GameStart'
-export {default as RoleAssignment} from './RoleSelect/RoleAssignment'
-export {default as WerewolfGamePage} from './WerewolfGamePage'
-export {default as AliasModal} from './AliasModal'
-export {default as LobbyView} from './LobbyView'
-export {default as NavigationBar} from './NavigationBar'
-export {default as GameScreen} from './GameScreen'
-export {default as VotingPage} from './VotingPage'
-export {default as GameEnd} from './GameEnd'
+export { default as HomePage } from './HomePage';
+export { default as LobbyPage } from './LobbyPage';
+export { default as RoleAssignment } from './RoleSelect/RoleAssignment';
+export { default as WerewolfGamePage } from './WerewolfGamePage';
+export { default as NavigationBar } from './NavigationBar';
+export { default as GameScreen } from './GameScreen';
+export { default as VotingPage } from './VotingPage';
+export { default as GameEnd } from './GameEnd';

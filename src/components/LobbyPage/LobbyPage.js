@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { useObjectVal } from 'react-firebase-hooks/database';
-import { GameStart, AliasModal, LobbyView } from './index';
+import GameStart from './GameStart';
+import AliasModal from './AliasModal';
+import LobbyView from './LobbyView';
 import Container from 'react-bootstrap/Container';
 
 // Main logic should be handled in this component
