@@ -1,10 +1,31 @@
 import React, { useState } from 'react';
 import { db } from '../../firebase';
 import { useObjectVal } from 'react-firebase-hooks/database';
+import styled from 'styled-components';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import GameStart from './GameStart';
 import AliasModal from './AliasModal';
-import LobbyView from './LobbyView';
+import PlayersList from './PlayersList';
 import Container from 'react-bootstrap/Container';
+
+const PageContainer = styled(Container)`
+  position: relative;
+  margin-top: 2rem;
+  text-align: center;
+  z-index: 1;
+`;
+
+const PageTitle = styled.h1`
+  color: white;
+  margin-bottom: 3rem;
+`;
+
+const TitleSpan = styled.span`
+  color: white;
+  text-decoration: underline;
+  text-decoration-color: #c22c31;
+`;
 
 // Main logic should be handled in this component
 function LobbyPage({ match, history }) {
@@ -15,19 +36,26 @@ function LobbyPage({ match, history }) {
   return lobbyLoading ? (
     <Container>...Loading</Container>
   ) : (
-    <React.Fragment>
-      <Container>
-        <AliasModal match={match} players={Object.entries(lobby.players)} />
-        <LobbyView players={Object.entries(lobby.players)} name={lobby.name} />
-        <GameStart
-          players={Object.entries(lobby.players)}
-          match={match}
-          history={history}
-          setGameStarted={setGameStarted}
-          gameStarted={gameStarted}
-        />
-      </Container>
-    </React.Fragment>
+    <PageContainer>
+      <PageTitle>
+        Lobby <TitleSpan>{lobby.name}</TitleSpan>
+      </PageTitle>
+      <Row>
+        <Col>
+          <PlayersList players={Object.entries(lobby.players)} />
+        </Col>
+        <Col className="d-flex align-items-center">
+          <GameStart
+            players={Object.entries(lobby.players)}
+            match={match}
+            history={history}
+            setGameStarted={setGameStarted}
+            gameStarted={gameStarted}
+          />
+        </Col>
+      </Row>
+      <AliasModal match={match} players={Object.entries(lobby.players)} />
+    </PageContainer>
   );
 }
 
