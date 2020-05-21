@@ -39,7 +39,7 @@ function GameStart({ match, players, history }) {
     checkIfHost();
   }, [lobbiesRef, players, userId, history, lobbyId]);
 
-  async function createGameSession() {
+  function createGameSession() {
     // checks for min players to start game
     if (players.length >= minPlayers) {
       try {
