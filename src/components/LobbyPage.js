@@ -15,7 +15,7 @@ function LobbyPage({ match, history }) {
   ) : (
     <React.Fragment>
       <Container>
-        <AliasModal match={match} />
+        <AliasModal match={match} players={Object.entries(lobby.players)} />
         <LobbyView players={Object.entries(lobby.players)} name={lobby.name} />
         <GameStart
           players={Object.entries(lobby.players)}
