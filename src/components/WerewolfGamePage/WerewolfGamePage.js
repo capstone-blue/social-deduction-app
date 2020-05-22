@@ -201,7 +201,7 @@ function WerewolfGamePage({ match }) {
     <Container>
       <Row>
         <Col style={{ backgroundColor: 'blue' }}>
-          <Row>
+          {/* <Row>
             <Col>
               <h1 className="text-center">
                 {initialGameState.title}{' '}
@@ -210,7 +210,7 @@ function WerewolfGamePage({ match }) {
                 </Badge>
               </h1>
             </Col>
-          </Row>
+          </Row> */}
           <Row>
             <TurnCountdown
               gameRef={gameSessionRef}
