@@ -270,25 +270,20 @@ function WerewolfGamePage({ match }) {
                   selectedCards={selectedCards}
                   centerCards={initialGameState.centerCards}
                 />
+                <PlayerCard
+                  gameRef={gameSessionRef}
+                  currPlayer={currPlayer}
+                  userId={userId}
+                  setCurrPlayerRole={setCurrPlayerRole}
+                  setSelectedCards={setSelectedCards}
+                  selectedCards={selectedCards}
+                />
               </Col>
               <Col />
             </Row>
           </Board>
           <Row>
-            <Col>
-              <Messages messages={messages} />
-            </Col>
-            <Col md={6}>
-              <PlayerCard
-                gameRef={gameSessionRef}
-                currPlayer={currPlayer}
-                userId={userId}
-                setCurrPlayerRole={setCurrPlayerRole}
-                setSelectedCards={setSelectedCards}
-                selectedCards={selectedCards}
-              />
-            </Col>
-            <Col />
+            <Messages messages={messages} />
           </Row>
         </Col>
       </Row>
