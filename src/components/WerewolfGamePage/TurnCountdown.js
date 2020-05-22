@@ -2,7 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useObjectVal, useListVals } from 'react-firebase-hooks/database';
 import { db } from '../../firebase';
 import { useUserId } from '../../context/userContext';
+import styled from 'styled-components';
 import Spinner from 'react-bootstrap/Spinner';
+import Col from 'react-bootstrap/Col';
+
+const TurnHeading = styled.div`
+  font-size: 3.5rem;
+  margin: 0 auto;
+`;
+
+const Timer = styled.div`
+  color: white;
+  font-size: 3.5rem;
+`;
 
 function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
   const [userId] = useUserId();
@@ -23,9 +35,9 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
       });
     }
     function setNextTurnInDB() {
-      roleList.shift();
-      gameRef.child('turnOrder').set(roleList);
-      gameRef.child('currentTurn').set(roleList[0]);
+      // roleList.shift(); //! comment these 3 lines back in
+      // gameRef.child('turnOrder').set(roleList);
+      // gameRef.child('currentTurn').set(roleList[0]);
     }
 
     if (host[userId]) {
@@ -38,8 +50,8 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
         setNextTurnInDB();
       } else if (countDownReached && roleList.length === 1) {
         // the turns are done
-        gameRef.child('isNight').set(false)
-        gameRef.child('status').set('dayPhase');
+        // gameRef.child('isNight').set(false);//! comment these 2 lines back in
+        //gameRef.child('status').set('dayPhase');
       }
     }
   }, [
@@ -65,10 +77,18 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
   return loadingEndTime || loadingRoleList ? (
     <Spinner animation="border" role="status" />
   ) : (
-    <h2>
-      {currentTurn}'s Turn{' '}
-      {`:${Math.floor((endTime - new Date().getTime()) / 1000)}`}
-    </h2>
+    <React.Fragment>
+      <Col />
+      <Col xs="auto">
+        <TurnHeading>{currentTurn}'s Turn </TurnHeading>
+      </Col>
+      <Col>
+        <Timer>
+          <span style={{ color: '#ffc108' }}>:</span>
+          {Math.floor((endTime - new Date().getTime()) / 1000)}
+        </Timer>
+      </Col>
+    </React.Fragment>
   );
 }
 

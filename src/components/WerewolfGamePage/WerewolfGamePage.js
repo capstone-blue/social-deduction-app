@@ -23,6 +23,10 @@ import {
 import Messages from '../NewMessaging/Messages';
 import PlayerCommands from './PlayerCommandsButtons/PlayerCommands';
 
+const PageContainer = styled(Container)`
+  background-color: none;
+`;
+
 const Board = styled(Container)`
   width: 80%;
   padding: 1rem;
@@ -198,9 +202,9 @@ function WerewolfGamePage({ match }) {
     loadingCurrPlayer ? (
     <Spinner animation="border" role="status" />
   ) : (
-    <Container>
+    <PageContainer fluid>
       <Row>
-        <Col style={{ backgroundColor: 'blue' }}>
+        <Col>
           {/* <Row>
             <Col>
               <h1 className="text-center">
@@ -211,7 +215,7 @@ function WerewolfGamePage({ match }) {
               </h1>
             </Col>
           </Row> */}
-          <Row>
+          <Row className="text-center">
             <TurnCountdown
               gameRef={gameSessionRef}
               roles={initialGameState.turnOrder}
@@ -276,7 +280,7 @@ function WerewolfGamePage({ match }) {
           </aside>
         </Col>
       </Row>
-    </Container>
+    </PageContainer>
   );
 }
 
