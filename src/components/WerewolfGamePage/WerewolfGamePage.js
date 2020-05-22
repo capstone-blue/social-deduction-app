@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Badge from 'react-bootstrap/Badge';
 import Spinner from 'react-bootstrap/Spinner';
 import TurnCountdown from './TurnCountdown';
 import OpponentList from './OpponentList';
@@ -33,6 +32,11 @@ const Board = styled(Container)`
   margin-bottom: 1rem;
   border-radius: 0.25rem;
   background-color: gray;
+`;
+
+const CommandText = styled.div`
+  color: white;
+  font-size: 1.5rem;
 `;
 
 function WerewolfGamePage({ match }) {
@@ -226,14 +230,14 @@ function WerewolfGamePage({ match }) {
           <Board
             style={
               currPlayer.startingRole.name === currentTurn
-                ? { backgroundColor: 'gold' }
-                : {}
+                ? { background: 'rgba(52, 58, 64, 1)' }
+                : { background: 'rgba(52, 58, 64, 0.65)' }
             }
           >
             <Row>
               <Col>
                 <aside className="text-center">
-                  <h2>Commands</h2>
+                  <CommandText>Commands</CommandText>
                   {/* <Button variant="warning" onClick={revealCard}>
               Reveal Card
             </Button>
