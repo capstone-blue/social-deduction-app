@@ -200,7 +200,7 @@ function WerewolfGamePage({ match }) {
   ) : (
     <Container>
       <Row>
-        <Col md={10}>
+        <Col style={{ backgroundColor: 'blue' }}>
           <Row>
             <Col>
               <h1 className="text-center">
@@ -255,8 +255,6 @@ function WerewolfGamePage({ match }) {
             </Col>
             <Col />
           </Row>
-        </Col>
-        <Col md={2}>
           <aside className="text-center">
             <h2>Commands</h2>
             {/* <Button variant="warning" onClick={revealCard}>
