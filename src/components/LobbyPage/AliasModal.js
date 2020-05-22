@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../firebase';
-import { useUserId } from '../context/userContext';
+import { db } from '../../firebase';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-function AliasModal({ match, players }) {
+function AliasModal({ match, currPlayer }) {
+  const userId = currPlayer[0];
   const [show, setShow] = useState(false);
-  const [userId] = useUserId();
   const [alias, setAlias] = useState('');
   const [aliasError, setAliasError] = useState('');
   const [isValidated, setIsValidated] = useState(false);
 
   useEffect(() => {
-    const currPlayer = players.find((p) => userId === p[0]);
     if (!currPlayer[1].alias) {
       setShow(true);
     }
-  }, [players, userId]);
+  }, []);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -36,7 +34,6 @@ function AliasModal({ match, players }) {
   }
 
   const handleClose = () => {
-    const currPlayer = players.find((p) => userId === p[0]);
     try {
       setIsValidated(true);
       if (!alias && !currPlayer[1].alias) {
@@ -52,13 +49,16 @@ function AliasModal({ match, players }) {
 
   return (
     <>
-      <Button variant="dark" onClick={handleShow}>
-        Create Alias
+      <Button size="sm" variant="outline-light" onClick={handleShow}>
+        Rename
       </Button>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>What would you like to set your alias as?</Modal.Title>
+          <Modal.Title>
+            What would you like to set your{' '}
+            <span style={{ color: '#c22c31' }}>alias</span> to?
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form noValidate validated={isValidated} onSubmit={handleSubmit}>
@@ -79,11 +79,6 @@ function AliasModal({ match, players }) {
             </Button>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="dark" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

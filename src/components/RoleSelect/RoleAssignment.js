@@ -28,7 +28,7 @@ function RoleAssignment({ match }) {
   const playersRef = lobbiesRef.child(match.params.id).child('players');
   const gameRef = lobbiesRef.child(match.params.id);
   const [currentRolesList] = useObjectVal(gameRef.child('currentRoles'));
-
+  console.log(currentRolesList);
   function buttonClicked(role) {
     if (playerVals.host) {
       if (currentRolesList) {
@@ -45,11 +45,11 @@ function RoleAssignment({ match }) {
     }
   }
   function masonButtonClicked() {
-    if (currentRolesList.includes('mason')) {
-      const newRoles = currentRolesList.filter((el) => el !== 'mason');
+    if (currentRolesList.includes('Mason')) {
+      const newRoles = currentRolesList.filter((el) => el !== 'Mason');
       gameRef.update({ currentRoles: newRoles });
     } else {
-      const newRoles = [...currentRolesList, 'mason', 'mason'];
+      const newRoles = [...currentRolesList, 'Mason', 'Mason'];
       gameRef.update({ currentRoles: newRoles });
     }
   }
@@ -69,8 +69,49 @@ function RoleAssignment({ match }) {
           currentRolesList={currentRolesList}
         />
         {` `}
+        <EvilButton
+          buttonClicked={buttonClicked}
+          role="Minion"
+          currentRolesList={currentRolesList}
+        />{' '}
       </div>
       <h1 className="text-center">Villagers</h1>
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="seer"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="robber"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="Troublemaker"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="Drunk"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="Tanner"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="Hunter"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <VillageButton
+        buttonClicked={buttonClicked}
+        role="Insomniac"
+        currentRolesList={currentRolesList}
+      />{' '}
+      <MasonButton masonButtonClicked={masonButtonClicked} />
       <VillageButton
         buttonClicked={buttonClicked}
         role="villager 1"
@@ -84,16 +125,6 @@ function RoleAssignment({ match }) {
       <VillageButton
         buttonClicked={buttonClicked}
         role="villager 3"
-        currentRolesList={currentRolesList}
-      />{' '}
-      <VillageButton
-        buttonClicked={buttonClicked}
-        role="seer"
-        currentRolesList={currentRolesList}
-      />{' '}
-      <VillageButton
-        buttonClicked={buttonClicked}
-        role="robber"
         currentRolesList={currentRolesList}
       />{' '}
       <div>
@@ -165,15 +196,12 @@ function RoleAssignment({ match }) {
       </div>
       <div>
         <h3 className="text-center">Coming "Soon"</h3>
-        <EvilButton buttonClicked={buttonClicked} role="minion" />{' '}
         <EvilButton buttonClicked={buttonClicked} role="alpha wolf" />{' '}
-        <VillageButton buttonClicked={buttonClicked} role="TroubleMaker" />{' '}
-        <VillageButton buttonClicked={buttonClicked} role="Drunk" />{' '}
-        <VillageButton buttonClicked={buttonClicked} role="Tanner" />{' '}
-        <VillageButton buttonClicked={buttonClicked} role="Hunter" />{' '}
-        <VillageButton buttonClicked={buttonClicked} role="Insomniac" />{' '}
-        <VillageButton buttonClicked={buttonClicked} role="dopplegänger" />{' '}
-        <MasonButton masonButtonClicked={masonButtonClicked} />
+        <VillageButton
+          buttonClicked={buttonClicked}
+          role="Doppelganger"
+          currentRolesList={currentRolesList}
+        />{' '}
       </div>
     </Container>
   ) : (
@@ -209,6 +237,7 @@ function wolfy(inputArray, players, playersRef, roleList, gameRef) {
     }
   }
   function setTheRoles() {
+    let count = 0;
     for (let i = 0; i < players.length; i++) {
       const individualRef = playersRef.child(players[i]);
       if (inPlay[i].includes('villager')) {
@@ -225,6 +254,8 @@ function wolfy(inputArray, players, playersRef, roleList, gameRef) {
           startingRole: roleUpdate,
           actualRole: roleUpdate,
         });
+        count++;
+        gameRef.update({ wolfCount: count });
       } else {
         const roleUpdate = roleList[inPlay[i]];
         availTurnVals.push(roleList[[inPlay[i]]]);

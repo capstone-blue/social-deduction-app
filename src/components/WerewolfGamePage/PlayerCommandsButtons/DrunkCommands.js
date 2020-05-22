@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 
-function RobberCommands({
+function DrunkCommands({
   userId,
   gameRef,
   currPlayer,
@@ -27,6 +27,7 @@ function RobberCommands({
       gameRef
         .child(`players/${userId}/startingRole`)
         .update({ actions: currPlayer.startingRole.actions - 1 });
+
       // const firstNewBorder = firstCard.border === 'green' ? 'red' : 'green';
       // const secondNewBorder = secondCard.border === 'green' ? 'red' : 'green';
 
@@ -55,9 +56,9 @@ function RobberCommands({
     </Button>
   ) : (
     <Button variant="warning" onClick={swapCards} disabled>
-      you swapped roles with {currPlayer.actualRole.name}
+      you swapped roles
     </Button>
   );
 }
 
-export default RobberCommands;
+export default DrunkCommands;

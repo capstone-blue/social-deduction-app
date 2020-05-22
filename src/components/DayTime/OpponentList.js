@@ -5,7 +5,14 @@ import Row from 'react-bootstrap/Row';
 import Badge from 'react-bootstrap/Badge';
 import SelectableBoardCard from './SelectableBoardCard';
 
-function OpponentList({ gameRef, setSelectedCards, selectedCards, players }) {
+function OpponentList({
+  gameRef,
+  setSelectedCards,
+  selectedCards,
+  players,
+  currPlayer,
+  currentTurn,
+}) {
   const [userId] = useUserId();
   const [opponents, setOpponents] = useState(null);
   // filter current user out of list
@@ -27,6 +34,8 @@ function OpponentList({ gameRef, setSelectedCards, selectedCards, players }) {
             opponentId={opponentId}
             setSelectedCards={setSelectedCards}
             selectedCards={selectedCards}
+            currPlayer={currPlayer}
+            currentTurn={currentTurn}
           />
         );
       })}
@@ -40,6 +49,8 @@ function OpponentCard({
   alias,
   setSelectedCards,
   selectedCards,
+  currPlayer,
+  currentTurn,
 }) {
   const playerRef = gameRef.child(`players/${opponentId}/actualRole`);
   const [cardSnap, loadingcardSnap] = useObject(playerRef);
@@ -51,11 +62,11 @@ function OpponentCard({
         {alias}
       </Badge>
       <SelectableBoardCard
-        gameRef = {gameRef}
+        gameRef={gameRef}
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}
         cardId={opponentId}
-        playerVal = {opponentId}
+        playerVal={opponentId}
         cardVal={cardSnap.val()}
         cardRef={playerRef}
       />
