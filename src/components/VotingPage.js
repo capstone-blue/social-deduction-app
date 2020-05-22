@@ -15,12 +15,8 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import UIfx from 'uifx';
 import selectSound from '../assets/sounds/select.wav';
 import unselectSound from '../assets/sounds/unselect.wav';
-// import sillyBackground from '../assets/sounds/sillyBackground.wav';
-
-// const sillyBGM = new UIfx(sillyBackground, {
-//   volume: 0.1,
-//   throttleMs: 50,
-// });
+import Sound from 'react-sound';
+import sillyBackground from '../assets/sounds/sillyBackground.wav';
 
 const select = new UIfx(selectSound, {
   volume: 0.3,
@@ -303,12 +299,19 @@ const VotingPage = ({ match }) => {
 
   return (
     <React.Fragment>
+      <Sound
+        url={sillyBackground}
+        // url="../assets/sounds/sillyBackground.wav"
+        playStatus={Sound.status.PLAYING}
+        autoLoad="true"
+        loop="true"
+      />
       <Container>
-        {/* <VotingTimer
+        <VotingTimer
           gameRef={gameSessionRef}
           host={isHost}
           finishVoting={finishVoting}
-        /> */}
+        />
         <Title>
           <Badge variant="dark">Decision Time!</Badge>
           <p variant="dark">Vote for the player you think is a werewolf!</p>

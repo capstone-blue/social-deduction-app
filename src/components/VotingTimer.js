@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { useObjectVal } from 'react-firebase-hooks/database';
+import Sound from 'react-sound';
+import ticktockSFX from '../assets/sounds/ticktock.wav';
 
 function VotingTimer({ gameRef, host, finishVoting }) {
   const [count, setCount] = useState('');
@@ -44,14 +46,26 @@ function VotingTimer({ gameRef, host, finishVoting }) {
     return () => clearInterval(interval);
   }, [count, endVotingTime]);
 
-  return seconds > 9 ? (
-    <h2>
-      Time Left: {minutes}:{seconds}
-    </h2>
-  ) : (
-    <h2>
-      Time Left: {minutes}:0{seconds}
-    </h2>
+  return (
+    <React.Fragment>
+      {seconds < 3 ? (
+        <Sound
+          url={ticktockSFX}
+          // url="../assets/sounds/sillyBackground.wav"
+          playStatus={Sound.status.PLAYING}
+          autoLoad="true"
+        />
+      ) : null}
+      {seconds > 9 ? (
+        <h2>
+          Time Left: {minutes}:{seconds}
+        </h2>
+      ) : (
+        <h2>
+          Time Left: {minutes}:0{seconds}
+        </h2>
+      )}
+    </React.Fragment>
   );
 }
 
