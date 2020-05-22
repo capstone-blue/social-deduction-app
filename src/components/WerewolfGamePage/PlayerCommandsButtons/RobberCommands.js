@@ -50,9 +50,24 @@ function RobberCommands({
     }
   }
   return currPlayer.startingRole.actions > 0 ? (
-    <Button variant="warning" onClick={swapCards}>
-      swap cards
-    </Button>
+    selectedCards && selectedCards.length === 1 ? (
+      selectedCards[0].cardId !== userId &&
+      selectedCards[0].cardId !== 'card 1' &&
+      selectedCards[0].cardId !== 'card 2' &&
+      selectedCards[0].cardId !== 'card 3' ? (
+        <Button variant="warning" onClick={swapCards}>
+          swap cards
+        </Button>
+      ) : (
+        <Button variant="warning" onClick={swapCards} disabled>
+          select one other player's card to swap with
+        </Button>
+      )
+    ) : (
+      <Button variant="warning" onClick={swapCards} disabled>
+        select one other player's card to swap with
+      </Button>
+    )
   ) : (
     <Button variant="warning" onClick={swapCards} disabled>
       you swapped roles with {currPlayer.actualRole.name}
