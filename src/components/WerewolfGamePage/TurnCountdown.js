@@ -7,8 +7,11 @@ import Spinner from 'react-bootstrap/Spinner';
 import Col from 'react-bootstrap/Col';
 
 const TurnHeading = styled.div`
+  color: white;
   font-size: 3.5rem;
   margin: 0 auto;
+  text-decoration: underline;
+  text-decoration-color: #c22c31;
 `;
 
 const Timer = styled.div`
@@ -50,8 +53,8 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
         setNextTurnInDB();
       } else if (countDownReached && roleList.length === 1) {
         // the turns are done
-        // gameRef.child('isNight').set(false);//! comment these 2 lines back in
-        //gameRef.child('status').set('dayPhase');
+        // gameRef.child('isNight').set(false); //! comment these 2 lines back in
+        // gameRef.child('status').set('dayPhase');
       }
     }
   }, [
