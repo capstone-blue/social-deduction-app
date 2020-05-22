@@ -1,13 +1,32 @@
+/* eslint-disable complexity */
 import React, { useState, useEffect } from 'react';
+import { VotingTimer } from './index';
 import { db } from '../firebase';
 import { useUserId } from '../context/userContext';
 import { useList, useObjectVal } from 'react-firebase-hooks/database';
 import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
+import ProgressBar from 'react-bootstrap/ProgressBar';
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
+import UIfx from 'uifx';
+import selectSound from '../assets/sounds/select.wav';
+import unselectSound from '../assets/sounds/unselect.wav';
+import Sound from 'react-sound';
+import sillyBackground from '../assets/sounds/sillyBackground.wav';
+
+const select = new UIfx(selectSound, {
+  volume: 0.3,
+  throttleMs: 50,
+});
+
+const unselect = new UIfx(unselectSound, {
+  volume: 0.3,
+  throttleMs: 50,
+});
 
 const Title = styled.h1`
   font-size: 2.5em;
@@ -71,6 +90,7 @@ const VotingPage = ({ match }) => {
         setAllVoted(true);
       }
     }
+    // sillyBGM.play();
     checkIfHost();
     listenOnVoteStatus();
     checkIfAllVoted();
@@ -84,10 +104,8 @@ const VotingPage = ({ match }) => {
   ]);
 
   async function vote(selectedPlayer) {
-    if (selectedPlayer.key === userId) {
-      return alert("You can't vote for yourself!");
-    }
     if (!voted) {
+      select.play();
       // increment vote count
       const selectedPlayerVoteRef = gameSessionRef
         .child('players')
@@ -108,6 +126,7 @@ const VotingPage = ({ match }) => {
   async function unvote() {
     // updated the selected player's vote count -1
     if (voted) {
+      unselect.play();
       const selectedPlayerVoteRef = gameSessionRef
         .child('players')
         .child(voted)
@@ -280,42 +299,56 @@ const VotingPage = ({ match }) => {
 
   return (
     <React.Fragment>
+      <Sound
+        url={sillyBackground}
+        // url="../assets/sounds/sillyBackground.wav"
+        playStatus={Sound.status.PLAYING}
+        autoLoad="true"
+        loop="true"
+      />
       <Container>
+        <VotingTimer
+          gameRef={gameSessionRef}
+          host={isHost}
+          finishVoting={finishVoting}
+        />
         <Title>
-          <Badge variant="dark">Who Should Die?</Badge>
+          <Badge variant="dark">Decision Time!</Badge>
+          <p variant="dark">Vote for the player you think is a werewolf!</p>
+          <Container>
+            <Col>
+              {voted ? (
+                <Button variant="success" onClick={() => unvote()}>
+                  Unvote
+                </Button>
+              ) : null}
+            </Col>
+          </Container>
         </Title>
+        <ProgressBar now={70} label="Time Remaining: (Not working)" />
         <Container>
           <ListGroup>
             {players.map((player) => (
-              <ListGroup.Item
-                key={player.key}
-                action
-                onClick={() => vote(player)}
-                disabled={!!voted}
-              >
-                <Container>
-                  <Badge variant="info">{player.val().alias}</Badge>
-                  <Badge variant="danger">Votes: {player.val().votes}</Badge>
-                </Container>
+              <ListGroup.Item variant="info" key={player.key}>
+                <Row>
+                  <Col>
+                    <p>{player.val().alias}</p>
+                  </Col>
+                  <Col>
+                    <Badge variant="danger">Votes: {player.val().votes}</Badge>
+                  </Col>
+                  <Col>
+                    <Button
+                      onClick={() => vote(player)}
+                      disabled={!!voted || player.key === userId}
+                    >
+                      Vote
+                    </Button>
+                  </Col>
+                </Row>
               </ListGroup.Item>
             ))}
           </ListGroup>
-        </Container>
-        <Container>
-          <Col>
-            {voted ? (
-              <Button variant="success" onClick={() => unvote()}>
-                Unvote
-              </Button>
-            ) : null}
-          </Col>
-          <Col>
-            {isHost && allVoted ? (
-              <Button variant="danger" onClick={() => finishVoting()}>
-                Everyone's Done Voting
-              </Button>
-            ) : null}
-          </Col>
         </Container>
       </Container>
     </React.Fragment>

@@ -106,7 +106,7 @@ const GameEnd = ({ match, history }) => {
     checkIfHost();
     playSound();
     listenOnNewLobby();
-  }, [gameSessionRef, gameSessionId, userId, isHost, winner]);
+  }, [gameSessionRef, gameSessionId, userId, isHost, winner, newLobbyRef]);
 
   async function createLobby() {
     try {
@@ -155,8 +155,6 @@ const GameEnd = ({ match, history }) => {
       console.error('Error in joinLobby', e.message);
     }
   }
-
-  console.log(players);
 
   return (
     <React.Fragment>
