@@ -19,8 +19,8 @@ function VotingTimer({ gameRef, host, finishVoting }) {
       db.ref('/.info/serverTimeOffset').once('value', function (snap) {
         const offset = snap.val();
         const rightNow = new Date().getTime() + offset;
-        const endVotingTime = rightNow + 25000;
-        gameRef.child('endVotingTime').set(endVotingTime);
+        const endVoteTime = rightNow + 25000;
+        gameRef.child('endVotingTime').set(endVoteTime);
       });
     }
     if (host) {
@@ -28,7 +28,7 @@ function VotingTimer({ gameRef, host, finishVoting }) {
         // set an expiration time for 25 seconds into the future
         setEndTimeInDB();
       } else if (countDownReached) {
-        finishVoting();
+        // finishVoting();
       }
     }
   }, [gameRef, host, votingHasntStarted, countDownReached, finishVoting]);

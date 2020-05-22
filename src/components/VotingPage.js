@@ -12,6 +12,19 @@ import Button from 'react-bootstrap/Button';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
+import UIfx from 'uifx';
+import selectSound from '../assets/sounds/select.wav';
+import unselectSound from '../assets/sounds/unselect.wav';
+
+const select = new UIfx(selectSound, {
+  volume: 0.3,
+  throttleMs: 50,
+});
+
+const unselect = new UIfx(unselectSound, {
+  volume: 0.3,
+  throttleMs: 50,
+});
 
 const Title = styled.h1`
   font-size: 2.5em;
@@ -89,6 +102,7 @@ const VotingPage = ({ match }) => {
 
   async function vote(selectedPlayer) {
     if (!voted) {
+      select.play();
       // increment vote count
       const selectedPlayerVoteRef = gameSessionRef
         .child('players')
@@ -109,6 +123,7 @@ const VotingPage = ({ match }) => {
   async function unvote() {
     // updated the selected player's vote count -1
     if (voted) {
+      unselect.play();
       const selectedPlayerVoteRef = gameSessionRef
         .child('players')
         .child(voted)
