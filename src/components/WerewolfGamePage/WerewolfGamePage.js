@@ -230,18 +230,45 @@ function WerewolfGamePage({ match }) {
                 : {}
             }
           >
-            <OpponentList
-              gameRef={gameSessionRef}
-              players={initialGameState.players}
-              setSelectedCards={setSelectedCards}
-              selectedCards={selectedCards}
-            />
-            <MiddleCardList
-              gameRef={gameSessionRef}
-              setSelectedCards={setSelectedCards}
-              selectedCards={selectedCards}
-              centerCards={initialGameState.centerCards}
-            />
+            <Row>
+              <Col>
+                <aside className="text-center">
+                  <h2>Commands</h2>
+                  {/* <Button variant="warning" onClick={revealCard}>
+              Reveal Card
+            </Button>
+            <Button variant="warning" onClick={swapCards}>
+              Swap Cards
+            </Button> */}
+                  {currPlayer &&
+                  currPlayer.startingRole.name === currentTurn ? (
+                    <PlayerCommands
+                      userId={userId}
+                      gameRef={gameSessionRef}
+                      currPlayer={currPlayer}
+                      setSelectedCards={setSelectedCards}
+                      selectedCards={selectedCards}
+                      currentTurn={currentTurn}
+                    />
+                  ) : null}
+                </aside>
+              </Col>
+              <Col xs="auto">
+                <OpponentList
+                  gameRef={gameSessionRef}
+                  players={initialGameState.players}
+                  setSelectedCards={setSelectedCards}
+                  selectedCards={selectedCards}
+                />
+                <MiddleCardList
+                  gameRef={gameSessionRef}
+                  setSelectedCards={setSelectedCards}
+                  selectedCards={selectedCards}
+                  centerCards={initialGameState.centerCards}
+                />
+              </Col>
+              <Col />
+            </Row>
           </Board>
           <Row>
             <Col>
@@ -259,25 +286,6 @@ function WerewolfGamePage({ match }) {
             </Col>
             <Col />
           </Row>
-          <aside className="text-center">
-            <h2>Commands</h2>
-            {/* <Button variant="warning" onClick={revealCard}>
-              Reveal Card
-            </Button>
-            <Button variant="warning" onClick={swapCards}>
-              Swap Cards
-            </Button> */}
-            {currPlayer && currPlayer.startingRole.name === currentTurn ? (
-              <PlayerCommands
-                userId={userId}
-                gameRef={gameSessionRef}
-                currPlayer={currPlayer}
-                setSelectedCards={setSelectedCards}
-                selectedCards={selectedCards}
-                currentTurn={currentTurn}
-              />
-            ) : null}
-          </aside>
         </Col>
       </Row>
     </PageContainer>
