@@ -56,6 +56,7 @@ function OpponentCard({
         cardId={opponentId}
         cardVal={cardSnap.val()}
         cardRef={playerRef}
+        theme={{ color: '#18A2B8', hover: '#bcced9' }}
       />
     </div>
   );

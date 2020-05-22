@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Card from 'react-bootstrap/Card';
 
-const BoardCard = styled(Card)`
-  width: 5rem;
-  min-height: 7rem;
+const BoardCard = styled.div`
+  color: ${(props) => (props.theme.color ? props.theme.color : '#23272B')};
+  width: 6rem;
+  min-height: 8rem;
   padding: 1rem;
   font-size: 1.5rem;
-  border-width: ${(props) => (props.border ? '2px' : '1px')};
-  border-color: ${(props) => props.border || 'gray'};
+  border: 1px solid gray;
+  border-top-width: 0.5rem;
+  border-style: solid;
+  border-top-color: ${(props) => props.border || 'transparent'};
+  border-radius: 0.25rem;
+  background-color: #eaeaea;
+  &:hover {
+    background-color: ${(props) =>
+      props.theme.hover ? props.theme.hover : '#B9BABB'};
+  }
 `;
 
 function SelectableBoardCard({
@@ -17,6 +25,7 @@ function SelectableBoardCard({
   cardId,
   cardVal,
   cardRef,
+  theme,
 }) {
   const [card, setCard] = useState({});
   useEffect(() => {
@@ -50,8 +59,8 @@ function SelectableBoardCard({
   }
   return (
     <div className="text-center" onClick={handleClick}>
-      <BoardCard border={card.border}>
-        <Card.Title>{card.isRevealed ? cardVal.name : '?'}</Card.Title>
+      <BoardCard border={card.border} theme={theme}>
+        <div>{card.isRevealed ? cardVal.name : '?'}</div>
       </BoardCard>
     </div>
   );
