@@ -298,13 +298,6 @@ const VotingPage = ({ match }) => {
                 </Button>
               ) : null}
             </Col>
-            {/* <Col>
-              {isHost && allVoted ? (
-                <Button variant="danger" onClick={() => finishVoting()}>
-                  Everyone's Done Voting
-                </Button>
-              ) : null}
-            </Col> */}
           </Container>
         </Title>
         <ProgressBar now={70} label="Time Remaining: (Not working)" />

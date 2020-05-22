@@ -19,19 +19,19 @@ function VotingTimer({ gameRef, host, finishVoting }) {
       db.ref('/.info/serverTimeOffset').once('value', function (snap) {
         const offset = snap.val();
         const rightNow = new Date().getTime() + offset;
-        const endVoteTime = rightNow + 2500;
-        gameRef.child('endVotingTime').set(endVoteTime);
+        const endVotingTime = rightNow + 25000;
+        gameRef.child('endVotingTime').set(endVotingTime);
       });
     }
     if (host) {
       if (votingHasntStarted) {
-        // set an expiration time for 15 seconds into the future
+        // set an expiration time for 25 seconds into the future
         setEndTimeInDB();
       } else if (countDownReached) {
         finishVoting();
       }
     }
-  }, [gameRef, host, votingHasntStarted, countDownReached]);
+  }, [gameRef, host, votingHasntStarted, countDownReached, finishVoting]);
 
   // every second, client checks their time against server end time
   useEffect(() => {
