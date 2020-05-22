@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { useObjectVal } from 'react-firebase-hooks/database';
-import UIfx from 'uifx';
-import sillyBackground from '../assets/sounds/sillyBackground.wav';
-
-const sillyBG = new UIfx(sillyBackground, {
-  volume: 0.1,
-  throttleMs: 50,
-});
 
 function VotingTimer({ gameRef, host, finishVoting }) {
   const [count, setCount] = useState('');
@@ -22,7 +15,6 @@ function VotingTimer({ gameRef, host, finishVoting }) {
   const seconds = Math.floor(timeLeft / 1000 - minutes * 60);
   // EFFECTS
   useEffect(() => {
-    sillyBG.play();
     function setEndTimeInDB() {
       db.ref('/.info/serverTimeOffset').once('value', function (snap) {
         const offset = snap.val();
@@ -36,7 +28,7 @@ function VotingTimer({ gameRef, host, finishVoting }) {
         // set an expiration time for 25 seconds into the future
         setEndTimeInDB();
       } else if (countDownReached) {
-        // finishVoting();
+        finishVoting();
       }
     }
   }, [gameRef, host, votingHasntStarted, countDownReached, finishVoting]);
