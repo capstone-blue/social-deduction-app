@@ -166,7 +166,7 @@ const GameEnd = ({ match, history }) => {
         </Title>
         <Badge variant="dark">Who died?</Badge>
         <ListGroup horizontal>
-          {deadPlayers ? (
+          {deadPlayers && deadPlayers.length !== players.length ? (
             deadPlayers.map((player) => (
               <ListGroup.Item key={player.key}>{player.val()}</ListGroup.Item>
             ))

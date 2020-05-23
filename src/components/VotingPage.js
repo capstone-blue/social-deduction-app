@@ -299,13 +299,13 @@ const VotingPage = ({ match }) => {
 
   return (
     <React.Fragment>
-      <Sound
+      {/* <Sound
         url={sillyBackground}
         // url="../assets/sounds/sillyBackground.wav"
         playStatus={Sound.status.PLAYING}
         autoLoad="true"
         loop="true"
-      />
+      /> */}
       <Container>
         <VotingTimer
           gameRef={gameSessionRef}
