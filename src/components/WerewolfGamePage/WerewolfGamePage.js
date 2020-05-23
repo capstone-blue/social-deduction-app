@@ -27,7 +27,7 @@ const PageContainer = styled(Container)`
 `;
 
 const Board = styled(Container)`
-  width: 80%;
+  min-width: 90%;
   padding: 1rem;
   margin-bottom: 1rem;
   border-radius: 0.25rem;
@@ -230,7 +230,7 @@ function WerewolfGamePage({ match }) {
           <Board
             style={
               currPlayer.startingRole.name === currentTurn
-                ? { background: 'rgba(52, 58, 64, 1)' }
+                ? { background: 'rgba(52, 58, 64, 0.65)' }
                 : { background: 'rgba(52, 58, 64, 0.65)' }
             }
           >
@@ -279,12 +279,11 @@ function WerewolfGamePage({ match }) {
                   selectedCards={selectedCards}
                 />
               </Col>
-              <Col />
+              <Col>
+                <Messages messages={messages} />
+              </Col>
             </Row>
           </Board>
-          <Row>
-            <Messages messages={messages} />
-          </Row>
         </Col>
       </Row>
     </PageContainer>
