@@ -243,7 +243,7 @@ function WerewolfGamePage({ match }) {
           <Board
             style={
               currPlayer.startingRole.name === currentTurn
-                ? { background: 'rgba(52, 58, 64, 0.65)' }
+                ? { background: 'rgb(255, 193, 8, 0.5)' }
                 : { background: 'rgba(52, 58, 64, 0.65)' }
             }
           >
