@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 const BoardCard = styled.div`
   margin: 0.5rem;
+  cursor: pointer;
   color: ${(props) => (props.theme.color ? props.theme.color : '#23272B')};
   width: 7rem;
   height: 8rem;
@@ -13,6 +14,7 @@ const BoardCard = styled.div`
   border-right: 0rem solid transparent;
   border-radius: 0.125rem;
   background-color: #eaeaea;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.1);
   border-color: ${(props) => props.border || 'transparent'};
   &:hover {
     background-color: ${(props) =>
