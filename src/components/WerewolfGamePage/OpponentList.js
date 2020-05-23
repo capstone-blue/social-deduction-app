@@ -10,6 +10,11 @@ const OpponentRow = styled(Row)`
   margin-bottom: 1rem;
 `;
 
+const OpponentBadge = styled(Badge)`
+  font-size: 1rem;
+  font-weight: 100;
+`;
+
 function OpponentList({ gameRef, setSelectedCards, selectedCards, players }) {
   const [userId] = useUserId();
   const [opponents, setOpponents] = useState(null);
@@ -52,9 +57,9 @@ function OpponentCard({
     ''
   ) : (
     <div className="text-center">
-      <Badge pill variant="info">
+      <OpponentBadge pill variant="info">
         {alias}
-      </Badge>
+      </OpponentBadge>
       <SelectableBoardCard
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}

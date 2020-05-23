@@ -9,6 +9,10 @@ const MiddleRow = styled(Row)`
   margin-bottom: 1rem;
 `;
 
+const CenterBadge = styled(Badge)`
+  font-weight: 100;
+`;
+
 function MiddleCardList({
   gameRef,
   selectedCards,
@@ -21,9 +25,9 @@ function MiddleCardList({
         const [cardId] = c;
         return (
           <div key={cardId} className="text-center">
-            <Badge pill variant="dark">
+            <CenterBadge pill variant="dark">
               Center Card
-            </Badge>
+            </CenterBadge>
             <MiddleCard
               gameRef={gameRef}
               cardId={cardId}

@@ -15,6 +15,11 @@ const PlayerContainer = styled.div`
   }
 `;
 
+const PlayerBadge = styled(Badge)`
+  font-weight: 100;
+  font-size: 1rem;
+`;
+
 const PlayerCard = styled.div`
   margin-top: 0.5rem;
   color: #22262a;
@@ -85,9 +90,9 @@ function SelectablePlayerCard({
 
   return (
     <PlayerContainer className="text-center" onClick={handleClick}>
-      <Badge pill variant="danger" className="text-center" size="lg">
+      <PlayerBadge pill variant="danger" className="text-center" size="lg">
         Your Card
-      </Badge>
+      </PlayerBadge>
       <PlayerCard border={card.border}>
         <PlayerCardTitle className="text-center">
           <div>{cardVal.startingRole.name}</div>
