@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Badge from 'react-bootstrap/Badge';
 import Spinner from 'react-bootstrap/Spinner';
 import TurnCountdown from './TurnCountdown';
 import OpponentList from './OpponentList';
@@ -23,12 +22,34 @@ import {
 import Messages from '../NewMessaging/Messages';
 import PlayerCommands from './PlayerCommandsButtons/PlayerCommands';
 
+const PageContainer = styled(Container)`
+  position: relative;
+  background-color: none;
+`;
+
 const Board = styled(Container)`
-  width: 80%;
+  min-width: 90%;
   padding: 1rem;
   margin-bottom: 1rem;
   border-radius: 0.25rem;
   background-color: gray;
+`;
+
+const CommandText = styled.div`
+  color: white;
+  font-size: 1.5rem;
+`;
+
+const StickyUI = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 10rem;
+  width: 100%;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  border-top: 1rem solid rgba(52, 58, 64, 1);
+  background-color: #22262a;
 `;
 
 function WerewolfGamePage({ match }) {
@@ -198,10 +219,10 @@ function WerewolfGamePage({ match }) {
     loadingCurrPlayer ? (
     <Spinner animation="border" role="status" />
   ) : (
-    <Container>
+    <PageContainer fluid>
       <Row>
-        <Col md={10}>
-          <Row>
+        <Col>
+          {/* <Row>
             <Col>
               <h1 className="text-center">
                 {initialGameState.title}{' '}
@@ -210,8 +231,8 @@ function WerewolfGamePage({ match }) {
                 </Badge>
               </h1>
             </Col>
-          </Row>
-          <Row>
+          </Row> */}
+          <Row className="text-center">
             <TurnCountdown
               gameRef={gameSessionRef}
               roles={initialGameState.turnOrder}
@@ -222,63 +243,70 @@ function WerewolfGamePage({ match }) {
           <Board
             style={
               currPlayer.startingRole.name === currentTurn
-                ? { backgroundColor: 'gold' }
-                : {}
+                ? { background: 'rgb(255, 193, 8, 0.5)' }
+                : { background: 'rgba(52, 58, 64, 0.65)' }
             }
           >
-            <OpponentList
-              gameRef={gameSessionRef}
-              players={initialGameState.players}
-              setSelectedCards={setSelectedCards}
-              selectedCards={selectedCards}
-            />
-            <MiddleCardList
-              gameRef={gameSessionRef}
-              setSelectedCards={setSelectedCards}
-              selectedCards={selectedCards}
-              centerCards={initialGameState.centerCards}
-            />
+            <Row>
+              <Col />
+              <Col xs="auto">
+                <OpponentList
+                  gameRef={gameSessionRef}
+                  players={initialGameState.players}
+                  setSelectedCards={setSelectedCards}
+                  selectedCards={selectedCards}
+                />
+                <MiddleCardList
+                  gameRef={gameSessionRef}
+                  setSelectedCards={setSelectedCards}
+                  selectedCards={selectedCards}
+                  centerCards={initialGameState.centerCards}
+                />
+              </Col>
+              <Col />
+            </Row>
           </Board>
-          <Row>
-            <Col>
-              <Messages messages={messages} />
-            </Col>
-            <Col md={6}>
-              <PlayerCard
-                gameRef={gameSessionRef}
-                currPlayer={currPlayer}
-                userId={userId}
-                setCurrPlayerRole={setCurrPlayerRole}
-                setSelectedCards={setSelectedCards}
-                selectedCards={selectedCards}
-              />
-            </Col>
-            <Col />
-          </Row>
         </Col>
-        <Col md={2}>
-          <aside className="text-center">
-            <h2>Commands</h2>
-            {/* <Button variant="warning" onClick={revealCard}>
+      </Row>
+      <StickyUI>
+        <Row>
+          <Col>
+            <aside className="text-center">
+              <CommandText>Commands</CommandText>
+              {/* <Button variant="warning" onClick={revealCard}>
               Reveal Card
             </Button>
             <Button variant="warning" onClick={swapCards}>
               Swap Cards
             </Button> */}
-            {currPlayer && currPlayer.startingRole.name === currentTurn ? (
-              <PlayerCommands
-                userId={userId}
-                gameRef={gameSessionRef}
-                currPlayer={currPlayer}
-                setSelectedCards={setSelectedCards}
-                selectedCards={selectedCards}
-                currentTurn={currentTurn}
-              />
-            ) : null}
-          </aside>
-        </Col>
-      </Row>
-    </Container>
+              {currPlayer && currPlayer.startingRole.name === currentTurn ? (
+                <PlayerCommands
+                  userId={userId}
+                  gameRef={gameSessionRef}
+                  currPlayer={currPlayer}
+                  setSelectedCards={setSelectedCards}
+                  selectedCards={selectedCards}
+                  currentTurn={currentTurn}
+                />
+              ) : null}
+            </aside>
+          </Col>
+          <Col>
+            <PlayerCard
+              gameRef={gameSessionRef}
+              currPlayer={currPlayer}
+              userId={userId}
+              setCurrPlayerRole={setCurrPlayerRole}
+              setSelectedCards={setSelectedCards}
+              selectedCards={selectedCards}
+            />
+          </Col>
+          <Col>
+            <Messages messages={messages} />
+          </Col>
+        </Row>
+      </StickyUI>
+    </PageContainer>
   );
 }
 

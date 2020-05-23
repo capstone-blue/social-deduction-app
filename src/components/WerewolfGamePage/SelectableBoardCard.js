@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Card from 'react-bootstrap/Card';
 
-const BoardCard = styled(Card)`
-  width: 5rem;
-  min-height: 7rem;
-  padding: 1rem;
+const BoardCard = styled.div`
+  margin: 0.5rem;
+  cursor: pointer;
+  color: ${(props) => (props.theme.color ? props.theme.color : '#23272B')};
+  width: 7rem;
+  height: 8rem;
+  padding: 1rem 0.5rem;
   font-size: 1.5rem;
-  border-width: ${(props) => (props.border ? '2px' : '1px')};
-  border-color: ${(props) => props.border || 'gray'};
+  border: 0.5rem solid transparent;
+  border-left: 0rem solid transparent;
+  border-right: 0rem solid transparent;
+  border-radius: 0.125rem;
+  background-color: #eaeaea;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.1);
+  border-color: ${(props) => props.border || 'transparent'};
+  &:hover {
+    background-color: ${(props) =>
+      props.theme.hover ? props.theme.hover : '#B9BABB'};
+  }
 `;
 
 function SelectableBoardCard({
@@ -17,6 +28,7 @@ function SelectableBoardCard({
   cardId,
   cardVal,
   cardRef,
+  theme,
 }) {
   const [card, setCard] = useState({});
   useEffect(() => {
@@ -44,14 +56,16 @@ function SelectableBoardCard({
       // if there is a card in the list already, give the new card a different border
       const firstCard = selectedCards[0];
       newCard.border =
-        firstCard && firstCard.border === 'green' ? 'red' : 'green';
+        firstCard && firstCard.border === '#27CCE5' ? '#DC3545' : '#27CCE5';
       setSelectedCards([...selectedCards, newCard]);
     }
   }
   return (
     <div className="text-center" onClick={handleClick}>
-      <BoardCard border={card.border}>
-        <Card.Title>{card.isRevealed ? cardVal.name : '?'}</Card.Title>
+      <BoardCard border={card.border} theme={theme}>
+        <div style={card.isRevealed ? { fontSize: '1rem' } : null}>
+          {card.isRevealed ? cardVal.name : '?'}
+        </div>
       </BoardCard>
     </div>
   );
