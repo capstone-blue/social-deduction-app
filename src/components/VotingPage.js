@@ -15,8 +15,6 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import UIfx from 'uifx';
 import selectSound from '../assets/sounds/select.wav';
 import unselectSound from '../assets/sounds/unselect.wav';
-import Sound from 'react-sound';
-import sillyBackground from '../assets/sounds/sillyBackground.wav';
 
 const select = new UIfx(selectSound, {
   volume: 0.3,

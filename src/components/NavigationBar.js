@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
-import { useObjectVal } from 'react-firebase-hooks/database';
 import { matchPath, withRouter } from 'react-router';
 import styled from 'styled-components';
 import Navbar from 'react-bootstrap/Navbar';
@@ -40,17 +39,19 @@ const NavigationBar = ({ location }) => {
         db.ref(`/gameSessions/${match.params.id}/status`).on('value', function (
           snapshot
         ) {
-          setStatus(snapshot.val());
+          if (snapshot.val()) {
+            setStatus(snapshot.val());
+          }
         });
       } catch (error) {
         console.error('Error in NavigationBar useEffect', error.message);
       }
     }
-  }, []);
+  }, [match, status]);
 
   return (
     <CustomNavbar>
-      {status === 'voting' ? (
+      {status === 'roleSelect' ? (
         <Sound
           url={sillyBackground}
           playStatus={Sound.status.PLAYING}
@@ -60,6 +61,18 @@ const NavigationBar = ({ location }) => {
       ) : status === 'nightPhase' ? (
         <Sound url={howl} playStatus={Sound.status.PLAYING} autoLoad="true" />
       ) : status === 'dayPhase' ? (
+        <Sound
+          url={rooster}
+          playStatus={Sound.status.PLAYING}
+          autoLoad="true"
+        />
+      ) : status === 'voting' ? (
+        <Sound
+          url={rooster}
+          playStatus={Sound.status.PLAYING}
+          autoLoad="true"
+        />
+      ) : status === 'results' ? (
         <Sound
           url={rooster}
           playStatus={Sound.status.PLAYING}
