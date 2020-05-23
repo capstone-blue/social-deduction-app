@@ -1,11 +1,41 @@
+/* eslint react/no-array-index-key: 0 */
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Badge from 'react-bootstrap/Badge';
-import Card from 'react-bootstrap/Card';
 
-const PlayerCardStyle = styled(Card)`
-  border-width: ${(props) => (props.border ? '3px' : '1px')};
-  border-color: ${(props) => props.border || 'gray'};
+const PlayerContainer = styled.div`
+  margin: 0 auto;
+  width: 14rem;
+`;
+
+const PlayerCard = styled.div`
+  margin-top: 0.5rem;
+  color: #22262a;
+  background-color: #eaeaea;
+  height: auto;
+  width: 14rem;
+  padding: 0.75rem;
+  border: 0.75rem solid transparent;
+  border-left: 0rem solid transparent;
+  border-right: 0rem solid transparent;
+  border-radius: 0.125rem;
+  background-color: #eaeaea;
+  border-color: ${(props) => props.border || 'transparent'};
+  &:hover {
+    background-color: ${(props) =>
+      props.theme.hover ? props.theme.hover : '#B9BABB'};
+  }
+`;
+
+const PlayerCardTitle = styled.div`
+  margin-top: 0.25rem;
+  color: #c22c31;
+  font-size: 1.5rem;
+`;
+
+const PlayerCardContent = styled.div`
+  margin-top: 1rem;
+  font-size: 1rem;
 `;
 
 function SelectablePlayerCard({
@@ -48,25 +78,32 @@ function SelectablePlayerCard({
   }
 
   return (
-    <div className="text-center" onClick={handleClick}>
-      <div className="text-center">
-        <Badge pill variant="success" className="text-center">
-          {cardVal.alias}
-        </Badge>
-        <PlayerCardStyle border={card.border}>
-          <Card.Title className="text-center">
-            <div>{cardVal.startingRole.name}</div>
-          </Card.Title>
-          <Card.Body>
-            <div>
-              {cardVal.startingRole.options.map((o, i) => (
-                <div key={`card-${cardId}-${i}`}>{o}</div>
-              ))}
-            </div>
-          </Card.Body>
-        </PlayerCardStyle>
-      </div>
-    </div>
+    <PlayerContainer className="text-center" onClick={handleClick}>
+      <Badge pill variant="danger" className="text-center" size="lg">
+        Your Card
+      </Badge>
+      <PlayerCard border={card.border}>
+        <PlayerCardTitle className="text-center">
+          <div>{cardVal.startingRole.name}</div>
+        </PlayerCardTitle>
+        <PlayerCardContent>
+          <div>
+            {cardVal.startingRole.options.map((o, i) => (
+              <div key={`card-${cardId}-${i}`}>
+                {i > 0 ? (
+                  <div>
+                    <div style={{ color: '#c22c31', fontSize: '14px' }}>or</div>
+                    <div>{o}</div>
+                  </div>
+                ) : (
+                  o
+                )}
+              </div>
+            ))}
+          </div>
+        </PlayerCardContent>
+      </PlayerCard>
+    </PlayerContainer>
   );
 }
 
