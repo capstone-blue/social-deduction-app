@@ -21,8 +21,10 @@ function TroubleMakerCommands({
       firstRef.set(secondVal);
       secondRef.set(firstVal);
 
-      const firstNewBorder = firstCard.border === 'green' ? 'red' : 'green';
-      const secondNewBorder = secondCard.border === 'green' ? 'red' : 'green';
+      const firstNewBorder =
+        firstCard.border === '#27CCE5' ? '#DC3545' : '#27CCE5';
+      const secondNewBorder =
+        secondCard.border === '#27CCE5' ? '#DC3545' : '#27CCE5';
 
       setSelectedCards([
         {

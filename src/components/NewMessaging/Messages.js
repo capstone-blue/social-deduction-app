@@ -1,4 +1,15 @@
 import React from 'react';
+import styled from 'styled-components';
+
+const MessageContainer = styled.div`
+  margin: 1rem 0;
+  text-align: center;
+  color: white;
+`;
+
+const MessageText = styled.div`
+  font-size: 1.5rem;
+`;
 
 function Messages({ messages }) {
   let messageVals = undefined;
@@ -6,22 +17,21 @@ function Messages({ messages }) {
     messageVals = Object.values(messages);
   }
 
-  return messages ? (
-    <div>
-      <h3>Messages</h3>
-      <div>
-        {messageVals.map((message) => (
-          <div key={messageVals.indexOf(message)}>
-            <div>{message}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  ) : (
-    <div>
-      <h3>Messages</h3>
-      <div />
-    </div>
+  return (
+    <MessageContainer>
+      {messages ? (
+        <React.Fragment>
+          <MessageText>Messages</MessageText>
+          {messageVals.map((message) => (
+            <div key={messageVals.indexOf(message)}>
+              <div>{message}</div>
+            </div>
+          ))}
+        </React.Fragment>
+      ) : (
+        <MessageText>No Messages</MessageText>
+      )}
+    </MessageContainer>
   );
 }
 
