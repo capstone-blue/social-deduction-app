@@ -36,9 +36,9 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
       });
     }
     function setNextTurnInDB() {
-      // roleList.shift(); //! comment these 3 lines back in
-      // gameRef.child('turnOrder').set(roleList);
-      // gameRef.child('currentTurn').set(roleList[0]);
+      roleList.shift();
+      gameRef.child('turnOrder').set(roleList);
+      gameRef.child('currentTurn').set(roleList[0]);
     }
 
     if (host[userId]) {
@@ -51,8 +51,8 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
         setNextTurnInDB();
       } else if (countDownReached && roleList.length === 1) {
         // the turns are done
-        // gameRef.child('isNight').set(false); //! comment these 2 lines back in
-        // gameRef.child('status').set('dayPhase');
+        gameRef.child('isNight').set(false);
+        gameRef.child('status').set('dayPhase');
       }
     }
   }, [
