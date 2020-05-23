@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const BoardCard = styled.div`
+  margin: 0 0.5rem;
   color: ${(props) => (props.theme.color ? props.theme.color : '#23272B')};
   width: 6rem;
   min-height: 8rem;

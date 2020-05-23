@@ -1,7 +1,12 @@
 import React from 'react';
 import { useObject } from 'react-firebase-hooks/database';
+import styled from 'styled-components';
 import Row from 'react-bootstrap/Row';
 import SelectableBoardCard from './SelectableBoardCard';
+
+const MiddleRow = styled(Row)`
+  margin-bottom: 1rem;
+`;
 
 function MiddleCardList({
   gameRef,
@@ -10,7 +15,7 @@ function MiddleCardList({
   centerCards,
 }) {
   return (
-    <Row className="justify-content-md-center">
+    <MiddleRow className="justify-content-center">
       {Object.entries(centerCards).map((c) => {
         const [cardId] = c;
         return (
@@ -23,7 +28,7 @@ function MiddleCardList({
           />
         );
       })}
-    </Row>
+    </MiddleRow>
   );
 }
 
