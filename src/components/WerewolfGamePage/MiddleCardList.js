@@ -2,6 +2,7 @@ import React from 'react';
 import { useObject } from 'react-firebase-hooks/database';
 import styled from 'styled-components';
 import Row from 'react-bootstrap/Row';
+import Badge from 'react-bootstrap/Badge';
 import SelectableBoardCard from './SelectableBoardCard';
 
 const MiddleRow = styled(Row)`
@@ -19,13 +20,17 @@ function MiddleCardList({
       {Object.entries(centerCards).map((c) => {
         const [cardId] = c;
         return (
-          <MiddleCard
-            key={cardId}
-            gameRef={gameRef}
-            cardId={cardId}
-            setSelectedCards={setSelectedCards}
-            selectedCards={selectedCards}
-          />
+          <div key={cardId} className="text-center">
+            <Badge pill variant="dark">
+              Center Card
+            </Badge>
+            <MiddleCard
+              gameRef={gameRef}
+              cardId={cardId}
+              setSelectedCards={setSelectedCards}
+              selectedCards={selectedCards}
+            />
+          </div>
         );
       })}
     </MiddleRow>
