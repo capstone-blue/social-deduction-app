@@ -54,7 +54,7 @@ function SelectableBoardCard({
       // if there is a card in the list already, give the new card a different border
       const firstCard = selectedCards[0];
       newCard.border =
-        firstCard && firstCard.border === '#18A2B8' ? '#DC3545' : '#18A2B8';
+        firstCard && firstCard.border === '#27CCE5' ? '#DC3545' : '#27CCE5';
       setSelectedCards([...selectedCards, newCard]);
     }
   }
