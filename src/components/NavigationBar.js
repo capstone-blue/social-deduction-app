@@ -26,12 +26,6 @@ const NavigationBar = () => {
         <img alt="" src={logo} width="30" height="30" />{' '}
         <div className="ml-2">Ultimate Werewolf</div>
       </CustomNavbarBrand>
-      {/* <Nav.Link style={{ color: '#63B3ED' }} href="/">
-        Return to Lobby (not working)
-      </Nav.Link>
-      <Nav.Link style={{ color: '#63B3ED' }} href="/">
-        Return to Game (not working)
-      </Nav.Link> */}
     </CustomNavbar>
   );
 };
