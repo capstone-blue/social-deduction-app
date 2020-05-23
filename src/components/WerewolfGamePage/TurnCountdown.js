@@ -7,15 +7,13 @@ import Spinner from 'react-bootstrap/Spinner';
 import Col from 'react-bootstrap/Col';
 
 const TurnHeading = styled.div`
-  color: white;
+  color: #ffc108;
   font-size: 3.5rem;
   margin: 0 auto;
-  text-decoration: underline;
-  text-decoration-color: #c22c31;
 `;
 
 const Timer = styled.div`
-  color: white;
+  color: #ffc108;
   font-size: 3.5rem;
 `;
 
@@ -87,7 +85,7 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
       </Col>
       <Col>
         <Timer>
-          <span style={{ color: '#ffc108' }}>:</span>
+          <span style={{ color: 'white' }}>:</span>
           {Math.floor((endTime - new Date().getTime()) / 1000)}
         </Timer>
       </Col>
