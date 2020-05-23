@@ -3,6 +3,19 @@ import { db } from '../../firebase';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import UIfx from 'uifx';
+import beepSound from '../../assets/sounds/beep.wav';
+import selectSound from '../../assets/sounds/select.wav';
+
+const beep = new UIfx(beepSound, {
+  volume: 0.5,
+  throttleMs: 50,
+});
+
+const select = new UIfx(selectSound, {
+  volume: 0.5,
+  throttleMs: 50,
+});
 
 function AliasModal({ match, currPlayer }) {
   const userId = currPlayer[0];
@@ -18,6 +31,7 @@ function AliasModal({ match, currPlayer }) {
   }, []);
 
   function handleSubmit(e) {
+    beep.play();
     e.preventDefault();
     setIsValidated(true);
     // if the name is blank, don't set it in the database
@@ -45,8 +59,10 @@ function AliasModal({ match, currPlayer }) {
       setAliasError(e.message);
     }
   };
-  const handleShow = () => setShow(true);
-
+  const handleShow = () => {
+    select.play();
+    setShow(true);
+  };
   return (
     <>
       <Button size="sm" variant="outline-light" onClick={handleShow}>
