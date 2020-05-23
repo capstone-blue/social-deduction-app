@@ -23,6 +23,7 @@ import Messages from '../NewMessaging/Messages';
 import PlayerCommands from './PlayerCommandsButtons/PlayerCommands';
 
 const PageContainer = styled(Container)`
+  position: relative;
   background-color: none;
 `;
 
@@ -37,6 +38,18 @@ const Board = styled(Container)`
 const CommandText = styled.div`
   color: white;
   font-size: 1.5rem;
+`;
+
+const StickyUI = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 10rem;
+  width: 100%;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  border-top: 1rem solid rgba(52, 58, 64, 1);
+  background-color: #22262a;
 `;
 
 function WerewolfGamePage({ match }) {
@@ -235,29 +248,7 @@ function WerewolfGamePage({ match }) {
             }
           >
             <Row>
-              <Col>
-                <aside className="text-center">
-                  <CommandText>Commands</CommandText>
-                  {/* <Button variant="warning" onClick={revealCard}>
-              Reveal Card
-            </Button>
-            <Button variant="warning" onClick={swapCards}>
-              Swap Cards
-            </Button> */}
-                  {currPlayer &&
-                  currPlayer.startingRole.name === currentTurn ? (
-                    <PlayerCommands
-                      userId={userId}
-                      gameRef={gameSessionRef}
-                      currPlayer={currPlayer}
-                      setSelectedCards={setSelectedCards}
-                      selectedCards={selectedCards}
-                      currentTurn={currentTurn}
-                    />
-                  ) : null}
-                </aside>
-                <Messages messages={messages} />
-              </Col>
+              <Col />
               <Col xs="auto">
                 <OpponentList
                   gameRef={gameSessionRef}
@@ -274,21 +265,47 @@ function WerewolfGamePage({ match }) {
               </Col>
               <Col />
             </Row>
-            <Row>
-              <Col>
-                <PlayerCard
-                  gameRef={gameSessionRef}
-                  currPlayer={currPlayer}
-                  userId={userId}
-                  setCurrPlayerRole={setCurrPlayerRole}
-                  setSelectedCards={setSelectedCards}
-                  selectedCards={selectedCards}
-                />
-              </Col>
-            </Row>
           </Board>
         </Col>
       </Row>
+      <StickyUI>
+        <Row>
+          <Col>
+            <aside className="text-center">
+              <CommandText>Commands</CommandText>
+              {/* <Button variant="warning" onClick={revealCard}>
+              Reveal Card
+            </Button>
+            <Button variant="warning" onClick={swapCards}>
+              Swap Cards
+            </Button> */}
+              {currPlayer && currPlayer.startingRole.name === currentTurn ? (
+                <PlayerCommands
+                  userId={userId}
+                  gameRef={gameSessionRef}
+                  currPlayer={currPlayer}
+                  setSelectedCards={setSelectedCards}
+                  selectedCards={selectedCards}
+                  currentTurn={currentTurn}
+                />
+              ) : null}
+            </aside>
+          </Col>
+          <Col>
+            <PlayerCard
+              gameRef={gameSessionRef}
+              currPlayer={currPlayer}
+              userId={userId}
+              setCurrPlayerRole={setCurrPlayerRole}
+              setSelectedCards={setSelectedCards}
+              selectedCards={selectedCards}
+            />
+          </Col>
+          <Col>
+            <Messages messages={messages} />
+          </Col>
+        </Row>
+      </StickyUI>
     </PageContainer>
   );
 }
