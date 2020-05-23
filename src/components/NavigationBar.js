@@ -7,14 +7,9 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import logo from '../assets/animals.svg';
 import Sound from 'react-sound';
-import happyBackground from '../assets/sounds/happyBackground.wav';
 import sillyBackground from '../assets/sounds/sillyBackground.wav';
-
-// const match = matchPath("gameSessions/gameSessionId/", {
-//   path: "/gameSessions/:id",
-//   exact: true,
-//   strict: false
-// });
+import howl from '../assets/sounds/howl.wav';
+import rooster from '../assets/sounds/rooster.wav';
 
 const CustomNavbar = styled(Navbar)`
   color: #ffffff;
@@ -37,17 +32,38 @@ const NavigationBar = ({ location }) => {
     exact: true,
     strict: false,
   });
-  const gameRef = db.ref(`/gameSessions/${match.params.id}`);
-  const [status] = useObjectVal(gameRef.child('status'));
+  const [status, setStatus] = useState(null);
+
+  useEffect(() => {
+    if (match) {
+      try {
+        db.ref(`/gameSessions/${match.params.id}/status`).on('value', function (
+          snapshot
+        ) {
+          setStatus(snapshot.val());
+        });
+      } catch (error) {
+        console.error('Error in NavigationBar useEffect', error.message);
+      }
+    }
+  }, []);
 
   return (
-    <CustomNavbar onClick={() => console.log(status)}>
+    <CustomNavbar>
       {status === 'voting' ? (
         <Sound
           url={sillyBackground}
           playStatus={Sound.status.PLAYING}
           autoLoad="true"
           loop="true"
+        />
+      ) : status === 'nightPhase' ? (
+        <Sound url={howl} playStatus={Sound.status.PLAYING} autoLoad="true" />
+      ) : status === 'dayPhase' ? (
+        <Sound
+          url={rooster}
+          playStatus={Sound.status.PLAYING}
+          autoLoad="true"
         />
       ) : null}
       <CustomNavbarBrand className="d-flex align-items-center" href="/">
