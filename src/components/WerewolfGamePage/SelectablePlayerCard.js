@@ -4,8 +4,15 @@ import styled from 'styled-components';
 import Badge from 'react-bootstrap/Badge';
 
 const PlayerContainer = styled.div`
+  position: relative;
+  cursor: pointer;
   margin: 0 auto;
   width: 14rem;
+  transition: all 0.1s ease-in-out;
+  bottom: 0;
+  &:hover {
+    bottom: 10rem;
+  }
 `;
 
 const PlayerCard = styled.div`
@@ -20,10 +27,9 @@ const PlayerCard = styled.div`
   border-right: 0rem solid transparent;
   border-radius: 0.125rem;
   background-color: #eaeaea;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.1);
   border-color: ${(props) => props.border || 'transparent'};
   &:hover {
-    background-color: ${(props) =>
-      props.theme.hover ? props.theme.hover : '#B9BABB'};
   }
 `;
 
