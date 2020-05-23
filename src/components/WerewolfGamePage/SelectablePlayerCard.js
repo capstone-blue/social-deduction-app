@@ -72,7 +72,7 @@ function SelectablePlayerCard({
       // if there is a card in the list already, give the new card a different border
       const firstCard = selectedCards[0];
       newCard.border =
-        firstCard && firstCard.border === 'green' ? 'red' : 'green';
+        firstCard && firstCard.border === '#27CCE5' ? '#DC3545' : '#27CCE5';
       setSelectedCards([...selectedCards, newCard]);
     }
   }
