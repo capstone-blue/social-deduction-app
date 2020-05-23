@@ -4,6 +4,7 @@ import { matchPath, withRouter } from 'react-router';
 import styled from 'styled-components';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import Button from 'react-bootstrap/Button';
 import logo from '../assets/animals.svg';
 import Sound from 'react-sound';
 import sillyBackground from '../assets/sounds/sillyBackground.wav';
@@ -32,6 +33,7 @@ const NavigationBar = ({ location }) => {
     strict: false,
   });
   const [status, setStatus] = useState(null);
+  const [sound, setSound] = useState(true);
 
   useEffect(() => {
     if (match) {
@@ -49,40 +51,54 @@ const NavigationBar = ({ location }) => {
     }
   }, [match, status]);
 
+  const mute = () => {
+    setSound(!sound);
+  };
+
   return (
     <CustomNavbar>
-      {status === 'roleSelect' ? (
+      {status === 'roleSelect' && sound ? (
         <Sound
           url={sillyBackground}
           playStatus={Sound.status.PLAYING}
           autoLoad="true"
           loop="true"
         />
-      ) : status === 'nightPhase' ? (
+      ) : status === 'nightPhase' && sound ? (
         <Sound url={howl} playStatus={Sound.status.PLAYING} autoLoad="true" />
-      ) : status === 'dayPhase' ? (
+      ) : status === 'dayPhase' && sound ? (
         <Sound
           url={rooster}
           playStatus={Sound.status.PLAYING}
           autoLoad="true"
         />
-      ) : status === 'voting' ? (
+      ) : status === 'voting' && sound ? (
         <Sound
-          url={rooster}
+          url={sillyBackground}
           playStatus={Sound.status.PLAYING}
           autoLoad="true"
+          loop="true"
         />
-      ) : status === 'results' ? (
+      ) : status === 'results' && sound ? (
         <Sound
-          url={rooster}
+          url={sillyBackground}
           playStatus={Sound.status.PLAYING}
           autoLoad="true"
+          loop="true"
+        />
+      ) : !status && sound ? (
+        <Sound
+          url={sillyBackground}
+          playStatus={Sound.status.PLAYING}
+          autoLoad="true"
+          loop="true"
         />
       ) : null}
       <CustomNavbarBrand className="d-flex align-items-center" href="/">
         <img alt="" src={logo} width="30" height="30" />{' '}
         <div className="ml-2">Ultimate Werewolf</div>
       </CustomNavbarBrand>
+      <Button onClick={() => mute()}>Mute</Button>
     </CustomNavbar>
   );
 };
