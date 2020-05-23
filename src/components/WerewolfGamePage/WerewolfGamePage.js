@@ -256,6 +256,7 @@ function WerewolfGamePage({ match }) {
                     />
                   ) : null}
                 </aside>
+                <Messages messages={messages} />
               </Col>
               <Col xs="auto">
                 <OpponentList
@@ -270,6 +271,11 @@ function WerewolfGamePage({ match }) {
                   selectedCards={selectedCards}
                   centerCards={initialGameState.centerCards}
                 />
+              </Col>
+              <Col />
+            </Row>
+            <Row>
+              <Col>
                 <PlayerCard
                   gameRef={gameSessionRef}
                   currPlayer={currPlayer}
@@ -278,9 +284,6 @@ function WerewolfGamePage({ match }) {
                   setSelectedCards={setSelectedCards}
                   selectedCards={selectedCards}
                 />
-              </Col>
-              <Col>
-                <Messages messages={messages} />
               </Col>
             </Row>
           </Board>
