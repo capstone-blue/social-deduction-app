@@ -2,18 +2,18 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const BoardCard = styled.div`
-  margin: 0 0.5rem;
+  margin: 0.5rem;
   color: ${(props) => (props.theme.color ? props.theme.color : '#23272B')};
-  width: 6rem;
-  min-height: 8rem;
-  padding: 1rem;
+  width: 7rem;
+  height: 8rem;
+  padding: 1rem 0.5rem;
   font-size: 1.5rem;
-  border: 1px solid gray;
-  border-top-width: 0.5rem;
-  border-style: solid;
-  border-top-color: ${(props) => props.border || 'transparent'};
-  border-radius: 0.25rem;
+  border: 0.5rem solid transparent;
+  border-left: 0rem solid transparent;
+  border-right: 0rem solid transparent;
+  border-radius: 0.125rem;
   background-color: #eaeaea;
+  border-color: ${(props) => props.border || 'transparent'};
   &:hover {
     background-color: ${(props) =>
       props.theme.hover ? props.theme.hover : '#B9BABB'};
@@ -54,14 +54,16 @@ function SelectableBoardCard({
       // if there is a card in the list already, give the new card a different border
       const firstCard = selectedCards[0];
       newCard.border =
-        firstCard && firstCard.border === 'green' ? 'red' : 'green';
+        firstCard && firstCard.border === '#18A2B8' ? '#DC3545' : '#18A2B8';
       setSelectedCards([...selectedCards, newCard]);
     }
   }
   return (
     <div className="text-center" onClick={handleClick}>
       <BoardCard border={card.border} theme={theme}>
-        <div>{card.isRevealed ? cardVal.name : '?'}</div>
+        <div style={card.isRevealed ? { fontSize: '1rem' } : null}>
+          {card.isRevealed ? cardVal.name : '?'}
+        </div>
       </BoardCard>
     </div>
   );
