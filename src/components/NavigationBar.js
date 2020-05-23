@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
+import { useObjectVal } from 'react-firebase-hooks/database';
+import { matchPath, withRouter } from 'react-router';
 import styled from 'styled-components';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -7,6 +9,12 @@ import logo from '../assets/animals.svg';
 import Sound from 'react-sound';
 import happyBackground from '../assets/sounds/happyBackground.wav';
 import sillyBackground from '../assets/sounds/sillyBackground.wav';
+
+// const match = matchPath("gameSessions/gameSessionId/", {
+//   path: "/gameSessions/:id",
+//   exact: true,
+//   strict: false
+// });
 
 const CustomNavbar = styled(Navbar)`
   color: #ffffff;
@@ -23,32 +31,20 @@ const CustomNavbarBrand = styled(Nav.Link)`
   }
 `;
 
-const NavigationBar = ({ match }) => {
-  const [page, setPage] = useState('');
-
-  useEffect(() => {
-    function listenOnPageStatus() {
-      try {
-        db.ref(`/gameSessions/${match.params.id}/status`).on('value', function (
-          snapshot
-        ) {
-          if (snapshot.val()) {
-            setPage(snapshot.val());
-          }
-        });
-      } catch (e) {
-        console.error('Error in VotingPage vote status listener', e.message);
-      }
-    }
-    listenOnPageStatus();
-  }, []);
+const NavigationBar = ({ location }) => {
+  const match = matchPath(location.pathname, {
+    path: '/gameSessions/:id',
+    exact: true,
+    strict: false,
+  });
+  const gameRef = db.ref(`/gameSessions/${match.params.id}`);
+  const [status] = useObjectVal(gameRef.child('status'));
 
   return (
-    <CustomNavbar>
-      {page === 'voting' ? (
+    <CustomNavbar onClick={() => console.log(status)}>
+      {status === 'voting' ? (
         <Sound
           url={sillyBackground}
-          // url="../assets/sounds/sillyBackground.wav"
           playStatus={Sound.status.PLAYING}
           autoLoad="true"
           loop="true"
@@ -62,4 +58,4 @@ const NavigationBar = ({ match }) => {
   );
 };
 
-export default NavigationBar;
+export default withRouter(NavigationBar);

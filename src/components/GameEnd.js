@@ -171,7 +171,7 @@ const GameEnd = ({ match, history }) => {
               <ListGroup.Item key={player.key}>{player.val()}</ListGroup.Item>
             ))
           ) : (
-            <ListGroup.Item>Nobody died!</ListGroup.Item>
+            <ListGroup.Item variant="info">Nobody died!</ListGroup.Item>
           )}
         </ListGroup>
         <Container>
