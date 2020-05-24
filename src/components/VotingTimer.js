@@ -54,6 +54,7 @@ function VotingTimer({ gameRef, host, finishVoting }) {
           url={guillotineSFX}
           playStatus={Sound.status.PLAYING}
           autoLoad="true"
+          volume={30}
         />
       ) : null}
       {seconds < 3 && seconds > 1 ? (
@@ -61,6 +62,7 @@ function VotingTimer({ gameRef, host, finishVoting }) {
           url={ticktockSFX}
           playStatus={Sound.status.PLAYING}
           autoLoad="true"
+          volume={20}
         />
       ) : null}
       {seconds > 9 ? (
