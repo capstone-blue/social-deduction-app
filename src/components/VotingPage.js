@@ -9,7 +9,6 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import ProgressBar from 'react-bootstrap/ProgressBar';
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import UIfx from 'uifx';
@@ -316,7 +315,6 @@ const VotingPage = ({ match }) => {
             </Col>
           </Container>
         </Title>
-        <ProgressBar now={70} label="Time Remaining: (Not working)" />
         <Container>
           <ListGroup>
             {players.map((player) => (
