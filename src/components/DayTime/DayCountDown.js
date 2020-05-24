@@ -30,7 +30,7 @@ function DayCountDown({ gameRef, host }) {
         // set an expiration time for 15 seconds into the future
         setEndTimeInDB();
       } else if (countDownReached) {
-        gameRef.child('status').set('voting');
+        // gameRef.child('status').set('voting'); //! Comment this line back in
       }
     }
   }, [gameRef, host, userId, gameHasntStarted, countDownReached]);
