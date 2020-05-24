@@ -23,7 +23,7 @@ function RoleMarkerButton(props) {
       onClick={clickActivate}
       size="sm"
     >
-      mark {props.role.toLowerCase()}
+      {props.role.toLowerCase()}
     </MarkerButton>
   );
 }

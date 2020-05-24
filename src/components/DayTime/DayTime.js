@@ -130,7 +130,7 @@ function DayTime({ match }) {
             />
           </Col>
           <Col xs="7">
-            <CommandText>Commands</CommandText>
+            <CommandText>Mark your suspects</CommandText>
             <Row>
               {allRoles.map((el) => (
                 <RoleMarkerButton
