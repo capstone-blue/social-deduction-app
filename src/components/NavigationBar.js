@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import { matchPath, withRouter } from 'react-router';
@@ -8,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 import logo from '../assets/animals.svg';
 import Sound from 'react-sound';
 import sillyBackground from '../assets/sounds/sillyBackground.wav';
+import happyBackground from '../assets/sounds/happyBackground.wav';
 import howl from '../assets/sounds/howl.wav';
 import rooster from '../assets/sounds/rooster.wav';
 
@@ -48,6 +50,8 @@ const NavigationBar = ({ location }) => {
       } catch (error) {
         console.error('Error in NavigationBar useEffect', error.message);
       }
+    } else {
+      setStatus('lobby');
     }
   }, [match, status]);
 
@@ -61,8 +65,8 @@ const NavigationBar = ({ location }) => {
         <Sound
           url={sillyBackground}
           playStatus={Sound.status.PLAYING}
-          autoLoad="true"
-          loop="true"
+          autoLoad={true}
+          loop={true}
         />
       ) : status === 'nightPhase' && sound ? (
         <Sound url={howl} playStatus={Sound.status.PLAYING} autoLoad="true" />
@@ -70,35 +74,37 @@ const NavigationBar = ({ location }) => {
         <Sound
           url={rooster}
           playStatus={Sound.status.PLAYING}
-          autoLoad="true"
+          autoLoad={true}
         />
       ) : status === 'voting' && sound ? (
         <Sound
           url={sillyBackground}
           playStatus={Sound.status.PLAYING}
-          autoLoad="true"
-          loop="true"
+          autoLoad={true}
+          loop={true}
         />
       ) : status === 'results' && sound ? (
         <Sound
           url={sillyBackground}
           playStatus={Sound.status.PLAYING}
-          autoLoad="true"
-          loop="true"
-        />
-      ) : !status && sound ? (
-        <Sound
-          url={sillyBackground}
-          playStatus={Sound.status.PLAYING}
-          autoLoad="true"
-          loop="true"
+          autoLoad={true}
+          loop={true}
         />
       ) : null}
       <CustomNavbarBrand className="d-flex align-items-center" href="/">
         <img alt="" src={logo} width="30" height="30" />{' '}
         <div className="ml-2">Ultimate Werewolf</div>
       </CustomNavbarBrand>
-      <Button onClick={() => mute()}>Mute</Button>
+      {sound ? (
+        <Button variant="dark" onClick={() => mute()}>
+          <i className="fas fa-volume-mute" />
+        </Button>
+      ) : null}
+      {!sound ? (
+        <Button variant="dark" onClick={() => mute()}>
+          <i className="fas fa-volume-up" />
+        </Button>
+      ) : null}
     </CustomNavbar>
   );
 };
