@@ -12,6 +12,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Spinner from 'react-bootstrap/Spinner';
 import RoleMarkerButton from './RoleMarkerButton';
+import SuspectedPlayerRole from './SuspectedPlayerRole';
 
 const PageContainer = styled(Container)`
   position: relative;
@@ -56,7 +57,7 @@ function DayTime({ match }) {
     gameRef.child('players').orderByChild('host').equalTo(true)
   );
 
-  const [suspects] = useObject(gameRef.child('suspects'));
+  const [suspects, loadingSuspects] = useObject(gameRef.child('suspects'));
 
   const [allRoles] = useObjectVal(gameRef.child('currentRoles'));
   const [markers] = useObject(gameRef.child('markers'));
@@ -83,7 +84,10 @@ function DayTime({ match }) {
     });
   }, [gameRef, setGameState]);
 
-  return !initialGameState || loadingHost || loadingCurrPlayer ? (
+  return !initialGameState ||
+    loadingHost ||
+    loadingCurrPlayer ||
+    loadingSuspects ? (
     <Spinner animation="border" role="status" />
   ) : (
     <PageContainer>
@@ -119,6 +123,7 @@ function DayTime({ match }) {
       </Row>
       <StickyUI>
         <Row>
+          <SuspectedPlayerRole suspects={suspects} userId={userId} />
           <Col>
             <PlayerCard
               gameRef={gameRef}
@@ -129,7 +134,7 @@ function DayTime({ match }) {
               selectedCards={selectedCards}
             />
           </Col>
-          <Col xs="7">
+          <Col>
             <CommandText>Mark your suspects</CommandText>
             <Row>
               {allRoles.map((el) => (
