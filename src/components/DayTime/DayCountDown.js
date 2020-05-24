@@ -21,8 +21,8 @@ function DayCountDown({ gameRef, host }) {
       db.ref('/.info/serverTimeOffset').once('value', function (snap) {
         const offset = snap.val();
         const rightNow = new Date().getTime() + offset;
-        const endDayTime = rightNow + 300000;
-        gameRef.child('endDayTime').set(endDayTime);
+        const endTime = rightNow + 300000;
+        gameRef.child('endDayTime').set(endTime);
       });
     }
     if (host[userId]) {
