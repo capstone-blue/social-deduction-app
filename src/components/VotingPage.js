@@ -22,7 +22,7 @@ const select = new UIfx(selectSound, {
 });
 
 const unselect = new UIfx(unselectSound, {
-  volume: 0.3,
+  volume: 0.1,
   throttleMs: 50,
 });
 
@@ -297,13 +297,6 @@ const VotingPage = ({ match }) => {
 
   return (
     <React.Fragment>
-      {/* <Sound
-        url={sillyBackground}
-        // url="../assets/sounds/sillyBackground.wav"
-        playStatus={Sound.status.PLAYING}
-        autoLoad="true"
-        loop="true"
-      /> */}
       <Container>
         <VotingTimer
           gameRef={gameSessionRef}

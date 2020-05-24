@@ -9,7 +9,8 @@ import Button from 'react-bootstrap/Button';
 import logo from '../assets/animals.svg';
 import Sound from 'react-sound';
 import sillyBackground from '../assets/sounds/sillyBackground.wav';
-import happyBackground from '../assets/sounds/happyBackground.wav';
+import detectiveBackground from '../assets/sounds/detectiveBackground.wav';
+import nightBackground from '../assets/sounds/nightBackground.mp3';
 import howl from '../assets/sounds/howl.wav';
 import rooster from '../assets/sounds/rooster.wav';
 
@@ -63,25 +64,50 @@ const NavigationBar = ({ location }) => {
     <CustomNavbar>
       {status === 'roleSelect' && sound ? (
         <Sound
-          url={sillyBackground}
+          url={detectiveBackground}
           playStatus={Sound.status.PLAYING}
           autoLoad={true}
           loop={true}
+          volume={10}
         />
       ) : status === 'nightPhase' && sound ? (
-        <Sound url={howl} playStatus={Sound.status.PLAYING} autoLoad="true" />
+        <React.Fragment>
+          <Sound
+            url={howl}
+            playStatus={Sound.status.PLAYING}
+            autoLoad="true"
+            volume={20}
+          />
+          <Sound
+            url={nightBackground}
+            playStatus={Sound.status.PLAYING}
+            autoLoad="true"
+            volume={10}
+          />
+        </React.Fragment>
       ) : status === 'dayPhase' && sound ? (
-        <Sound
-          url={rooster}
-          playStatus={Sound.status.PLAYING}
-          autoLoad={true}
-        />
+        <React.Fragment>
+          <Sound
+            url={rooster}
+            playStatus={Sound.status.PLAYING}
+            autoLoad={true}
+            volume={20}
+          />
+          <Sound
+            url={sillyBackground}
+            playStatus={Sound.status.PLAYING}
+            autoLoad={true}
+            loop={true}
+            volume={10}
+          />
+        </React.Fragment>
       ) : status === 'voting' && sound ? (
         <Sound
           url={sillyBackground}
           playStatus={Sound.status.PLAYING}
           autoLoad={true}
           loop={true}
+          volume={10}
         />
       ) : status === 'results' && sound ? (
         <Sound
@@ -89,6 +115,7 @@ const NavigationBar = ({ location }) => {
           playStatus={Sound.status.PLAYING}
           autoLoad={true}
           loop={true}
+          volume={10}
         />
       ) : null}
       <CustomNavbarBrand className="d-flex align-items-center" href="/">
