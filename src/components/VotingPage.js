@@ -9,14 +9,11 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import ProgressBar from 'react-bootstrap/ProgressBar';
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import UIfx from 'uifx';
-import selectSound from '../assets/sounds/select.wav';
-import unselectSound from '../assets/sounds/unselect.wav';
-import Sound from 'react-sound';
-import sillyBackground from '../assets/sounds/sillyBackground.wav';
+import selectSound from '../assets/sounds/select.mp3';
+import unselectSound from '../assets/sounds/unselect.mp3';
 
 const select = new UIfx(selectSound, {
   volume: 0.3,
@@ -24,7 +21,7 @@ const select = new UIfx(selectSound, {
 });
 
 const unselect = new UIfx(unselectSound, {
-  volume: 0.3,
+  volume: 0.1,
   throttleMs: 50,
 });
 
@@ -299,13 +296,6 @@ const VotingPage = ({ match }) => {
 
   return (
     <React.Fragment>
-      <Sound
-        url={sillyBackground}
-        // url="../assets/sounds/sillyBackground.wav"
-        playStatus={Sound.status.PLAYING}
-        autoLoad="true"
-        loop="true"
-      />
       <Container>
         <VotingTimer
           gameRef={gameSessionRef}
@@ -325,7 +315,6 @@ const VotingPage = ({ match }) => {
             </Col>
           </Container>
         </Title>
-        <ProgressBar now={70} label="Time Remaining: (Not working)" />
         <Container>
           <ListGroup>
             {players.map((player) => (

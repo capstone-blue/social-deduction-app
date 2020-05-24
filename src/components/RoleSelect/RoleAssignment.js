@@ -8,6 +8,19 @@ import VillageButton from './VillageButton';
 import MasonButton from './MasonButton';
 import RoleLockButton from './RoleLockButton';
 import Container from 'react-bootstrap/Container';
+import UIfx from 'uifx';
+import selectSound from '../../assets/sounds/select.mp3';
+import unselectSound from '../../assets/sounds/unselect.mp3';
+
+const select = new UIfx(selectSound, {
+  volume: 0.3,
+  throttleMs: 50,
+});
+
+const unselect = new UIfx(unselectSound, {
+  volume: 0.1,
+  throttleMs: 50,
+});
 
 //possible further work
 
@@ -33,13 +46,16 @@ function RoleAssignment({ match }) {
     if (playerVals.host) {
       if (currentRolesList) {
         if (currentRolesList.includes(role)) {
+          unselect.play();
           const newRoles = currentRolesList.filter((el) => el !== role);
           gameRef.update({ currentRoles: newRoles });
         } else {
+          select.play();
           const newRoles = [...currentRolesList, role];
           gameRef.update({ currentRoles: newRoles });
         }
       } else {
+        select.play();
         gameRef.update({ currentRoles: [role] });
       }
     }

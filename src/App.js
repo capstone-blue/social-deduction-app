@@ -84,7 +84,6 @@ function App() {
     <div>...Loading</div>
   ) : (
     <div>
-      <NavigationBar />
       <OuterPage>
         <Routes user={user} />
         <GraveyardContainer>
@@ -113,11 +112,9 @@ function App() {
 function Routes() {
   return (
     <Router>
+      <NavigationBar />
       <Switch>
         <Route path="/lobbies/:id" component={LobbyPage} />
-        {/* <Route path="/gamesession/:id/gameover" component={GameEnd} />
-        {/* <Route path="/gamesession/:id/vote" component={VotingPage} /> */}
-        {/* <Route path="/gamesession/:id" component={GameSession} />  */}
         <Route path="/hostScreen/:id" component={RoleAssignment} />
         <Route path="/gameSessions/:id" component={GameScreen} />
         <Route path="/" component={HomePage} />

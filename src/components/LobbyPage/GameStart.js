@@ -6,6 +6,13 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import { useObjectVal } from 'react-firebase-hooks/database';
+import UIfx from 'uifx';
+import startSound from '../../assets/sounds/start.mp3';
+
+const start = new UIfx(startSound, {
+  volume: 0.3,
+  throttleMs: 50,
+});
 
 const StartButton = styled(Button)`
   font-size: 2rem;
@@ -48,6 +55,7 @@ function GameStart({ match, players, history }) {
     // checks for min players to start game
     if (players.length >= minPlayers) {
       try {
+        start.play();
         // creates a game session by transferring lobby members data over
         db.ref(`/gameSessions/${lobbyId}`);
         db.ref(`/gameSessions`).update({ [lobbyId]: gameRules });

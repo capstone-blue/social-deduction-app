@@ -1,7 +1,16 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
+import UIfx from 'uifx';
+import guillotineSound from '../../assets/sounds/guillotine.mp3';
+
+const guillotine = new UIfx(guillotineSound, {
+  volume: 0.4,
+  throttleMs: 50,
+});
+
 function RoleLockButton(props) {
   function clickActivate() {
+    guillotine.play();
     props.wolfy(
       props.roles,
       props.players,
