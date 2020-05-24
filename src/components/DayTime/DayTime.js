@@ -64,7 +64,7 @@ function DayTime({ match }) {
 
   // State - should only influence current user's own screen
   const [initialGameState, setGameState] = useState(null);
-  const [currPlayerRole, setCurrPlayerRole] = useState('');
+  const [, setCurrPlayerRole] = useState('');
   const [selectedCards, setSelectedCards] = useState([]);
   const [isRevealed] = useState(false);
   // function revealCard() {
