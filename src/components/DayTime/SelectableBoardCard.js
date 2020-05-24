@@ -70,8 +70,8 @@ function SelectableBoardCard({
         isRevealed: false,
         isSelected: true,
       };
-      // this differes from night phase. we don't need to select 2 cards during the day, so we only account for selecting 1.
-      newCard.border = '#27CCE5';
+      // this differs from night phase. we don't need to select 2 cards during the day, so we only account for selecting 1.
+      newCard.border = theme ? '#27CCE5' : '#5B6672';
       setSelectedCards([newCard]);
     }
   }
