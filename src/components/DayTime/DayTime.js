@@ -119,8 +119,7 @@ function DayTime({ match }) {
       </Row>
       <StickyUI>
         <Row>
-          <Col />
-          <Col md={6}>
+          <Col>
             <PlayerCard
               gameRef={gameRef}
               currPlayer={currPlayer}
@@ -130,27 +129,24 @@ function DayTime({ match }) {
               selectedCards={selectedCards}
             />
           </Col>
-          <Col>{/* <ResetForm gameRef={gameRef} /> */}</Col>
+          <Col>
+            <CommandText>Commands</CommandText>
+            <Row>
+              {allRoles.map((el) => (
+                <RoleMarkerButton
+                  key={el}
+                  selectedCards={selectedCards}
+                  role={el}
+                  gameRef={gameRef}
+                  applyMarker={applyMarker}
+                  suspects={suspects}
+                  markers={markers}
+                />
+              ))}
+            </Row>
+          </Col>
         </Row>
       </StickyUI>
-      <Row>
-        <Col>
-          <aside className="text-center">
-            <CommandText>Commands</CommandText>
-            {allRoles.map((el) => (
-              <RoleMarkerButton
-                key={el}
-                selectedCards={selectedCards}
-                role={el}
-                gameRef={gameRef}
-                applyMarker={applyMarker}
-                suspects={suspects}
-                markers={markers}
-              />
-            ))}
-          </aside>
-        </Col>
-      </Row>
     </PageContainer>
   );
 }
