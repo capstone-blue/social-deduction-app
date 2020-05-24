@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { useObjectVal } from 'react-firebase-hooks/database';
 import Sound from 'react-sound';
-import ticktockSFX from '../assets/sounds/ticktock.wav';
+import ticktockSFX from '../assets/sounds/ticktock.mp3';
+import guillotineSFX from '../assets/sounds/guillotine.mp3';
 
 function VotingTimer({ gameRef, host, finishVoting }) {
   const [count, setCount] = useState('');
@@ -48,10 +49,16 @@ function VotingTimer({ gameRef, host, finishVoting }) {
 
   return (
     <React.Fragment>
-      {seconds < 3 ? (
+      {seconds === 1 ? (
+        <Sound
+          url={guillotineSFX}
+          playStatus={Sound.status.PLAYING}
+          autoLoad="true"
+        />
+      ) : null}
+      {seconds < 3 && seconds > 1 ? (
         <Sound
           url={ticktockSFX}
-          // url="../assets/sounds/sillyBackground.wav"
           playStatus={Sound.status.PLAYING}
           autoLoad="true"
         />

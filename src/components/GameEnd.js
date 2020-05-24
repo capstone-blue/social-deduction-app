@@ -13,9 +13,9 @@ import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
 import UIfx from 'uifx';
 import victorySound from '../assets/sounds/victory.mp3';
-import deathbellSound from '../assets/sounds/deathbell.wav';
-import wowSound from '../assets/sounds/wow.wav';
-import jingleSound from '../assets/sounds/jingle.wav';
+import deathbellSound from '../assets/sounds/deathbell.mp3';
+import wowSound from '../assets/sounds/wow.mp3';
+import jingleSound from '../assets/sounds/jingle.mp3';
 import startSound from '../assets/sounds/start.mp3';
 
 const victory = new UIfx(victorySound, {

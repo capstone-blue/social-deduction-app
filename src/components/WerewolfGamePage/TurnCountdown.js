@@ -5,6 +5,9 @@ import { useUserId } from '../../context/userContext';
 import styled from 'styled-components';
 import Spinner from 'react-bootstrap/Spinner';
 import Col from 'react-bootstrap/Col';
+import Sound from 'react-sound';
+import ticktockSFX from '../../assets/sounds/ticktock.mp3';
+import dingSFX from '../../assets/sounds/ding.mp3';
 
 const TurnHeading = styled.div`
   color: #ffc108;
@@ -89,6 +92,22 @@ function TurnCountdown({ gameRef, host, currentTurn, setCurrentTurn }) {
           {Math.floor((endTime - new Date().getTime()) / 1000)}
         </Timer>
       </Col>
+      {count === 2 ? (
+        <Sound
+          url={ticktockSFX}
+          playStatus={Sound.status.PLAYING}
+          autoLoad="true"
+          volume={20}
+        />
+      ) : null}
+      {count === 0 ? (
+        <Sound
+          url={dingSFX}
+          playStatus={Sound.status.PLAYING}
+          autoLoad="true"
+          volume={30}
+        />
+      ) : null}
     </React.Fragment>
   );
 }

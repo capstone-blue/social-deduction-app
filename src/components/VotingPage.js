@@ -13,8 +13,8 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import UIfx from 'uifx';
-import selectSound from '../assets/sounds/select.wav';
-import unselectSound from '../assets/sounds/unselect.wav';
+import selectSound from '../assets/sounds/select.mp3';
+import unselectSound from '../assets/sounds/unselect.mp3';
 
 const select = new UIfx(selectSound, {
   volume: 0.3,

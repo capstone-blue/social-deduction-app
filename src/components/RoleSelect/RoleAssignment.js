@@ -9,8 +9,8 @@ import MasonButton from './MasonButton';
 import RoleLockButton from './RoleLockButton';
 import Container from 'react-bootstrap/Container';
 import UIfx from 'uifx';
-import selectSound from '../../assets/sounds/select.wav';
-import unselectSound from '../../assets/sounds/unselect.wav';
+import selectSound from '../../assets/sounds/select.mp3';
+import unselectSound from '../../assets/sounds/unselect.mp3';
 
 const select = new UIfx(selectSound, {
   volume: 0.3,

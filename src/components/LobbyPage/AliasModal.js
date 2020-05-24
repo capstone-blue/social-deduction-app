@@ -4,8 +4,8 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import UIfx from 'uifx';
-import beepSound from '../../assets/sounds/beep.wav';
-import selectSound from '../../assets/sounds/select.wav';
+import beepSound from '../../assets/sounds/beep.mp3';
+import selectSound from '../../assets/sounds/select.mp3';
 
 const beep = new UIfx(beepSound, {
   volume: 0.5,

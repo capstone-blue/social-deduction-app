@@ -13,7 +13,7 @@ import UIfx from 'uifx';
 import startSound from '../assets/sounds/start.mp3';
 
 const start = new UIfx(startSound, {
-  volume: 0.5,
+  volume: 0.3,
   throttleMs: 50,
 });
 

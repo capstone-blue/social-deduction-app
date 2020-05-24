@@ -8,11 +8,12 @@ import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import logo from '../assets/animals.svg';
 import Sound from 'react-sound';
-import sillyBackground from '../assets/sounds/sillyBackground.wav';
-import detectiveBackground from '../assets/sounds/detectiveBackground.wav';
+import sillyBackground from '../assets/sounds/sillyBackground.mp3';
+import detectiveBackground from '../assets/sounds/detectiveBackground.mp3';
 import nightBackground from '../assets/sounds/nightBackground.mp3';
-import howl from '../assets/sounds/howl.wav';
-import rooster from '../assets/sounds/rooster.wav';
+import morningBackground from '../assets/sounds/morningBackground.mp3';
+import howl from '../assets/sounds/howl.mp3';
+import rooster from '../assets/sounds/rooster.mp3';
 
 const CustomNavbar = styled(Navbar)`
   color: #ffffff;
@@ -94,7 +95,7 @@ const NavigationBar = ({ location }) => {
             volume={20}
           />
           <Sound
-            url={sillyBackground}
+            url={morningBackground}
             playStatus={Sound.status.PLAYING}
             autoLoad={true}
             loop={true}
