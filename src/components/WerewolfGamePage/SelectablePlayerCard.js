@@ -91,7 +91,7 @@ function SelectablePlayerCard({
   return (
     <PlayerContainer className="text-center" onClick={handleClick}>
       <PlayerBadge pill variant="danger" className="text-center" size="lg">
-        Your Card
+        Starting Role
       </PlayerBadge>
       <PlayerCard border={card.border}>
         <PlayerCardTitle className="text-center">

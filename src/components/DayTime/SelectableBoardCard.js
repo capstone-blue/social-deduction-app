@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useObject } from 'react-firebase-hooks/database';
-import Card from 'react-bootstrap/Card';
 
-const BoardCard = styled(Card)`
-  width: 5rem;
-  min-height: 7rem;
-  padding: 1rem;
+const BoardCard = styled.div`
+  margin: 0.5rem;
+  cursor: pointer;
+  color: ${(props) => (props.theme.color ? props.theme.color : '#23272B')};
+  width: 7rem;
+  height: 8rem;
+  padding: 1rem 0.5rem;
   font-size: 1.5rem;
-  border-width: ${(props) => (props.border ? '2px' : '1px')};
-  border-color: ${(props) => props.border || 'gray'};
+  border: 0.5rem solid transparent;
+  border-left: 0rem solid transparent;
+  border-right: 0rem solid transparent;
+  border-radius: 0.125rem;
+  background-color: #eaeaea;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.1);
+  border-color: ${(props) => props.border || 'transparent'};
+  &:hover {
+    background-color: ${(props) =>
+      props.theme.hover ? props.theme.hover : '#B9BABB'};
+  }
 `;
 
 function SelectableBoardCard({
@@ -17,9 +28,9 @@ function SelectableBoardCard({
   setSelectedCards,
   selectedCards,
   cardId,
-  playerVal,
   cardVal,
   cardRef,
+  theme,
 }) {
   const [card, setCard] = useState({});
   // const [suspects, loadingSuspects] = useObject(gameRef.child('suspects'))
@@ -29,8 +40,8 @@ function SelectableBoardCard({
   let suspectIdentity = undefined;
   if (suspects) {
     if (suspects.val()) {
-      if (suspects.val()[playerVal]) {
-        suspectIdentity = suspects.val()[playerVal];
+      if (suspects.val()[cardId]) {
+        suspectIdentity = suspects.val()[cardId];
       } else if (suspects.val()[cardId]) {
         suspectIdentity = suspects.val()[cardId];
       }
@@ -59,26 +70,19 @@ function SelectableBoardCard({
         isRevealed: false,
         isSelected: true,
       };
-      // if there is a card in the list already, give the new card a different border
-      const firstCard = selectedCards[0];
-      newCard.border =
-        firstCard && firstCard.border === 'green' ? 'red' : 'green';
-      setSelectedCards([...selectedCards, newCard]);
+      // this differs from night phase. we don't need to select 2 cards during the day, so we only account for selecting 1.
+      newCard.border = theme ? '#27CCE5' : '#5B6672';
+      setSelectedCards([newCard]);
     }
   }
 
   return (
     <div className="text-center" onClick={handleClick}>
-      {suspectIdentity ? (
-        <BoardCard border={card.border}>
-          <Card.Title> suspected {suspectIdentity} </Card.Title>
-          {/* <Card.Body>suspected {suspectIdentity}</Card.Body> */}
-        </BoardCard>
-      ) : (
-        <BoardCard border={card.border}>
-          <Card.Title> ? </Card.Title>
-        </BoardCard>
-      )}
+      <BoardCard border={card.border} theme={theme}>
+        <div style={suspectIdentity ? { fontSize: '1rem' } : null}>
+          {suspectIdentity ? suspectIdentity : '?'}
+        </div>
+      </BoardCard>
     </div>
   );
 }
