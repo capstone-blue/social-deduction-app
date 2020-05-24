@@ -70,11 +70,9 @@ function SelectableBoardCard({
         isRevealed: false,
         isSelected: true,
       };
-      // if there is a card in the list already, give the new card a different border
-      const firstCard = selectedCards[0];
-      newCard.border =
-        firstCard && firstCard.border === '#27CCE5' ? '#DC3545' : '#27CCE5';
-      setSelectedCards([...selectedCards, newCard]);
+      // this differes from night phase. we don't need to select 2 cards during the day, so we only account for selecting 1.
+      newCard.border = '#27CCE5';
+      setSelectedCards([newCard]);
     }
   }
 
