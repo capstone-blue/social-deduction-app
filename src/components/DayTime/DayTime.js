@@ -10,16 +10,19 @@ import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Badge from 'react-bootstrap/Badge';
 import Spinner from 'react-bootstrap/Spinner';
 import RoleMarkerButton from './RoleMarkerButton';
 
+const PageContainer = styled(Container)`
+  position: relative;
+`;
+
 const Board = styled(Container)`
-  width: 80%;
+  min-width: 90%;
   padding: 1rem;
   margin-bottom: 1rem;
   border-radius: 0.25rem;
-  background-color: gray;
+  background-color: rgba(52, 58, 64, 0.65);
 `;
 
 function DayTime({ match }) {
@@ -66,20 +69,10 @@ function DayTime({ match }) {
   return !initialGameState || loadingHost || loadingCurrPlayer ? (
     <Spinner animation="border" role="status" />
   ) : (
-    <Container>
+    <PageContainer>
       <Row>
-        <Col md={10}>
-          <Row>
-            <Col>
-              <h1 className="text-center">
-                {initialGameState.title}{' '}
-                <Badge variant={initialGameState.isNight ? 'dark' : 'light'}>
-                  {initialGameState.isNight ? 'Night Phase' : 'Day Phase'}
-                </Badge>
-              </h1>
-            </Col>
-          </Row>
-          <Row>
+        <Col>
+          <Row className="text-center">
             <DayCountDown gameRef={gameRef} host={host} />
           </Row>
           <Board style={{}}>
@@ -132,7 +125,7 @@ function DayTime({ match }) {
           </aside>
         </Col>
       </Row>
-    </Container>
+    </PageContainer>
   );
 }
 
