@@ -7,12 +7,11 @@ const SuspectedPlayerRoleContainer = styled.div`
   width: 20rem;
   left: 50%;
   margin-left: -10rem;
-  bottom: 9rem;
+  bottom: 136px;
   text-align: center;
 `;
 
 const SuspectBadge = styled(Badge)`
-  color: white;
   font-size: 1.25rem;
   font-weight: 100;
 `;
