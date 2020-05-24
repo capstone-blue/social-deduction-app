@@ -8,18 +8,22 @@ import VillageButton from './VillageButton';
 import MasonButton from './MasonButton';
 import RoleLockButton from './RoleLockButton';
 import Container from 'react-bootstrap/Container';
+import videoRoleLock from '../../utils/turns/videoRoleLock';
 
 //possible further work
 
 // default setup button for given number of players
 //prebuilt game states that are regarded as fun
-function RoleAssignment({ match }) {
+function VideoRoleSelect({ match }) {
   const [lobbiesRef] = useState(db.ref().child('gameSessions'));
   const [userId] = useUserId();
   const [playerVals] = useObjectVal(
     lobbiesRef.child(match.params.id).child('players').child(userId)
   );
 
+  const [allPlayerVals] = useObjectVal(
+    lobbiesRef.child(match.params.id).child('players')
+  );
   const [players] = useListKeys(
     lobbiesRef.child(match.params.id).child('players')
   );
@@ -174,8 +178,8 @@ function RoleAssignment({ match }) {
             <div className="text-center">
               <h1>Start Game</h1>
               <RoleLockButton
-                wolfy={wolfy}
-                roles={currentRolesList}
+                wolfy={videoRoleLock}
+                roles={allPlayerVals}
                 players={players}
                 playersRef={playersRef}
                 roleList={roleList}
@@ -210,89 +214,4 @@ function RoleAssignment({ match }) {
   );
 }
 
-function wolfy(inputArray, players, playersRef, roleList, gameRef) {
-  const inPlay = [];
-  let availTurnVals = [];
-  const spliceArray = inputArray.slice(0);
-  for (let i = 0; i < players.length; i++) {
-    const newVal = Math.round(Math.random() * (spliceArray.length - 1));
-    inPlay.push(spliceArray[newVal]);
-    spliceArray.splice(newVal, 1);
-  }
-  function setTheCards() {
-    for (let j = 1; j - 1 < spliceArray.length; j++) {
-      const cardVal = `card ${j}`;
-      if (spliceArray[j - 1].includes('villager')) {
-        const cardUpdate = roleList.villager;
-        availTurnVals.push(roleList.villager);
-        gameRef.child('centerCards').update({ [cardVal]: cardUpdate });
-      } else if (spliceArray[j - 1].includes('werewolf')) {
-        const cardUpdate = roleList.werewolf;
-        availTurnVals.push(roleList.werewolf);
-        gameRef.child('centerCards').update({ [cardVal]: cardUpdate });
-      } else {
-        const cardUpdate = roleList[[spliceArray[j - 1]]];
-        availTurnVals.push(roleList[[spliceArray[j - 1]]]);
-        gameRef.child('centerCards').update({ [cardVal]: cardUpdate });
-      }
-    }
-  }
-  function setTheRoles() {
-    let count = 0;
-    for (let i = 0; i < players.length; i++) {
-      const individualRef = playersRef.child(players[i]);
-      if (inPlay[i].includes('villager')) {
-        const roleUpdate = roleList.villager;
-        availTurnVals.push(roleList.villager);
-        individualRef.update({
-          startingRole: roleUpdate,
-          actualRole: roleUpdate,
-        });
-      } else if (inPlay[i].includes('werewolf')) {
-        const roleUpdate = roleList.werewolf;
-        availTurnVals.push(roleList.werewolf);
-        individualRef.update({
-          startingRole: roleUpdate,
-          actualRole: roleUpdate,
-        });
-        count++;
-        gameRef.update({ wolfCount: count });
-      } else {
-        const roleUpdate = roleList[inPlay[i]];
-        availTurnVals.push(roleList[[inPlay[i]]]);
-        individualRef.update({
-          startingRole: roleUpdate,
-          actualRole: roleUpdate,
-        });
-      }
-    }
-  }
-  function setTheTurnOrder(rolesWithVal) {
-    let turnOrder = [];
-    let turnOrderSet = [];
-    rolesWithVal.forEach((el) => {
-      if (!turnOrder.includes(el)) {
-        turnOrder.push(el);
-      }
-    });
-    console.log(turnOrder);
-    for (let i = 1; i <= 12; i++) {
-      turnOrder.forEach((el) => {
-        // console.log(Number(el.turnStart), el.turnStart)
-        if (Number(el.turnStart) === i) {
-          // console.log('got here with', el.name)
-          turnOrderSet.push(el.name);
-        }
-      });
-    }
-    // console.log(turnOrderSet)
-    const firstTurn = turnOrderSet[0];
-    gameRef.update({ currentTurn: firstTurn });
-    gameRef.update({ turnOrder: turnOrderSet });
-  }
-  setTheRoles(players, playersRef, roleList);
-  setTheCards(spliceArray, roleList, gameRef);
-  setTheTurnOrder(availTurnVals);
-}
-
-export default RoleAssignment;
+export default VideoRoleSelect;
