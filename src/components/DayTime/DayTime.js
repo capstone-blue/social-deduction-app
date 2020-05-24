@@ -25,6 +25,23 @@ const Board = styled(Container)`
   background-color: rgba(52, 58, 64, 0.65);
 `;
 
+const StickyUI = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 10rem;
+  width: 100%;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  border-top: 1rem solid rgba(52, 58, 64, 1);
+  background-color: #22262a;
+`;
+
+const CommandText = styled.div`
+  color: white;
+  font-size: 1.5rem;
+`;
+
 function DayTime({ match }) {
   const [gameRef] = useState(
     db.ref().child('gameSessions').child(match.params.id)
@@ -75,42 +92,51 @@ function DayTime({ match }) {
           <Row className="text-center">
             <DayCountDown gameRef={gameRef} host={host} />
           </Row>
-          <Board style={{}}>
-            <OpponentList
-              gameRef={gameRef}
-              players={initialGameState.players}
-              setSelectedCards={setSelectedCards}
-              selectedCards={selectedCards}
-              isRevealed={isRevealed}
-            />
-            <MiddleCardList
-              gameRef={gameRef}
-              setSelectedCards={setSelectedCards}
-              selectedCards={selectedCards}
-              centerCards={initialGameState.centerCards}
-              isRevealed={isRevealed}
-              suspects={suspects.val()}
-            />
+          <Board>
+            <Row>
+              <Col />
+              <Col xs="auto">
+                <OpponentList
+                  gameRef={gameRef}
+                  players={initialGameState.players}
+                  setSelectedCards={setSelectedCards}
+                  selectedCards={selectedCards}
+                  isRevealed={isRevealed}
+                />
+                <MiddleCardList
+                  gameRef={gameRef}
+                  setSelectedCards={setSelectedCards}
+                  selectedCards={selectedCards}
+                  centerCards={initialGameState.centerCards}
+                  isRevealed={isRevealed}
+                  suspects={suspects.val()}
+                />
+              </Col>
+              <Col />
+            </Row>
           </Board>
-          <Row>
-            <Col />
-            <Col md={6}>
-              <PlayerCard
-                gameRef={gameRef}
-                currPlayer={currPlayer}
-                userId={userId}
-                setCurrPlayerRole={setCurrPlayerRole}
-                setSelectedCards={setSelectedCards}
-                selectedCards={selectedCards}
-              />
-            </Col>
-            <Col>{/* <ResetForm gameRef={gameRef} /> */}</Col>
-          </Row>
         </Col>
-        <Col md={2}>
+      </Row>
+      <StickyUI>
+        <Row>
+          <Col />
+          <Col md={6}>
+            <PlayerCard
+              gameRef={gameRef}
+              currPlayer={currPlayer}
+              userId={userId}
+              setCurrPlayerRole={setCurrPlayerRole}
+              setSelectedCards={setSelectedCards}
+              selectedCards={selectedCards}
+            />
+          </Col>
+          <Col>{/* <ResetForm gameRef={gameRef} /> */}</Col>
+        </Row>
+      </StickyUI>
+      <Row>
+        <Col>
           <aside className="text-center">
-            <h2>Commands</h2>
-
+            <CommandText>Commands</CommandText>
             {allRoles.map((el) => (
               <RoleMarkerButton
                 key={el}
