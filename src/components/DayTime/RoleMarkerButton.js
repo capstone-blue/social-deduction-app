@@ -1,5 +1,11 @@
 import React from 'react';
+import styled from 'styled-components';
 import Button from 'react-bootstrap/Button';
+
+const MarkerButton = styled(Button)`
+  margin: 0.25rem;
+`;
+
 function RoleMarkerButton(props) {
   function clickActivate() {
     props.applyMarker(
@@ -11,9 +17,14 @@ function RoleMarkerButton(props) {
     );
   }
   return (
-    <Button variant="warning" name={props.role} onClick={clickActivate}>
-      Mark this player as {props.role}
-    </Button>
+    <MarkerButton
+      variant="warning"
+      name={props.role}
+      onClick={clickActivate}
+      size="sm"
+    >
+      mark {props.role.toLowerCase()}
+    </MarkerButton>
   );
 }
 

@@ -129,7 +129,7 @@ function DayTime({ match }) {
               selectedCards={selectedCards}
             />
           </Col>
-          <Col>
+          <Col xs="7">
             <CommandText>Commands</CommandText>
             <Row>
               {allRoles.map((el) => (
