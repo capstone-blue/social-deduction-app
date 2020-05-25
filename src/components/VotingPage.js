@@ -28,7 +28,7 @@ const unselect = new UIfx(unselectSound, {
 const Title = styled.h1`
   font-size: 2.5em;
   text-align: center;
-  color: darkslateblue;
+  color: #ffc108;
 `;
 
 // list of players to vote for shows up
@@ -303,12 +303,12 @@ const VotingPage = ({ match }) => {
           finishVoting={finishVoting}
         />
         <Title>
-          <Badge variant="dark">Decision Time!</Badge>
+          <Badge variant="danger">Decision Time!</Badge>
           <p variant="dark">Vote for the player you think is a werewolf!</p>
           <Container>
             <Col>
               {voted ? (
-                <Button variant="success" onClick={() => unvote()}>
+                <Button variant="dark" onClick={() => unvote()}>
                   Unvote
                 </Button>
               ) : null}
@@ -318,18 +318,21 @@ const VotingPage = ({ match }) => {
         <Container>
           <ListGroup>
             {players.map((player) => (
-              <ListGroup.Item variant="info" key={player.key}>
+              <ListGroup.Item variant="dark" key={player.key}>
                 <Row>
                   <Col>
                     <p>{player.val().alias}</p>
                   </Col>
                   <Col>
-                    <Badge variant="danger">Votes: {player.val().votes}</Badge>
+                    <Badge variant="danger" size="lg">
+                      Votes: {player.val().votes}
+                    </Badge>
                   </Col>
                   <Col>
                     <Button
                       onClick={() => vote(player)}
                       disabled={!!voted || player.key === userId}
+                      variant="info"
                     >
                       Vote
                     </Button>
