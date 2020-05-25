@@ -28,7 +28,7 @@ const unselect = new UIfx(unselectSound, {
 const Title = styled.h1`
   font-size: 2.5em;
   text-align: center;
-  color: darkslateblue;
+  color: #ffc108;
 `;
 
 // list of players to vote for shows up
@@ -303,33 +303,26 @@ const VotingPage = ({ match }) => {
           finishVoting={finishVoting}
         />
         <Title>
-          <Badge variant="dark">Decision Time!</Badge>
           <p variant="dark">Vote for the player you think is a werewolf!</p>
-          <Container>
-            <Col>
-              {voted ? (
-                <Button variant="success" onClick={() => unvote()}>
-                  Unvote
-                </Button>
-              ) : null}
-            </Col>
-          </Container>
         </Title>
         <Container>
           <ListGroup>
             {players.map((player) => (
-              <ListGroup.Item variant="info" key={player.key}>
+              <ListGroup.Item variant="dark" key={player.key}>
                 <Row>
                   <Col>
                     <p>{player.val().alias}</p>
                   </Col>
                   <Col>
-                    <Badge variant="danger">Votes: {player.val().votes}</Badge>
+                    <Badge variant="info" size="lg">
+                      Votes: {player.val().votes}
+                    </Badge>
                   </Col>
                   <Col>
                     <Button
                       onClick={() => vote(player)}
                       disabled={!!voted || player.key === userId}
+                      variant="info"
                     >
                       Vote
                     </Button>
@@ -339,6 +332,15 @@ const VotingPage = ({ match }) => {
             ))}
           </ListGroup>
         </Container>
+      </Container>
+      <Container>
+        <Col className="text-center my-2">
+          {voted ? (
+            <Button variant="danger" onClick={() => unvote()}>
+              Unvote
+            </Button>
+          ) : null}
+        </Col>
       </Container>
     </React.Fragment>
   );
