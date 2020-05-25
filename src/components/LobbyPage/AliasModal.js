@@ -28,7 +28,7 @@ function AliasModal({ match, currPlayer }) {
     if (!currPlayer[1].alias) {
       setShow(true);
     }
-  }, []);
+  }, [currPlayer]);
 
   function handleSubmit(e) {
     beep.play();

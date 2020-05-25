@@ -74,7 +74,7 @@ function WerewolfGamePage({ match }) {
   );
   // State - should only influence current user's own screen
   const [initialGameState, setGameState] = useState(null);
-  const [currPlayerRole, setCurrPlayerRole] = useState('');
+  const [, setCurrPlayerRole] = useState('');
   const [selectedCards, setSelectedCards] = useState([]);
   console.log(currPlayer);
   // function revealCard() {
@@ -216,6 +216,7 @@ function WerewolfGamePage({ match }) {
   return !initialGameState ||
     loadingHost ||
     loadingCurrentTurn ||
+    loadingMessages ||
     loadingCurrPlayer ? (
     <Spinner animation="border" role="status" />
   ) : (
