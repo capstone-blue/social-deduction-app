@@ -303,7 +303,6 @@ const VotingPage = ({ match }) => {
           finishVoting={finishVoting}
         />
         <Title>
-          <Badge variant="danger">Decision Time!</Badge>
           <p variant="dark">Vote for the player you think is a werewolf!</p>
         </Title>
         <Container>
