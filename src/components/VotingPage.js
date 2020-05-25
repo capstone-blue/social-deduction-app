@@ -305,15 +305,6 @@ const VotingPage = ({ match }) => {
         <Title>
           <Badge variant="danger">Decision Time!</Badge>
           <p variant="dark">Vote for the player you think is a werewolf!</p>
-          <Container>
-            <Col>
-              {voted ? (
-                <Button variant="dark" onClick={() => unvote()}>
-                  Unvote
-                </Button>
-              ) : null}
-            </Col>
-          </Container>
         </Title>
         <Container>
           <ListGroup>
@@ -324,7 +315,7 @@ const VotingPage = ({ match }) => {
                     <p>{player.val().alias}</p>
                   </Col>
                   <Col>
-                    <Badge variant="danger" size="lg">
+                    <Badge variant="info" size="lg">
                       Votes: {player.val().votes}
                     </Badge>
                   </Col>
@@ -342,6 +333,15 @@ const VotingPage = ({ match }) => {
             ))}
           </ListGroup>
         </Container>
+      </Container>
+      <Container>
+        <Col className="text-center my-2">
+          {voted ? (
+            <Button variant="danger" onClick={() => unvote()}>
+              Unvote
+            </Button>
+          ) : null}
+        </Col>
       </Container>
     </React.Fragment>
   );
