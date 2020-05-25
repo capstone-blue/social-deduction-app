@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { useObjectVal } from 'react-firebase-hooks/database';
+import styled from 'styled-components';
 import Sound from 'react-sound';
 import ticktockSFX from '../assets/sounds/ticktock.mp3';
 import guillotineSFX from '../assets/sounds/guillotine.mp3';
+
+const TimerContainer = styled.div`
+  color: white;
+  text-align: center;
+`;
 
 function VotingTimer({ gameRef, host, finishVoting }) {
   const [count, setCount] = useState('');
@@ -48,7 +54,7 @@ function VotingTimer({ gameRef, host, finishVoting }) {
   }, [count, endVotingTime]);
 
   return (
-    <React.Fragment>
+    <TimerContainer>
       {seconds === 1 ? (
         <Sound
           url={guillotineSFX}
@@ -74,7 +80,7 @@ function VotingTimer({ gameRef, host, finishVoting }) {
           Time Left: {minutes}:0{seconds}
         </h2>
       )}
-    </React.Fragment>
+    </TimerContainer>
   );
 }
 
