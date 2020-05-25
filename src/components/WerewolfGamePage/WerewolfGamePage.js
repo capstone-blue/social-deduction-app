@@ -74,7 +74,7 @@ function WerewolfGamePage({ match }) {
   );
   // State - should only influence current user's own screen
   const [initialGameState, setGameState] = useState(null);
-  const [currPlayerRole, setCurrPlayerRole] = useState('');
+  const [, setCurrPlayerRole] = useState('');
   const [selectedCards, setSelectedCards] = useState([]);
   // function revealCard() {
   //   if(currPlayer.startingRole.name ==="Doppelganger" || currPlayer.startingRole.name === "Robber" || currPlayer.startingRole.name ==="Seer" || currPlayer.startingRole.name === "Insomniac"){
@@ -215,6 +215,7 @@ function WerewolfGamePage({ match }) {
   return !initialGameState ||
     loadingHost ||
     loadingCurrentTurn ||
+    loadingMessages ||
     loadingCurrPlayer ? (
     <Spinner animation="border" role="status" />
   ) : (

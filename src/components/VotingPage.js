@@ -9,14 +9,11 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import ProgressBar from 'react-bootstrap/ProgressBar';
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import UIfx from 'uifx';
-import selectSound from '../assets/sounds/select.wav';
-import unselectSound from '../assets/sounds/unselect.wav';
-import Sound from 'react-sound';
-import sillyBackground from '../assets/sounds/sillyBackground.wav';
+import selectSound from '../assets/sounds/select.mp3';
+import unselectSound from '../assets/sounds/unselect.mp3';
 
 const select = new UIfx(selectSound, {
   volume: 0.3,
@@ -24,14 +21,14 @@ const select = new UIfx(selectSound, {
 });
 
 const unselect = new UIfx(unselectSound, {
-  volume: 0.3,
+  volume: 0.1,
   throttleMs: 50,
 });
 
 const Title = styled.h1`
   font-size: 2.5em;
   text-align: center;
-  color: darkslateblue;
+  color: #ffc108;
 `;
 
 // list of players to vote for shows up
@@ -299,13 +296,6 @@ const VotingPage = ({ match }) => {
 
   return (
     <React.Fragment>
-      <Sound
-        url={sillyBackground}
-        // url="../assets/sounds/sillyBackground.wav"
-        playStatus={Sound.status.PLAYING}
-        autoLoad="true"
-        loop="true"
-      />
       <Container>
         <VotingTimer
           gameRef={gameSessionRef}
@@ -313,34 +303,26 @@ const VotingPage = ({ match }) => {
           finishVoting={finishVoting}
         />
         <Title>
-          <Badge variant="dark">Decision Time!</Badge>
           <p variant="dark">Vote for the player you think is a werewolf!</p>
-          <Container>
-            <Col>
-              {voted ? (
-                <Button variant="success" onClick={() => unvote()}>
-                  Unvote
-                </Button>
-              ) : null}
-            </Col>
-          </Container>
         </Title>
-        <ProgressBar now={70} label="Time Remaining: (Not working)" />
         <Container>
           <ListGroup>
             {players.map((player) => (
-              <ListGroup.Item variant="info" key={player.key}>
+              <ListGroup.Item variant="dark" key={player.key}>
                 <Row>
                   <Col>
                     <p>{player.val().alias}</p>
                   </Col>
                   <Col>
-                    <Badge variant="danger">Votes: {player.val().votes}</Badge>
+                    <Badge variant="info" size="lg">
+                      Votes: {player.val().votes}
+                    </Badge>
                   </Col>
                   <Col>
                     <Button
                       onClick={() => vote(player)}
                       disabled={!!voted || player.key === userId}
+                      variant="info"
                     >
                       Vote
                     </Button>
@@ -350,6 +332,15 @@ const VotingPage = ({ match }) => {
             ))}
           </ListGroup>
         </Container>
+      </Container>
+      <Container>
+        <Col className="text-center my-2">
+          {voted ? (
+            <Button variant="danger" onClick={() => unvote()}>
+              Unvote
+            </Button>
+          ) : null}
+        </Col>
       </Container>
     </React.Fragment>
   );

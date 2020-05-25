@@ -9,6 +9,13 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import UIfx from 'uifx';
+import startSound from '../assets/sounds/start.mp3';
+
+const start = new UIfx(startSound, {
+  volume: 0.3,
+  throttleMs: 50,
+});
 
 const PageContainer = styled(Container)`
   position: relative;
@@ -79,6 +86,7 @@ function LobbyForm({ history }) {
 
   async function createLobby() {
     try {
+      start.play();
       const lobbySnap = await lobbiesRef.push({
         name: lobbyName,
         status: 'pending',
@@ -98,6 +106,7 @@ function LobbyForm({ history }) {
 
   async function joinLobby() {
     try {
+      start.play();
       const lobbySnaps = await lobbiesRef
         .orderByChild('name')
         .equalTo(lobbyName)

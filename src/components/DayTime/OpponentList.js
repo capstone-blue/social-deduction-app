@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useObject } from 'react-firebase-hooks/database';
 import { useUserId } from '../../context/userContext';
+import styled from 'styled-components';
 import Row from 'react-bootstrap/Row';
 import Badge from 'react-bootstrap/Badge';
 import SelectableBoardCard from './SelectableBoardCard';
 
-function OpponentList({
-  gameRef,
-  setSelectedCards,
-  selectedCards,
-  players,
-  currPlayer,
-  currentTurn,
-}) {
+const OpponentRow = styled(Row)`
+  margin-bottom: 1rem;
+`;
+
+const OpponentBadge = styled(Badge)`
+  font-size: 1rem;
+  font-weight: 100;
+`;
+
+function OpponentList({ gameRef, setSelectedCards, selectedCards, players }) {
   const [userId] = useUserId();
   const [opponents, setOpponents] = useState(null);
   // filter current user out of list
@@ -23,7 +26,7 @@ function OpponentList({
   return !opponents ? (
     ''
   ) : (
-    <Row className="justify-content-md-center">
+    <OpponentRow className="justify-content-center">
       {opponents.map((o) => {
         const [opponentId, opponentData] = o;
         return (
@@ -34,12 +37,10 @@ function OpponentList({
             opponentId={opponentId}
             setSelectedCards={setSelectedCards}
             selectedCards={selectedCards}
-            currPlayer={currPlayer}
-            currentTurn={currentTurn}
           />
         );
       })}
-    </Row>
+    </OpponentRow>
   );
 }
 
@@ -49,8 +50,6 @@ function OpponentCard({
   alias,
   setSelectedCards,
   selectedCards,
-  currPlayer,
-  currentTurn,
 }) {
   const playerRef = gameRef.child(`players/${opponentId}/actualRole`);
   const [cardSnap, loadingcardSnap] = useObject(playerRef);
@@ -58,17 +57,17 @@ function OpponentCard({
     ''
   ) : (
     <div className="text-center">
-      <Badge pill variant="info">
+      <OpponentBadge pill variant="info">
         {alias}
-      </Badge>
+      </OpponentBadge>
       <SelectableBoardCard
         gameRef={gameRef}
         setSelectedCards={setSelectedCards}
         selectedCards={selectedCards}
         cardId={opponentId}
-        playerVal={opponentId}
         cardVal={cardSnap.val()}
         cardRef={playerRef}
+        theme={{ color: '#18A2B8', hover: '#bcced9' }}
       />
     </div>
   );

@@ -2,6 +2,20 @@ import { useObjectVal } from 'react-firebase-hooks/database';
 import { useUserId } from '../../context/userContext';
 import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase';
+import styled from 'styled-components';
+import Spinner from 'react-bootstrap/Spinner';
+import Col from 'react-bootstrap/Col';
+
+const TurnHeading = styled.div`
+  color: #ffc108;
+  font-size: 3.5rem;
+  margin: 0 auto;
+`;
+
+const Timer = styled.div`
+  color: #ffc108;
+  font-size: 3.5rem;
+`;
 
 function DayCountDown({ gameRef, host }) {
   const [userId] = useUserId();
@@ -21,8 +35,8 @@ function DayCountDown({ gameRef, host }) {
       db.ref('/.info/serverTimeOffset').once('value', function (snap) {
         const offset = snap.val();
         const rightNow = new Date().getTime() + offset;
-        const endDayTime = rightNow + 300000;
-        gameRef.child('endDayTime').set(endDayTime);
+        const endTime = rightNow + 300000;
+        gameRef.child('endDayTime').set(endTime);
       });
     }
     if (host[userId]) {
@@ -44,14 +58,22 @@ function DayCountDown({ gameRef, host }) {
     return () => clearInterval(interval);
   }, [count, endDayTime]);
 
-  return seconds > 9 ? (
-    <h2>
-      Time Left: {minutes}:{seconds}
-    </h2>
+  return loadingDayEndTime ? (
+    <Spinner animation="border" role="status" />
   ) : (
-    <h2>
-      Time Left: {minutes}:0{seconds}
-    </h2>
+    <React.Fragment>
+      <Col />
+      <Col xs="auto">
+        <TurnHeading>Find the Werewolf!</TurnHeading>
+      </Col>
+      <Col>
+        <Timer>
+          {minutes ? minutes : ''}
+          <span style={{ color: 'white' }}>:</span>
+          {seconds > 9 ? `${seconds}` : `0${seconds}`}
+        </Timer>
+      </Col>
+    </React.Fragment>
   );
 }
 

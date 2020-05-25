@@ -10,16 +10,37 @@ import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Badge from 'react-bootstrap/Badge';
 import Spinner from 'react-bootstrap/Spinner';
 import RoleMarkerButton from './RoleMarkerButton';
+import SuspectedPlayerRole from './SuspectedPlayerRole';
+
+const PageContainer = styled(Container)`
+  position: relative;
+`;
 
 const Board = styled(Container)`
-  width: 80%;
+  min-width: 90%;
   padding: 1rem;
   margin-bottom: 1rem;
   border-radius: 0.25rem;
-  background-color: gray;
+  background-color: rgba(52, 58, 64, 0.65);
+`;
+
+const StickyUI = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 10rem;
+  width: 100%;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  border-top: 1rem solid rgba(52, 58, 64, 1);
+  background-color: #22262a;
+`;
+
+const CommandText = styled.div`
+  color: white;
+  font-size: 1.5rem;
 `;
 
 function DayTime({ match }) {
@@ -36,14 +57,14 @@ function DayTime({ match }) {
     gameRef.child('players').orderByChild('host').equalTo(true)
   );
 
-  const [suspects] = useObject(gameRef.child('suspects'));
+  const [suspects, loadingSuspects] = useObject(gameRef.child('suspects'));
 
   const [allRoles] = useObjectVal(gameRef.child('currentRoles'));
   const [markers] = useObject(gameRef.child('markers'));
 
   // State - should only influence current user's own screen
   const [initialGameState, setGameState] = useState(null);
-  const [currPlayerRole, setCurrPlayerRole] = useState('');
+  const [, setCurrPlayerRole] = useState('');
   const [selectedCards, setSelectedCards] = useState([]);
   const [isRevealed] = useState(false);
   // function revealCard() {
@@ -63,76 +84,75 @@ function DayTime({ match }) {
     });
   }, [gameRef, setGameState]);
 
-  return !initialGameState || loadingHost || loadingCurrPlayer ? (
+  return !initialGameState ||
+    loadingHost ||
+    loadingCurrPlayer ||
+    loadingSuspects ? (
     <Spinner animation="border" role="status" />
   ) : (
-    <Container>
+    <PageContainer>
       <Row>
-        <Col md={10}>
-          <Row>
-            <Col>
-              <h1 className="text-center">
-                {initialGameState.title}{' '}
-                <Badge variant={initialGameState.isNight ? 'dark' : 'light'}>
-                  {initialGameState.isNight ? 'Night Phase' : 'Day Phase'}
-                </Badge>
-              </h1>
-            </Col>
-          </Row>
-          <Row>
+        <Col>
+          <Row className="text-center">
             <DayCountDown gameRef={gameRef} host={host} />
           </Row>
-          <Board style={{}}>
-            <OpponentList
-              gameRef={gameRef}
-              players={initialGameState.players}
-              setSelectedCards={setSelectedCards}
-              selectedCards={selectedCards}
-              isRevealed={isRevealed}
-            />
-            <MiddleCardList
-              gameRef={gameRef}
-              setSelectedCards={setSelectedCards}
-              selectedCards={selectedCards}
-              centerCards={initialGameState.centerCards}
-              isRevealed={isRevealed}
-              suspects={suspects.val()}
-            />
+          <Board>
+            <Row>
+              <Col />
+              <Col xs="auto">
+                <OpponentList
+                  gameRef={gameRef}
+                  players={initialGameState.players}
+                  setSelectedCards={setSelectedCards}
+                  selectedCards={selectedCards}
+                  isRevealed={isRevealed}
+                />
+                <MiddleCardList
+                  gameRef={gameRef}
+                  setSelectedCards={setSelectedCards}
+                  selectedCards={selectedCards}
+                  centerCards={initialGameState.centerCards}
+                  isRevealed={isRevealed}
+                  suspects={suspects.val()}
+                />
+              </Col>
+              <Col />
+            </Row>
           </Board>
-          <Row>
-            <Col />
-            <Col md={6}>
-              <PlayerCard
-                gameRef={gameRef}
-                currPlayer={currPlayer}
-                userId={userId}
-                setCurrPlayerRole={setCurrPlayerRole}
-                setSelectedCards={setSelectedCards}
-                selectedCards={selectedCards}
-              />
-            </Col>
-            <Col>{/* <ResetForm gameRef={gameRef} /> */}</Col>
-          </Row>
-        </Col>
-        <Col md={2}>
-          <aside className="text-center">
-            <h2>Commands</h2>
-
-            {allRoles.map((el) => (
-              <RoleMarkerButton
-                key={el}
-                selectedCards={selectedCards}
-                role={el}
-                gameRef={gameRef}
-                applyMarker={applyMarker}
-                suspects={suspects}
-                markers={markers}
-              />
-            ))}
-          </aside>
         </Col>
       </Row>
-    </Container>
+      <StickyUI>
+        <Row>
+          <SuspectedPlayerRole suspects={suspects} userId={userId} />
+          <Col>
+            <PlayerCard
+              gameRef={gameRef}
+              currPlayer={currPlayer}
+              userId={userId}
+              setCurrPlayerRole={setCurrPlayerRole}
+              setSelectedCards={setSelectedCards}
+              selectedCards={selectedCards}
+            />
+          </Col>
+          <Col>
+            <CommandText>Mark your suspects</CommandText>
+            <Row>
+              {allRoles.map((el) => (
+                <RoleMarkerButton
+                  key={el}
+                  selectedCards={selectedCards}
+                  role={el}
+                  gameRef={gameRef}
+                  applyMarker={applyMarker}
+                  suspects={suspects}
+                  markers={markers}
+                />
+              ))}
+            </Row>
+          </Col>
+        </Row>
+      </StickyUI>
+    </PageContainer>
   );
 }
 
