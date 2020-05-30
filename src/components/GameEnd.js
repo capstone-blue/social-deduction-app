@@ -70,7 +70,7 @@ const GameEnd = ({ match, history }) => {
             setWinner(snapshot.val());
           });
       } catch (e) {
-        console.error('Error in GameEnd setWinningTeam', e.message);
+        // console.error('Error in GameEnd setWinningTeam', e.message);
       }
     }
     function checkIfHost() {
@@ -90,7 +90,7 @@ const GameEnd = ({ match, history }) => {
           }
         });
       } catch (e) {
-        console.error('Error in GameStart lobby listener', e.message);
+        // console.error('Error in GameStart lobby listener', e.message);
       }
     }
     function playSound() {
@@ -124,7 +124,7 @@ const GameEnd = ({ match, history }) => {
       await gameSessionRef.child('newLobby').set(lobbyName);
       history.push(`/lobbies/${lobbySnap.key}`);
     } catch (e) {
-      console.error('Error in createLobby', e.message);
+      // console.error('Error in createLobby', e.message);
     }
   }
 
@@ -152,7 +152,7 @@ const GameEnd = ({ match, history }) => {
         .update({ ...userSnap.val, inLobby: true });
       newLobbyRef.off();
     } catch (e) {
-      console.error('Error in joinLobby', e.message);
+      // console.error('Error in joinLobby', e.message);
     }
   }
 
