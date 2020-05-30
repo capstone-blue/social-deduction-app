@@ -63,7 +63,7 @@ const VotingPage = ({ match }) => {
           }
         });
       } catch (e) {
-        console.error('Error in VotingPage vote status listener', e.message);
+        // console.error('Error in VotingPage vote status listener', e.message);
       }
     }
     function checkIfHost() {
@@ -177,7 +177,6 @@ const VotingPage = ({ match }) => {
         }
       });
     });
-    console.log(actualRoles);
 
     await gameSessionRef.child('deadPlayers').set(deadPlayers);
 
@@ -198,8 +197,6 @@ const VotingPage = ({ match }) => {
       const hunterVictimRole = hunterVictim.val().actualRole.name;
       // check whether a tanner also died
       const tannerDied = actualRoles.includes('Tanner');
-      console.log(actualRoles);
-      console.log(tannerDied);
       if (hunterVictimRole === 'Werewolf' && tannerDied)
         await gameSessionRef.child('winner').set('Tanner and Villagers');
       else if (hunterVictimRole !== 'Werewolf' && tannerDied)
@@ -210,7 +207,6 @@ const VotingPage = ({ match }) => {
     }
 
     async function minionWinConditions() {
-      console.log('got here with', actualRoles);
       // if there is a werewolf and minion dies, werewolves win
       // if there are no werewolves and someone other than minion dies, werewolves win
       // if there are no werewolve and minion dies, villagers win
@@ -231,7 +227,6 @@ const VotingPage = ({ match }) => {
     )
       await gameSessionRef.child('winner').set('Villagers');
     else if (actualRoles.length === 1) {
-      console.log('got here with', actualRoles);
       if (actualRoles.includes('Werewolf'))
         await gameSessionRef.child('winner').set('Villagers');
       else if (actualRoles.includes('Hunter')) findHunterVictim();
