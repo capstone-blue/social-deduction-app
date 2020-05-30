@@ -38,7 +38,7 @@ function GameStart({ match, players, history }) {
             }
           });
       } catch (e) {
-        console.error('Error in GameStart lobby listener', e.message);
+        // console.error('Error in GameStart lobby listener', e.message);
       }
     }
     function checkIfHost() {
@@ -68,7 +68,7 @@ function GameStart({ match, players, history }) {
         // set lobby status from pending to started so component will render redirect to game session from the lobby listener
         lobbiesRef.update({ status: 'started' });
       } catch (e) {
-        console.error('Error in createGameSession', e.message);
+        // console.error('Error in createGameSession', e.message);
       }
     } else {
       alert(
