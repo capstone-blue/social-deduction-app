@@ -79,7 +79,7 @@ function DayTime({ match }) {
         const gameState = gameSessionSnap.val();
         setGameState(gameState);
       } catch (e) {
-        console.error('Error loading intitial game state, ', e.message);
+        // console.error('Error loading intitial game state, ', e.message);
       }
     });
   }, [gameRef, setGameState]);
