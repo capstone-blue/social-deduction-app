@@ -12,7 +12,6 @@ function WerewolfCommands({
   const [wolves] = useObjectVal(gameRef.child('wolfCount'));
   function revealCard() {
     if (currPlayer.startingRole.name === currentTurn) {
-      console.log(currPlayer.startingRole.name, currentTurn);
       selectedCards[0].isRevealed
         ? setSelectedCards([{ ...selectedCards[0], isRevealed: false }])
         : setSelectedCards([{ ...selectedCards[0], isRevealed: true }]);

@@ -14,8 +14,6 @@ function PlayerCommands({
   selectedCards,
   currentTurn,
 }) {
-  console.log('current Player', currPlayer);
-  console.log('currentTurn', currentTurn);
   if (currPlayer.startingRole.name === 'Doppelganger') {
     return (
       <DoppelgangerCommands

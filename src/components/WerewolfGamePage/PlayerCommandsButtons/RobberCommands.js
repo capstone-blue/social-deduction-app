@@ -13,14 +13,10 @@ function RobberCommands({
     if (selectedCards.length !== 1) {
       return null;
     } else if (currPlayer.startingRole.name === currentTurn) {
-      console.log(currPlayer.startingRole.name, currentTurn);
       const [firstCard] = selectedCards;
-      console.log(firstCard);
       const { cardRef: firstRef, cardVal: firstVal } = firstCard;
-      console.log(currPlayer);
       const secondRef = gameRef.child(`players/${userId}/actualRole`);
       const secondVal = currPlayer.actualRole;
-      console.log(firstRef, firstVal, secondRef, secondVal);
 
       firstRef.set(secondVal);
       secondRef.set(firstVal);
