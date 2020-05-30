@@ -50,7 +50,7 @@ const NavigationBar = ({ location }) => {
           }
         });
       } catch (error) {
-        console.error('Error in NavigationBar useEffect', error.message);
+        // console.error('Error in NavigationBar useEffect', error.message);
       }
     } else {
       setStatus('lobby');
