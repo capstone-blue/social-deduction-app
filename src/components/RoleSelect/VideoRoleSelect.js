@@ -33,7 +33,6 @@ function VideoRoleSelect({ match }) {
   const playersRef = lobbiesRef.child(match.params.id).child('players');
   const gameRef = lobbiesRef.child(match.params.id);
   const [currentRolesList] = useObjectVal(gameRef.child('currentRoles'));
-  console.log(currentRolesList);
   function buttonClicked(role) {
     if (playerVals.host) {
       if (currentRolesList) {
