@@ -39,7 +39,6 @@ function LobbyPage({ match, history }) {
     <Container>...Loading</Container>
   ) : (
     <PageContainer>
-      {console.log(lobby.players)}
       <PageTitle>
         Lobby <TitleSpan>{lobby.name}</TitleSpan>
       </PageTitle>

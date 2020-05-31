@@ -100,7 +100,7 @@ function LobbyForm({ history }) {
       setLobbyName('');
       history.push(`/lobbies/${lobbySnap.key}`);
     } catch (e) {
-      console.error('Error in createLobby', e.message);
+      // console.error('Error in createLobby', e.message);
     }
   }
 
@@ -111,7 +111,6 @@ function LobbyForm({ history }) {
         .orderByChild('name')
         .equalTo(lobbyName)
         .once('value');
-      console.log(lobbySnaps);
       if (!lobbySnaps.val()) {
         setLobbyName('');
         throw new Error(`Cannot find lobby with name ${lobbyName}`);
@@ -132,7 +131,7 @@ function LobbyForm({ history }) {
         .child(userId)
         .update({ ...userSnap.val, inLobby: true });
     } catch (e) {
-      console.error('Error in joinLobby', e.message);
+      // console.error('Error in joinLobby', e.message);
     }
   }
 

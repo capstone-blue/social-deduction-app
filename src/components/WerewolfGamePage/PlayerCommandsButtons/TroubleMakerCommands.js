@@ -13,7 +13,6 @@ function TroubleMakerCommands({
     if (selectedCards.length < 2) {
       return null;
     } else if (currPlayer.startingRole.name === currentTurn) {
-      console.log(currPlayer.startingRole.name, currentTurn);
       const [firstCard, secondCard] = selectedCards;
       const { cardRef: firstRef, cardVal: firstVal } = firstCard;
       const { cardRef: secondRef, cardVal: secondVal } = secondCard;

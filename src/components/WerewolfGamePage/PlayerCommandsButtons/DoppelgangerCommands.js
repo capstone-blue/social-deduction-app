@@ -11,7 +11,6 @@ function DoppelgangerCommands({
 }) {
   function revealCard() {
     if (currPlayer.startingRole.name === currentTurn) {
-      console.log(currPlayer.startingRole.name, currentTurn);
       if (selectedCards[0].isRevealed) {
         setSelectedCards([{ ...selectedCards[0], isRevealed: false }]);
       } else {

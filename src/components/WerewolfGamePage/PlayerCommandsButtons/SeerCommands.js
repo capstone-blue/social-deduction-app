@@ -9,7 +9,6 @@ function SeerCommands({
   selectedCards,
   currentTurn,
 }) {
-  console.log(selectedCards);
   function revealCard() {
     if (currPlayer.startingRole.name === currentTurn) {
       if (selectedCards) {

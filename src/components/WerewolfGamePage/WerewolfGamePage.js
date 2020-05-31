@@ -146,7 +146,7 @@ function WerewolfGamePage({ match }) {
         const gameState = gameSessionSnap.val();
         setGameState(gameState);
       } catch (e) {
-        console.error('Error loading intitial game state, ', e.message);
+        // console.error('Error loading intitial game state, ', e.message);
       }
     });
   }, [gameSessionRef, setGameState]);
@@ -163,7 +163,6 @@ function WerewolfGamePage({ match }) {
       await masonMessages(gameSessionRef, userId);
     }
     if (currPlayer) {
-      console.log(currentTurn, currPlayer.startingRole.name);
       if (
         currentTurn === 'Werewolf' &&
         currPlayer.startingRole.name === 'Werewolf'
@@ -178,7 +177,6 @@ function WerewolfGamePage({ match }) {
         currentTurn === 'Minion' &&
         currPlayer.startingRole.name === 'Minion'
       ) {
-        console.log('got here');
         getMinions();
       } else if (
         currentTurn === 'Mason' &&
