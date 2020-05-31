@@ -76,7 +76,6 @@ function WerewolfGamePage({ match }) {
   const [initialGameState, setGameState] = useState(null);
   const [, setCurrPlayerRole] = useState('');
   const [selectedCards, setSelectedCards] = useState([]);
-  console.log(currPlayer);
   // function revealCard() {
   //   if(currPlayer.startingRole.name ==="Doppelganger" || currPlayer.startingRole.name === "Robber" || currPlayer.startingRole.name ==="Seer" || currPlayer.startingRole.name === "Insomniac"){
   //     if (selectedCards.length > 1){
